@@ -1,0 +1,74 @@
+[debug] [2019-08-10T12:56:12.099Z] ----------------------------------------------------------------------
+[debug] [2019-08-10T12:56:12.101Z] Command:       /usr/local/bin/node /usr/local/bin/firebase init
+[debug] [2019-08-10T12:56:12.101Z] CLI Version:   7.2.2
+[debug] [2019-08-10T12:56:12.101Z] Platform:      darwin
+[debug] [2019-08-10T12:56:12.101Z] Node Version:  v11.13.0
+[debug] [2019-08-10T12:56:12.102Z] Time:          Sat Aug 10 2019 20:56:12 GMT+0800 (Singapore Standard Time)
+[debug] [2019-08-10T12:56:12.102Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2019-08-10T12:56:12.107Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2019-08-10T12:56:12.108Z] > authorizing via signed-in user
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  /Users/harry/Projects/project-reentry/project-reentry
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[debug] [2019-08-10T12:56:21.391Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2019-08-10T12:56:21.391Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2019-08-10T12:56:21.505Z] <<< HTTP RESPONSE 200
+[debug] [2019-08-10T12:56:21.537Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects?page_size=100  
+ 
+[debug] [2019-08-10T12:56:21.986Z] <<< HTTP RESPONSE 200
+[info] i  Using project project-reentry (project-reentry)
+[info] 
+=== Firestore Setup
+[debug] [2019-08-10T12:56:26.714Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2019-08-10T12:56:26.715Z] > authorizing via signed-in user
+[debug] [2019-08-10T12:56:26.715Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/project-reentry  
+ 
+[debug] [2019-08-10T12:56:26.984Z] <<< HTTP RESPONSE 200
+[info] 
+[info] Firestore Security Rules allow you to define how and when to allow
+[info] requests. You can keep these rules in your project directory
+[info] and publish them with firebase deploy.
+[info] 
+[debug] [2019-08-10T12:56:29.433Z] >>> HTTP REQUEST GET https://firebaserules.googleapis.com/v1/projects/project-reentry/releases?pageSize=10&pageToken=  
+ 
+[debug] [2019-08-10T12:56:30.881Z] <<< HTTP RESPONSE 200
+[debug] [2019-08-10T12:56:30.882Z] Found ruleset: projects/project-reentry/rulesets/ab93092d-f2ac-435b-9c0d-a3a3ea664cbd
+[debug] [2019-08-10T12:56:30.883Z] >>> HTTP REQUEST GET https://firebaserules.googleapis.com/v1/projects/project-reentry/rulesets/ab93092d-f2ac-435b-9c0d-a3a3ea664cbd  
+ 
+[debug] [2019-08-10T12:56:31.237Z] <<< HTTP RESPONSE 200
+[info] 
+[info] Firestore indexes allow you to perform complex queries while
+[info] maintaining performance that scales with the size of the result
+[info] set. You can keep index definitions in your project directory
+[info] and publish them with firebase deploy.
+[info] 
+[debug] [2019-08-10T12:56:33.168Z] >>> HTTP REQUEST GET https://firestore.googleapis.com/v1beta2/projects/project-reentry/databases/(default)/collectionGroups/-/indexes  
+ 
+[debug] [2019-08-10T12:56:33.168Z] >>> HTTP REQUEST GET https://firestore.googleapis.com/v1beta2/projects/project-reentry/databases/(default)/collectionGroups/-/fields?filter=indexConfig.usesAncestorConfig=false  
+ 
+[debug] [2019-08-10T12:56:34.003Z] <<< HTTP RESPONSE 200
+[debug] [2019-08-10T12:56:34.004Z] <<< HTTP RESPONSE 200
+[info] 
+=== Hosting Setup
+[info] 
+[info] Your public directory is the folder (relative to your project directory) that
+[info] will contain Hosting assets to be uploaded with firebase deploy. If you
+[info] have a build process for your assets, use your build's output directory.
+[info] 
