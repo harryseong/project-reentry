@@ -1,0 +1,36 @@
+footer {
+  margin: 1em 0;
+  padding: 1em;
+  flex-shrink: 0;
+
+  #sado-logo-img {
+    width: 8em;
+  }
+
+  .social-media-icon, .social-media-icon:visited {
+    background-color: rgba(255, 255, 255, 0);
+    color: #5c5c5c;
+    transition: 0.3s;
+    border: solid 0.05em #9b9b9b;
+  }
+
+  .social-media-icon span {
+    display: block;
+  }
+
+  .social-media-icon:hover {
+    background-color: white;
+    transform: scale(1.04);
+    transition: 0.3s;
+    border: solid 0.05em #696969;
+  }
+
+  .fb-icon:hover {
+    color: #4267b2;
+    margin-right: 0.02em;
+  }
+
+  .twitter-icon:hover {
+    color: #38A1F3;
+  }
+}
