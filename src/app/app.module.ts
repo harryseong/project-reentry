@@ -7,8 +7,8 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import {CoreModule} from './core/core.module';
-import {HomeModule} from './home/home.module';
 import {PageNotFoundModule} from './page-not-found/page-not-found.module';
+import {UserSideModule} from './user-side/user-side.module';
 
 @NgModule({
   declarations: [
@@ -18,7 +18,7 @@ import {PageNotFoundModule} from './page-not-found/page-not-found.module';
     CoreModule,
     BrowserModule,
     BrowserAnimationsModule,
-    HomeModule,
+    UserSideModule,
     PageNotFoundModule,
     AppRoutingModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {DialogService} from '../../../core/services/dialog/dialog.service';
 
 @Component({
   selector: 'app-footer',
@@ -7,9 +8,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class FooterComponent implements OnInit {
 
-  constructor() { }
+  constructor(private dialogService: DialogService) { }
 
-  ngOnInit() {
+  ngOnInit() {}
+
+  openHelpDialog() {
+    this.dialogService.openHelpDialog();
   }
-
 }

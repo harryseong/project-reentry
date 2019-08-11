@@ -1,0 +1,45 @@
+.mat-expansion-panel-header {
+  padding: 0 0.8em;
+}
+
+.org-filter-controls .mat-expansion-panel-body {
+  padding: 0 0.8em 0.8em;
+}
+
+.miles-away {
+  font-size: 1em;
+  font-weight: 600;
+}
+
+.near-me-header-div  {
+  font-size: 0.8em;
+}
+
+.near-me-header {
+  font-size: 1.3em;
+  font-weight: 400;
+}
+
+.selected-category {
+  font-size: 0.8em;
+}
+
+.org-filter-controls {
+  border: 0.05em solid #cdcdcd;
+  background-color: rgba(255, 255, 255, 0.81);
+  font-size: 0.8em;
+}
+
+.near-me-header-card, .org-card {
+  background-color: rgba(255, 255, 255, 0.81);
+  border: 0.05em solid #cdcdcd;
+  font-size: 0.9em;
+  padding: 0.8em;
+  margin-bottom: 0.25em;
+}
+
+.org-name {
+  font-size: 1.1em;
+  font-weight: 500;
+  margin-bottom: 0.75em;
+}

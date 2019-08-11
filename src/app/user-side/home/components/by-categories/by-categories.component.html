@@ -1,0 +1,5 @@
+<div fxLayout="row wrap" fxLayoutAlign="center">
+  <div fxFlex="45%" fxFlex.xs="90%" class="category-tile" *ngFor="let service of serviceCategories" (click)="selectCategory(service.service)">
+    {{service.service}}
+  </div>
+</div>
