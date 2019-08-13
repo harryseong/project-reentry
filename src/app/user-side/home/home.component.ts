@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {animate, style, transition, trigger} from '@angular/animations';
+import {FirestoreService} from '../../core/services/firestore/firestore.service';
 
 @Component({
   selector: 'app-home',
@@ -16,9 +17,11 @@ import {animate, style, transition, trigger} from '@angular/animations';
 })
 export class HomeComponent implements OnInit {
 
-  constructor() { }
+  constructor(private db: FirestoreService) { }
 
   ngOnInit() {
+    this.db.getAllOrgs();
+    this.db.getAllServiceCategories();
   }
 
 }

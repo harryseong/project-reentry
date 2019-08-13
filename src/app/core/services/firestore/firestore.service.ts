@@ -2,14 +2,18 @@ import { Injectable } from '@angular/core';
 import {AngularFirestore, AngularFirestoreCollection} from '@angular/fire/firestore';
 import {Router} from '@angular/router';
 import {SnackBarService} from '../snack-bar/snack-bar.service';
+import {BehaviorSubject} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FirestoreService {
+  allOrgs$ = new BehaviorSubject([]);
+  serviceCategories$ = new BehaviorSubject([]);
 
   organizations: AngularFirestoreCollection<any>;
   serviceCategories: AngularFirestoreCollection<any>;
+
   languages: AngularFirestoreCollection<any>;
   counties: AngularFirestoreCollection<any>;
   users: AngularFirestoreCollection<any>;
@@ -24,7 +28,30 @@ export class FirestoreService {
     this.users = db.collection<any>('users');
   }
 
-  _sort(array: string[], parameter: string): string[] {
+  // Run this once when Home component initiated.
+  getAllOrgs() {
+    this.organizations.get().toPromise()
+      .then(querySnapshot => this.allOrgs$.next(querySnapshot.docs.map(doc => doc.data())))
+      .catch(err => this.snackBarService.openSnackBar('Something went wrong. Please refresh the page.', 'OK'));
+  }
+
+  // Run this once when Home component initiated.
+  getAllServiceCategories() {
+    this.serviceCategories.get().toPromise()
+      .then(querySnapshot => {
+        const sortedServiceCategories = this._sort(querySnapshot.docs.map(doc => doc.data()), 'service');
+        this.serviceCategories$.next(sortedServiceCategories);
+      })
+      .catch(err => this.snackBarService.openSnackBar('Something went wrong. Please refresh the page.', 'OK'));
+  }
+
+  getOrgsByServiceCategories(serviceCategories: any[]) {
+    const allOrgs = this.allOrgs$.value;
+    return serviceCategories.includes('All Services') ?
+      allOrgs : allOrgs.filter(org => org.services.some(sc => serviceCategories.includes(sc)));
+  }
+
+  _sort(array: any[], parameter: string): string[] {
     return Object.assign([], array)
       .sort((a, b) => (a[parameter] > b[parameter]) ? 1 : ((b[parameter] > a[parameter] ? -1 : 0)));
   }

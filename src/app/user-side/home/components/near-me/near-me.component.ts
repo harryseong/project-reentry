@@ -6,6 +6,7 @@ import {animate, style, transition, trigger} from '@angular/animations';
 import {FirestoreService} from '../../../../core/services/firestore/firestore.service';
 import {SnackBarService} from '../../../../core/services/snack-bar/snack-bar.service';
 import {GoogleMapsService} from '../../../../core/services/google-maps/google-maps.service';
+import {BehaviorSubject} from 'rxjs';
 declare var google: any;
 
 /** Error when invalid control is dirty, touched, or submitted. */
@@ -43,7 +44,7 @@ export interface OrgFilters {
 export class NearMeComponent implements OnInit {
   geocoder = new google.maps.Geocoder();
 
-  serviceCategoryOptions: any[] = [];
+  serviceCategories$ = new BehaviorSubject([]);
   selectedServiceCategories: any[] = [];
   selectAll = false;
 
@@ -55,9 +56,8 @@ export class NearMeComponent implements OnInit {
 
   // Stores orgs found by service categories.
   foundOrgs: any[] = [];
-
-  // Stores filtered orgs.
-  filteredOrgs: any[] = [];
+  filteredOrgs$ = new BehaviorSubject([]);
+  searchStatus = 'ready';
 
   orgFilters: OrgFilters = {distanceRadius: 25, noEligibilityRequirements: false,
     includeReligiousOrgs: true, showOnlyOrgsWithTransport: false};
@@ -67,16 +67,16 @@ export class NearMeComponent implements OnInit {
               private snackBarService: SnackBarService,
               private router: Router,
               private googleMapsService: GoogleMapsService,
-              private zone: NgZone) { }
-
-  ngOnInit() {
-    this.db.serviceCategories.valueChanges().subscribe(sc => this.serviceCategoryOptions = this.db._sort(sc, 'service'));
+              private zone: NgZone) {
+    this.serviceCategories$ = db.serviceCategories$;
   }
+
+  ngOnInit() {}
 
   selectAllToggle() {
     const selectedServicesCategories = this.servicesNearMeForm.get('serviceCategories');
     if (selectedServicesCategories.value.includes('All Services')) {
-      selectedServicesCategories.setValue([...this.serviceCategoryOptions.map(service => service.service), 'All Services']);
+      selectedServicesCategories.setValue([...this.serviceCategories$.value.map(service => service.service), 'All Services']);
       this.selectAll = true;
     } else {
       selectedServicesCategories.setValue([]);
@@ -87,14 +87,14 @@ export class NearMeComponent implements OnInit {
     const selectedServiceCategories = this.servicesNearMeForm.get('serviceCategories').value;
 
     // If "Select All" is selected and one option is unselected.
-    if (this.selectAll === true && selectedServiceCategories.length === this.serviceCategoryOptions.length) {
+    if (this.selectAll === true && selectedServiceCategories.length === this.serviceCategories$.value.length) {
       this.selectAll = false;
       const index = selectedServiceCategories.indexOf('All Services');
       if (index > -1) {
         selectedServiceCategories.splice(index, 1);
         this.servicesNearMeForm.get('serviceCategoryOptions').setValue(selectedServiceCategories);
       }
-    } else if (this.selectAll === false && selectedServiceCategories.length === this.serviceCategoryOptions.length) {
+    } else if (this.selectAll === false && selectedServiceCategories.length === this.serviceCategories$.value.length) {
       this.selectAll = true;
       selectedServiceCategories.push('All Services');
       this.servicesNearMeForm.get('serviceCategoryOptions').setValue(selectedServiceCategories);
@@ -102,6 +102,7 @@ export class NearMeComponent implements OnInit {
   }
 
   findServices() {
+    this.searchStatus = 'searching';
     const address = this.servicesNearMeForm.get('location').value;
     if (address !== '' && this.servicesNearMeForm.get('serviceCategories').value.length > 0) {
       this.codeAddress(address);
@@ -133,10 +134,11 @@ export class NearMeComponent implements OnInit {
     this.codedLocation.locationAddress = results[0].formatted_address;
     this.codedLocation.locationId = results[0].place_id;
     this.selectedServiceCategories = selectedServices.includes('All Services') ? ['All Services'] : selectedServices;
-    this.findOrgs();
+    this.getOrgsByServicesCategories();
   }
 
   locationNotInMichigan() {
+    this.searchStatus = 'done';
     this.servicesNearMeForm.get('location').reset();
     const message = 'The location provided was not found to be in Michigan. Please input a Michigan city or address.';
     const action = 'OK';
@@ -145,6 +147,7 @@ export class NearMeComponent implements OnInit {
   }
 
   locationInvalid(results, status) {
+    this.searchStatus = 'done';
     this.servicesNearMeForm.get('location').reset();
     const message = results.length === 0 ? 'The provided location is not valid. Please try again.' :
       'The app could not reach geocoding services. Please refresh the page and try again.';
@@ -154,70 +157,68 @@ export class NearMeComponent implements OnInit {
     return null;
   }
 
-  findOrgs() {
-    this.db.organizations.valueChanges().subscribe(rsp => {
-      const foundOrgs = this.servicesNearMeForm.get('serviceCategories').value.includes('All Services') ? rsp :
-        rsp.filter(org => org.services.some(sc => this.selectedServiceCategories.includes(sc)));
+  getOrgsByServicesCategories() {
+    const foundOrgs = this.db.getOrgsByServiceCategories(this.selectedServiceCategories);
+    const foundOrgsWithDist = [];
+    let orgCount = 0;
 
-      let orgCount = 0;
+    if (foundOrgs.length > 0) {
+      foundOrgs.forEach(org => {
 
-      if (foundOrgs.length > 0) {
-        foundOrgs.forEach(org => {
-
-          this.googleMapsService.distanceMatrixService.getDistanceMatrix({
+        this.googleMapsService.distanceMatrixService.getDistanceMatrix({
             origins: [this.codedLocation.locationAddress],
             destinations: [org.address.gpsCoords],
             travelMode: google.maps.TravelMode.DRIVING,
-            unitSystem: google.maps.UnitSystem.IMPERIAL}, (response, status2) => {
-              if (status2.toString() === 'OK') {
-                org.distance = response.rows[0].elements[0].distance.text;
-                this.foundOrgs.push(org);
+            unitSystem: google.maps.UnitSystem.IMPERIAL
+          }, (response, status) => {
+            if (status.toString() === 'OK') {
+              org.distance = response.rows[0].elements[0].distance.text;
+              foundOrgsWithDist.push(org);
+              orgCount++;
 
-                orgCount++;
-
-                if (orgCount === foundOrgs.length) {
-                  this.sortOrgsByDistance(foundOrgs);
-                  this.applyOrgFilters();
-                }
+              if (orgCount === foundOrgsWithDist.length) {
+                this.foundOrgs = this.sortOrgsByDistance(foundOrgsWithDist);
+                this.applyOrgFilters();
+                this.searchStatus = 'done';
               }
             }
-          );
+          }
+        );
 
-        });
-      }
-    });
+      });
+    }
   }
 
-  sortOrgsByDistance(foundOrgs) {
+  sortOrgsByDistance(orgs) {
     const collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
-    this.foundOrgs = foundOrgs.sort((a, b) => collator.compare(a.distance, b.distance));
+    return orgs.sort((a, b) => collator.compare(a.distance, b.distance));
   }
 
   applyOrgFilters() {
-    this.filteredOrgs = Object.assign([], this.foundOrgs);
-    this.filteredOrgs = this.filteredOrgs
+    let filteredOrgs = Object.assign([], this.foundOrgs)
       .filter(org => org.distance.split(' mi')[0] <= this.orgFilters.distanceRadius);
 
     if (this.orgFilters.includeReligiousOrgs === false) {
-      this.filteredOrgs = this.filteredOrgs
-        .filter(org => !org.services.includes('Religious Organization'));
+      filteredOrgs = filteredOrgs.filter(org => !org.services.includes('Religious Organization'));
     }
 
     if (this.orgFilters.noEligibilityRequirements === true) {
-      this.filteredOrgs = this.filteredOrgs
-        .filter(org => !org.eligibilityRequirements && !org.seniorRequirements);
+      filteredOrgs = filteredOrgs.filter(org => !org.eligibilityRequirements && !org.seniorRequirements);
     }
 
     if (this.orgFilters.showOnlyOrgsWithTransport === true) {
-      this.filteredOrgs = this.filteredOrgs.filter(org => org.transportation);
+      filteredOrgs = filteredOrgs.filter(org => org.transportation);
     }
+
+    this.filteredOrgs$.next(filteredOrgs);
   }
 
   tryAnotherSearch() {
-    this.codedLocation = {locationId: null, locationAddress: null};
+    this.codedLocation = {locationId: null, locationAddress: []};
     this.selectedServiceCategories = [];
     this.foundOrgs = [];
-    this.filteredOrgs = [];
+    this.searchStatus = 'ready';
+    this.filteredOrgs$.next([]);
     this.orgFilters = {distanceRadius: 25, noEligibilityRequirements: false, includeReligiousOrgs: true, showOnlyOrgsWithTransport: false};
     this.showFilterControls = false;
     this.servicesNearMeForm.get('location').reset();

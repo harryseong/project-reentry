@@ -1,14 +1,18 @@
+<div *ngIf="searchStatus === 'searching'">
+  <app-progress-spinner></app-progress-spinner>
+</div>
+
 <div fxLayout="column" fxLayoutGap="1.5em" fxLayoutAlign="start start">
-  <div fxFill>
-    <form [formGroup]="servicesNearMeForm" [@transitionAnimations] fxFill fxLayout="column" fxLayoutGap="2em"
-          (keydown.enter)="$event.preventDefault()">
+
+  <div fxFill [fxShow]="searchStatus === 'ready'">
+    <form [formGroup]="servicesNearMeForm" [@transitionAnimations] fxFill fxLayout="column" fxLayoutGap="2em" (keydown.enter)="$event.preventDefault()">
 
       <div fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="5%">
         <mat-form-field fxFlex="50%" fxFlex.sm="50%" fxFlex.xs="100%">
           <mat-label><i class="fas fa-concierge-bell fa-sm fa-fw"></i> Which services are you looking for?</mat-label>
           <mat-select formControlName="serviceCategories" multiple [required]="true">
             <mat-option value="All Services" (click)="selectAllToggle()">--- Select All ---</mat-option>
-            <mat-option *ngFor="let service of serviceCategoryOptions" [value]="service.service" (click)="selectServiceCategory()">{{service.service}}</mat-option>
+            <mat-option *ngFor="let service of (serviceCategories$ | async)" [value]="service.service" (click)="selectServiceCategory()">{{service.service}}</mat-option>
           </mat-select>
           <mat-hint>
             Select at least one type of service.
@@ -41,7 +45,7 @@
     </form>
   </div>
 
-  <div fxLayout="column" fxFill fxLayoutGap="1em" *ngIf="(filteredOrgs !== null)">
+  <div fxLayout="column" fxFill fxLayoutGap="1em" [fxShow]="searchStatus === 'done'">
 
     <!--Services Near Me Header-->
     <mat-card class="near-me-header-card mat-elevation-z0">
@@ -73,8 +77,7 @@
 
     <!--Filter Controls-->
     <mat-accordion>
-      <mat-expansion-panel class="org-filter-controls mat-elevation-z0" (opened)="showFilterControls = true"
-                           (closed)="showFilterControls = false">
+      <mat-expansion-panel class="org-filter-controls mat-elevation-z0" (opened)="showFilterControls = true" (closed)="showFilterControls = false">
         <mat-expansion-panel-header>
           <mat-panel-title>
             <span><i class="fas fa-sliders-h"></i> Search Filters</span>
@@ -104,7 +107,7 @@
     </mat-accordion>
 
     <!--List of Services-->
-    <mat-card class="org-card mat-elevation-z0" *ngFor="let org of filteredOrgs; last as isLast">
+    <mat-card class="org-card mat-elevation-z0" *ngFor="let org of filteredOrgs$ | async; last as isLast">
       <div class="org-name">
         <a [routerLink]="['/service/view', org.name]">{{org.name}}</a>
       </div>
@@ -130,7 +133,7 @@
     </mat-card>
 
     <!--Display if No Services Found-->
-    <mat-card class="org-card mat-elevation-z0" *ngIf="filteredOrgs==null || filteredOrgs.length==0">
+    <mat-card class="org-card mat-elevation-z0" *ngIf="(filteredOrgs$ | async).length === 0">
       <div>
         <strong><i class="fas fa-info-circle"></i> No Services Found</strong>
       </div>
@@ -145,6 +148,5 @@
     </mat-card>
 
   </div>
-
 
 </div>
