@@ -4,6 +4,7 @@ import {NearMeComponent} from './components/near-me/near-me.component';
 import {ByCategoriesComponent} from './components/by-categories/by-categories.component';
 import {SharedModule} from '../../shared/shared.module';
 import {HomeComponent} from './home.component';
+import { NearMeResultsComponent } from './components/near-me/near-me-results/near-me-results.component';
 
 
 
@@ -11,7 +12,8 @@ import {HomeComponent} from './home.component';
   declarations: [
     NearMeComponent,
     ByCategoriesComponent,
-    HomeComponent
+    HomeComponent,
+    NearMeResultsComponent
   ],
   imports: [
     CommonModule,

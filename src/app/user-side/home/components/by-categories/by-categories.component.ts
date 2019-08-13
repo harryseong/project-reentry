@@ -15,7 +15,7 @@ export class ByCategoriesComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.db.services.valueChanges()
+    this.db.serviceCategories.valueChanges()
       .subscribe(serviceCategories => this.serviceCategories = this.db._sort(serviceCategories, 'service'));
   }
 

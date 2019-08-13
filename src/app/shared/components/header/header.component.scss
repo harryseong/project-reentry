@@ -1,7 +1,15 @@
 #project-reentry-header {
   margin: 0;
 
+  #project-reentry-title.mobile {
+    font-size: 0.8em;
+  }
+
   #project-reentry-logo {
     height: 3.2em;
+  }
+
+  #project-reentry-logo.mobile {
+    height: 2.2em;
   }
 }

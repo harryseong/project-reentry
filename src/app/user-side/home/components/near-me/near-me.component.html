@@ -1,24 +1,19 @@
 <div fxLayout="column" fxLayoutGap="1.5em" fxLayoutAlign="start start">
-  <div fxLayout="column" fxLayoutGap="1em" fxLayoutAlign="center center" fxFill class="progress-spinner" *ngIf="loading==true">
-    <mat-spinner [diameter]="75"></mat-spinner>
-    <div>Loading...</div>
-  </div>
-
-  <div [hidden]="servicesNearMeState.display==true || loading==true" fxFill>
-    <form [formGroup]="servicesForm" [@transitionAnimations] fxFill fxLayout="column" fxLayoutGap="2em"
+  <div fxFill>
+    <form [formGroup]="servicesNearMeForm" [@transitionAnimations] fxFill fxLayout="column" fxLayoutGap="2em"
           (keydown.enter)="$event.preventDefault()">
 
       <div fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="5%">
         <mat-form-field fxFlex="50%" fxFlex.sm="50%" fxFlex.xs="100%">
           <mat-label><i class="fas fa-concierge-bell fa-sm fa-fw"></i> Which services are you looking for?</mat-label>
-          <mat-select formControlName="services" multiple [required]="true">
+          <mat-select formControlName="serviceCategories" multiple [required]="true">
             <mat-option value="All Services" (click)="selectAllToggle()">--- Select All ---</mat-option>
-            <mat-option *ngFor="let service of serviceList" [value]="service.service" (click)="serviceSelection()">{{service.service}}</mat-option>
+            <mat-option *ngFor="let service of serviceCategoryOptions" [value]="service.service" (click)="selectServiceCategory()">{{service.service}}</mat-option>
           </mat-select>
           <mat-hint>
             Select at least one type of service.
           </mat-hint>
-          <mat-error *ngIf="servicesForm.get('services').hasError('required')">
+          <mat-error *ngIf="servicesNearMeForm.get('serviceCategories').hasError('required')">
             Please select at least one type of service.
           </mat-error>
         </mat-form-field>
@@ -30,14 +25,14 @@
           <mat-hint>
             Type in your city or address located in Michigan.
           </mat-hint>
-          <mat-error *ngIf="servicesForm.get('location').hasError('required')">
+          <mat-error *ngIf="servicesNearMeForm.get('location').hasError('required')">
             A city or address located in Michigan is required.
           </mat-error>
         </mat-form-field>
       </div>
 
       <div>
-        <button type="button" mat-stroked-button [disabled]="!servicesForm.valid" id="find-services-button"
+        <button type="button" mat-stroked-button [disabled]="!servicesNearMeForm.valid" id="find-services-button"
                 (keyup.enter)="findServices()" (click)="findServices()">
           <span><i class="fas fa-search"></i> FIND SERVICES NEAR ME</span>
         </button>
@@ -46,63 +41,61 @@
     </form>
   </div>
 
-  <div fxLayout="column" fxFill fxLayoutGap="1em" *ngIf="servicesNearMeState.display==true && loading==false">
+  <div fxLayout="column" fxFill fxLayoutGap="1em" *ngIf="(filteredOrgs !== null)">
 
     <!--Services Near Me Header-->
     <mat-card class="near-me-header-card mat-elevation-z0">
-      <div fxLayout="row" fxLayoutAlign="start start">
+      <div fxLayout="row" fxLayoutAlign="space-between">
         <div fxLayout="column" fxLayoutGap="1em" class="near-me-header-div">
           <div class="near-me-header" fxLayout="row wrap">
             <div>Services Near&nbsp;</div>
             <div>
-              <strong>{{servicesNearMeState.myLocation}}</strong>
+              <strong>{{codedLocation.locationAddress}}</strong>
             </div>
           </div>
-          <div fxLayout="column" fxLayoutGap="0.5em" *ngIf="servicesNearMeState.serviceCategories.length > 0">
+          <div fxLayout="column" fxLayoutGap="0.5em" *ngIf="selectedServiceCategories.length > 0">
             <div>
-              <strong>Selected Categor{{servicesNearMeState.serviceCategories.length>1 ? 'ies' : 'y'}}</strong>
+              <strong>Selected Categor{{selectedServiceCategories.length>1 ? 'ies' : 'y'}}</strong>
             </div>
             <div>
               <mat-chip-list>
-                <mat-chip class="selected-category" *ngFor="let category of servicesNearMeState.serviceCategories">{{category}}</mat-chip>
+                <mat-chip class="selected-category" *ngFor="let category of selectedServiceCategories">{{category}}</mat-chip>
               </mat-chip-list>
             </div>
           </div>
         </div>
 
-        <span class="spacer"></span>
-
         <div>
-          <a href="javascript:void(0)" (click)="back()">Try another search</a>
+          <a href="javascript:void(0)" (click)="tryAnotherSearch()">Try another search</a>
         </div>
       </div>
     </mat-card>
 
     <!--Filter Controls-->
     <mat-accordion>
-      <mat-expansion-panel class="org-filter-controls mat-elevation-z0" (opened)="filterControlsVisible = true"
-                           (closed)="filterControlsVisible = false">
+      <mat-expansion-panel class="org-filter-controls mat-elevation-z0" (opened)="showFilterControls = true"
+                           (closed)="showFilterControls = false">
         <mat-expansion-panel-header>
           <mat-panel-title>
             <span><i class="fas fa-sliders-h"></i> Search Filters</span>
           </mat-panel-title>
           <mat-panel-description>
-            Click to {{filterControlsVisible==false ? 'view' : 'hide'}} filter options.
+            Click to {{showFilterControls==false ? 'view' : 'hide'}} filter options.
           </mat-panel-description>
         </mat-expansion-panel-header>
         <div fxLayout="row" fxLayout.xs="column" fxLayoutGap="1em" fxLayoutGap.xs="1em">
           <div fxLayout="column" fxFlex="50" fxLayoutGap="0.75em">
-            <div><mat-slide-toggle (change)="updateFilter()" [(ngModel)]="searchFilterControls.includeReligiousOrgs">Include religious organizations</mat-slide-toggle></div>
-            <div><mat-slide-toggle (change)="updateFilter()" [(ngModel)]="searchFilterControls.noEligibilityRequirements">Has no eligibility requirements</mat-slide-toggle></div>
-            <div><mat-slide-toggle (change)="updateFilter()" [(ngModel)]="searchFilterControls.showOnlyOrgsWithTransport">Provides transportation</mat-slide-toggle></div>
+            <div><mat-slide-toggle (change)="applyOrgFilters()" [(ngModel)]="orgFilters.includeReligiousOrgs">Include religious organizations</mat-slide-toggle></div>
+            <div><mat-slide-toggle (change)="applyOrgFilters()" [(ngModel)]="orgFilters.noEligibilityRequirements">Has no eligibility requirements</mat-slide-toggle></div>
+            <div><mat-slide-toggle (change)="applyOrgFilters()" [(ngModel)]="orgFilters.showOnlyOrgsWithTransport">Provides transportation</mat-slide-toggle></div>
           </div>
           <div fxLayout="column" fxFlex="45" fxLayoutGap="0">
             <div>
               <mat-slider fxFlex="100" [max]="200" [min]="1" [step]="1" [thumbLabel]="true" [tickInterval]="10"
-                          (change)="updateFilter()" [(ngModel)]="searchFilterControls.distanceRadius"></mat-slider>
+                          (change)="applyOrgFilters()" [(ngModel)]="orgFilters.distanceRadius"></mat-slider>
             </div>
             <div>
-              Show organizations within <strong>{{searchFilterControls.distanceRadius}} mile<span *ngIf="searchFilterControls.distanceRadius>1">s</span></strong> from me.
+              Show organizations within <strong>{{orgFilters.distanceRadius}} mile<span *ngIf="orgFilters.distanceRadius>1">s</span></strong> from me.
             </div>
           </div>
         </div>
@@ -111,7 +104,7 @@
     </mat-accordion>
 
     <!--List of Services-->
-    <mat-card class="org-card mat-elevation-z0" *ngFor="let org of filteredOrgList; last as isLast">
+    <mat-card class="org-card mat-elevation-z0" *ngFor="let org of filteredOrgs; last as isLast">
       <div class="org-name">
         <a [routerLink]="['/service/view', org.name]">{{org.name}}</a>
       </div>
@@ -137,19 +130,21 @@
     </mat-card>
 
     <!--Display if No Services Found-->
-    <mat-card class="org-card mat-elevation-z0" *ngIf="filteredOrgList==null || filteredOrgList.length==0">
+    <mat-card class="org-card mat-elevation-z0" *ngIf="filteredOrgs==null || filteredOrgs.length==0">
       <div>
         <strong><i class="fas fa-info-circle"></i> No Services Found</strong>
       </div>
       <p>
-        No services belonging to selected categor{{servicesNearMeState.serviceCategories.length>1 ? 'ies' : 'y'}} were found within
-        <strong>{{searchFilterControls.distanceRadius}} mile<span *ngIf="searchFilterControls.distanceRadius>1">s</span></strong>
-        of <strong>{{servicesNearMeState.myLocation}}</strong>.
+        No services belonging to selected categor{{selectedServiceCategories.length>1 ? 'ies' : 'y'}} were found within
+        <strong>{{orgFilters.distanceRadius}} mile<span *ngIf="orgFilters.distanceRadius>1">s</span></strong>
+        of <strong>{{codedLocation.locationAddress}}</strong>.
       </p>
       <p>
-        Please try adjusting search filter options or <a href="javascript:void(0)" (click)="back()">try another search</a>.
+        Please try adjusting search filter options or <a href="javascript:void(0)" (click)="tryAnotherSearch()">try another search</a>.
       </p>
     </mat-card>
 
   </div>
+
+
 </div>

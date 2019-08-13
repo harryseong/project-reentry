@@ -9,7 +9,7 @@ import {SnackBarService} from '../snack-bar/snack-bar.service';
 export class FirestoreService {
 
   organizations: AngularFirestoreCollection<any>;
-  services: AngularFirestoreCollection<any>;
+  serviceCategories: AngularFirestoreCollection<any>;
   languages: AngularFirestoreCollection<any>;
   counties: AngularFirestoreCollection<any>;
   users: AngularFirestoreCollection<any>;
@@ -18,7 +18,7 @@ export class FirestoreService {
               private router: Router,
               private snackBarService: SnackBarService) {
     this.organizations = db.collection<any>('organizations');
-    this.services = db.collection<any>('services');
+    this.serviceCategories = db.collection<any>('services');
     this.counties = db.collection<any>('counties');
     this.languages = db.collection<any>('languages');
     this.users = db.collection<any>('users');
@@ -37,7 +37,7 @@ export class FirestoreService {
           const message = 'New organization was successfully saved.';
           const action = 'OK';
           this.snackBarService.openSnackBar(message, action, 4000);
-          this.router.navigate(['/', 'admint4', 'organization', 'all']);
+          this.router.navigate(['/', 'admin', 'organization', 'all']);
         }
       });
   }
@@ -49,7 +49,7 @@ export class FirestoreService {
         console.log('no documents found');
       } else {
         querySnapshot.forEach(docSnapshot => this.organizations.doc(docSnapshot.id).set(orgForm.value));
-        this.router.navigate(['/', 'admint4', 'organization', 'view', orgForm.get('name').value]);
+        this.router.navigate(['/', 'admin', 'organization', 'view', orgForm.get('name').value]);
       }
     });
     console.log('Organization was successfully updated: ' + orgForm.get('name').value);
@@ -69,7 +69,7 @@ export class FirestoreService {
         console.log('Organization was deleted: ' + orgName);
         if (showSnackBar === true) {
           querySnapshot.forEach(docSnapshot => this.organizations.doc(docSnapshot.id).delete());
-          this.router.navigate(['/admint4/organization/all']);
+          this.router.navigate(['/admin/organization/all']);
           const message = orgName + ' has been deleted.';
           const action = 'OK';
           this.snackBarService.openSnackBar(message, action);
@@ -81,7 +81,7 @@ export class FirestoreService {
   updateCategoryViewCount(category: string) {
     const year = new Date().getFullYear();
     const month = new Date().getMonth();
-    const query = this.services.ref.where('service', '==', category);
+    const query = this.serviceCategories.ref.where('service', '==', category);
     query.get().then(querySnapshot => {
       if (querySnapshot.empty) {
         console.log('no documents found');
@@ -99,23 +99,23 @@ export class FirestoreService {
                 data.viewData[year][month] = 1;
               }
               // Update data on Firebase.
-              this.services.doc(id).set(data);
+              this.serviceCategories.doc(id).set(data);
             } else {
               // If year does not exist, create year entry.
               data.viewData[year] = {};
-              this.services.doc(id).set(data).then(() => {
+              this.serviceCategories.doc(id).set(data).then(() => {
                 // Create month entry and set count to 0.
                 data.viewData[year][month] = 1;
                 // Update data on Firebase.
-                this.services.doc(id).set(data);
+                this.serviceCategories.doc(id).set(data);
               });
             }
           };
           if (data.viewData !== undefined) {
             incrementCount();
           } else {
-            data['viewData'] = {};
-            this.services.doc(id).set(data).then(() => {
+            data.viewData = {};
+            this.serviceCategories.doc(id).set(data).then(() => {
               incrementCount();
             });
           }
@@ -160,7 +160,7 @@ export class FirestoreService {
           if (data.viewData !== undefined) {
             incrementCount();
           } else {
-            data['viewData'] = {};
+            data.viewData = {};
             this.organizations.doc(id).set(data).then(() => {
               incrementCount();
             });

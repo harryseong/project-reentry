@@ -40,6 +40,7 @@ import {HelpDialogComponent} from './components/dialogs/help-dialog/help-dialog.
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
+    ProgressSpinnerComponent,
   ],
   entryComponents: [
     HelpDialogComponent
