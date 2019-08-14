@@ -3,10 +3,13 @@
 <div class="container" fxLayoutAlign="center center" fxLayout="row">
 
   <div fxLayout="column" fxFlex="55" fxFlex.sm="80" fxFlex.xs="95">
-
     <app-header></app-header>
 
-    <router-outlet></router-outlet>
+    <router-outlet *ngIf="(allOrgs$ | async) && (serviceCategories$ | async); else progressSpinner"></router-outlet>
+
+    <ng-template #progressSpinner>
+      <app-progress-spinner></app-progress-spinner>
+    </ng-template>
 
     <app-footer></app-footer>
   </div>

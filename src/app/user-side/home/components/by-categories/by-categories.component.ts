@@ -20,6 +20,6 @@ export class ByCategoriesComponent implements OnInit {
   }
 
   selectCategory(category: string) {
-    this.router.navigate(['services', 'view', category]);
+    this.router.navigate(['orgs', 'category', category]);
   }
 }

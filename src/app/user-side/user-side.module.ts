@@ -2,15 +2,15 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { UserSideRoutingModule } from './user-side-routing.module';
-import {AboutComponent} from './components/about/about.component';
 import {SharedModule} from '../shared/shared.module';
 import { UserSideComponent } from './user-side.component';
 import {HomeModule} from './home/home.module';
+import {AboutModule} from './about/about.module';
+import {OrgsModule} from './orgs/orgs.module';
 
 
 @NgModule({
   declarations: [
-    AboutComponent,
     UserSideComponent,
   ],
   exports: [],
@@ -18,7 +18,9 @@ import {HomeModule} from './home/home.module';
     CommonModule,
     UserSideRoutingModule,
     SharedModule,
-    HomeModule
+    HomeModule,
+    AboutModule,
+    OrgsModule
   ]
 })
 export class UserSideModule { }

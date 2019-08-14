@@ -8,8 +8,8 @@ import {BehaviorSubject} from 'rxjs';
   providedIn: 'root'
 })
 export class FirestoreService {
-  allOrgs$ = new BehaviorSubject([]);
-  serviceCategories$ = new BehaviorSubject([]);
+  allOrgs$ = new BehaviorSubject(null);
+  serviceCategories$ = new BehaviorSubject(null);
 
   organizations: AngularFirestoreCollection<any>;
   serviceCategories: AngularFirestoreCollection<any>;
