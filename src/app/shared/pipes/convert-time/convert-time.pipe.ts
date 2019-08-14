@@ -1,12 +1,13 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import * as moment from 'moment';
 
 @Pipe({
   name: 'convertTime'
 })
 export class ConvertTimePipe implements PipeTransform {
 
-  transform(value: any, ...args: any[]): any {
-    return null;
+  transform(time: string): any {
+    return moment(time, 'HH:mm').format('h:mm A');
   }
 
 }

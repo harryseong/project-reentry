@@ -1,0 +1,40 @@
+.org-section {
+  margin-bottom: 1em;
+}
+
+#gMap {
+  height: 15em;
+  width: 25em;
+  margin-top: 1em;
+}
+
+table, th, td {
+  width: auto;
+  text-align: left;
+}
+th, td {
+  padding: 0 0.2em;
+}
+th {
+  font-weight: 500;
+}
+
+h4 {
+  margin-bottom: 0.5em;
+}
+
+#other-info-table, #hours-table {
+  font-size: 0.9em;
+}
+
+#other-info-table th {
+  text-align: right;
+  vertical-align: top;
+  white-space: nowrap;
+  width: auto;
+}
+
+#other-info-table td {
+  text-align: left;
+  vertical-align: top;
+}

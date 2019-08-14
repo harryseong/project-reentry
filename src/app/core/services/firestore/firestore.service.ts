@@ -45,6 +45,11 @@ export class FirestoreService {
       .catch(err => this.snackBarService.openSnackBar('Something went wrong. Please refresh the page.', 'OK'));
   }
 
+  getOrg(orgName: string) {
+    const allOrgs = this.allOrgs$.value;
+    return allOrgs.find(org => org.name === orgName);
+  }
+
   getOrgsByServiceCategories(serviceCategories: any[]) {
     const allOrgs = this.allOrgs$.value;
     return serviceCategories.includes('All Services') ?
