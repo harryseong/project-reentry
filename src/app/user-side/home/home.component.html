@@ -1,13 +1,17 @@
-<mat-tab-group mat-align-tabs="start" [@transitionAnimations]>
-  <mat-tab label="Near Me">
-    <div class="mat-tab-content">
-      <app-near-me></app-near-me>
-    </div>
-  </mat-tab>
+<div [@transitionAnimations]>
+  <app-subheader [subheaderText]="subheaderText"></app-subheader>
 
-  <mat-tab label="By Categories">
-    <div class="mat-tab-content">
-      <app-by-categories></app-by-categories>
-    </div>
-  </mat-tab>
-</mat-tab-group>
+  <mat-tab-group mat-align-tabs="start">
+    <mat-tab label="Near Me">
+      <div class="mat-tab-content">
+        <app-near-me></app-near-me>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="By Categories">
+      <div class="mat-tab-content">
+        <app-by-categories></app-by-categories>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

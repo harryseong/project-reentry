@@ -15,6 +15,7 @@ import {animate, style, transition, trigger} from '@angular/animations';
   ],
 })
 export class AboutComponent implements OnInit {
+  subheaderText = 'A little about us...';
 
   constructor() { }
 

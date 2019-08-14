@@ -16,6 +16,7 @@ import {FirestoreService} from '../../core/services/firestore/firestore.service'
   ],
 })
 export class HomeComponent implements OnInit {
+  subheaderText = 'Connecting you to the services you need...';
 
   constructor(private db: FirestoreService) { }
 

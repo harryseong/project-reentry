@@ -11,6 +11,7 @@ import {FooterComponent} from './components/footer/footer.component';
 import { HeaderComponent } from './components/header/header.component';
 import { ProgressSpinnerComponent } from './components/progress-spinner/progress-spinner.component';
 import {HelpDialogComponent} from './components/dialogs/help-dialog/help-dialog.component';
+import { SubheaderComponent } from './components/subheader/subheader.component';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import {HelpDialogComponent} from './components/dialogs/help-dialog/help-dialog.
     HeaderComponent,
     FooterComponent,
     ProgressSpinnerComponent,
-    HelpDialogComponent
+    HelpDialogComponent,
+    SubheaderComponent
   ],
   imports: [
     CommonModule,
@@ -41,6 +43,7 @@ import {HelpDialogComponent} from './components/dialogs/help-dialog/help-dialog.
     ReactiveFormsModule,
     RouterModule,
     ProgressSpinnerComponent,
+    SubheaderComponent,
   ],
   entryComponents: [
     HelpDialogComponent

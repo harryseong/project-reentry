@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700');
 
-html, body {
+html {
   height: 100%;
 }
 
@@ -9,12 +9,6 @@ body {
   flex-direction: column;
   font-family: 'Montserrat', sans-serif;
   margin: 0 0 5em 0;
-}
-
-app-root {
-  display: flex;
-  min-height: 100vh;
-  flex-direction: column;
 }
 
 .container {

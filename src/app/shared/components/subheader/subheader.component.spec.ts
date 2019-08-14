@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NearMeResultsComponent } from './near-me-results.component';
+import { SubheaderComponent } from './subheader.component';
 
-describe('NearMeResultsComponent', () => {
-  let component: NearMeResultsComponent;
-  let fixture: ComponentFixture<NearMeResultsComponent>;
+describe('SubheaderComponent', () => {
+  let component: SubheaderComponent;
+  let fixture: ComponentFixture<SubheaderComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NearMeResultsComponent ]
+      declarations: [ SubheaderComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(NearMeResultsComponent);
+    fixture = TestBed.createComponent(SubheaderComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -13,6 +13,7 @@ import {HomeModule} from './home/home.module';
     AboutComponent,
     UserSideComponent,
   ],
+  exports: [],
   imports: [
     CommonModule,
     UserSideRoutingModule,
