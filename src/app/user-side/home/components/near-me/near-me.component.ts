@@ -57,7 +57,7 @@ export class NearMeComponent implements OnInit {
   // Stores orgs found by service categories.
   foundOrgs: any[] = [];
   filteredOrgs$ = new BehaviorSubject([]);
-  searchStatus = 'ready';
+  searchStatus$ = new BehaviorSubject('ready');
 
   orgFilters: OrgFilters = {distanceRadius: 25, noEligibilityRequirements: false,
     includeReligiousOrgs: true, showOnlyOrgsWithTransport: false};
@@ -102,7 +102,7 @@ export class NearMeComponent implements OnInit {
   }
 
   findServices() {
-    this.searchStatus = 'searching';
+    this.searchStatus$.next('searching');
     const address = this.servicesNearMeForm.get('location').value;
     if (address !== '' && this.servicesNearMeForm.get('serviceCategories').value.length > 0) {
       this.codeAddress(address);
@@ -138,7 +138,7 @@ export class NearMeComponent implements OnInit {
   }
 
   locationNotInMichigan() {
-    this.searchStatus = 'done';
+    this.searchStatus$.next('done');
     this.servicesNearMeForm.get('location').reset();
     const message = 'The location provided was not found to be in Michigan. Please input a Michigan city or address.';
     const action = 'OK';
@@ -147,7 +147,7 @@ export class NearMeComponent implements OnInit {
   }
 
   locationInvalid(results, status) {
-    this.searchStatus = 'done';
+    this.searchStatus$.next('done');
     this.servicesNearMeForm.get('location').reset();
     const message = results.length === 0 ? 'The provided location is not valid. Please try again.' :
       'The app could not reach geocoding services. Please refresh the page and try again.';
@@ -179,7 +179,7 @@ export class NearMeComponent implements OnInit {
               if (orgCount === foundOrgsWithDist.length) {
                 this.foundOrgs = this.sortOrgsByDistance(foundOrgsWithDist);
                 this.applyOrgFilters();
-                this.searchStatus = 'done';
+                this.zone.run(() => this.searchStatus$.next('done'));
               }
             }
           }
@@ -217,7 +217,7 @@ export class NearMeComponent implements OnInit {
     this.codedLocation = {locationId: null, locationAddress: []};
     this.selectedServiceCategories = [];
     this.foundOrgs = [];
-    this.searchStatus = 'ready';
+    this.searchStatus$.next('ready');
     this.filteredOrgs$.next([]);
     this.orgFilters = {distanceRadius: 25, noEligibilityRequirements: false, includeReligiousOrgs: true, showOnlyOrgsWithTransport: false};
     this.showFilterControls = false;
