@@ -34,7 +34,7 @@ export class OrgCategoryComponent implements OnInit {
 
   ngOnInit() {
     this.serviceCategory = this.route.snapshot.params.category_id;
-    this.subheaderText = 'I\'m looking for ' + this.serviceCategory.toLowerCase() + ' services...';
+    this.subheaderText = this.serviceCategory + ' Services';
     this.getOrgs();
   }
 
