@@ -13,6 +13,7 @@ export class FirestoreService {
 
   organizations: AngularFirestoreCollection<any>;
   serviceCategories: AngularFirestoreCollection<any>;
+  services: AngularFirestoreCollection<any>;  // TODO: Remove this.
 
   languages: AngularFirestoreCollection<any>;
   counties: AngularFirestoreCollection<any>;
@@ -22,7 +23,7 @@ export class FirestoreService {
               private router: Router,
               private snackBarService: SnackBarService) {
     this.organizations = db.collection<any>('organizations');
-    this.serviceCategories = db.collection<any>('services');
+    this.serviceCategories = db.collection<any>('serviceCategories');
     this.counties = db.collection<any>('counties');
     this.languages = db.collection<any>('languages');
     this.users = db.collection<any>('users');

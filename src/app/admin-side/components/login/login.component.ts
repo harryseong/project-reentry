@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {UserService} from '../../../core/services/user/user.service';
 
 @Component({
   selector: 'app-login',
@@ -6,10 +7,20 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
+  user$ = null;
 
-  constructor() { }
+  constructor(private userService: UserService) {
+    this.user$ = userService.user$;
+  }
 
   ngOnInit() {
+    if (this.user$.value === null) {
+      this.userService.confirmLoginStatus();
+    }
+  }
+
+  login() {
+    this.userService.login();
   }
 
 }

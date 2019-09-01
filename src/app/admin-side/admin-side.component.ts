@@ -9,7 +9,6 @@ export class AdminSideComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
 }

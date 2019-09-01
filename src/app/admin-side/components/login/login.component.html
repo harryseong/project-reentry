@@ -1,1 +1,3 @@
-<p>login works!</p>
+<div *ngIf="user$ | async as user">{{user.displayName}}</div>
+
+<button mat-stroked-button (click)="login()">LOGIN</button>

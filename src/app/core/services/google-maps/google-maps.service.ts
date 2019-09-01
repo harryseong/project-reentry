@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {FirestoreService} from '../firestore/firestore.service';
 import {SnackBarService} from '../snack-bar/snack-bar.service';
+import {Org} from '../../interfaces/org';
 declare var google: any;
 
 @Injectable({
@@ -11,9 +12,10 @@ export class GoogleMapsService {
   distanceMatrixService = new google.maps.DistanceMatrixService();
 
   constructor(private firestoreService: FirestoreService,
-              private snackBarService: SnackBarService) {}
+              private snackBarService: SnackBarService) {
+  }
 
-  codeAddressAndSave(address: string, orgForm: any) {
+  codeAddressAndSave(address: string, org: Org) {
     this.geocoder.geocode({address}, (results, status) => {
       if (status.toString() === 'OK') {
         const stateAddressComponent = results[0].address_components.find(ac => ac.types.includes('administrative_area_level_1'));
@@ -22,9 +24,9 @@ export class GoogleMapsService {
           // Get lat and lng of address and save them in Firestore.
           const lat = results[0].geometry.location.lat();
           const lng = results[0].geometry.location.lng();
-          orgForm.get('address').get('gpsCoords').get('lat').setValue(lat);
-          orgForm.get('address').get('gpsCoords').get('lng').setValue(lng);
-          this.firestoreService.saveOrg(orgForm, true);
+          org.address.gpsCoords.lat = lat;
+          org.address.gpsCoords.lng = lng;
+          this.firestoreService.saveOrg(org, true);
         } else if (state !== 'MI') {
           console.warn('The address provided was not found to be in Michigan.');
           const message = 'The address provided was not found to be in Michigan. Please input a valid Michigan address.';
@@ -41,8 +43,8 @@ export class GoogleMapsService {
     });
   }
 
-  codeAddressAndUpdate(address: string, originalOrgName: string, orgForm: any) {
-    this.geocoder.geocode( { 'address': address}, (results, status) => {
+  codeAddressAndUpdate(address: string, originalOrgName: string, org: Org) {
+    this.geocoder.geocode( {address}, (results, status) => {
       if (status.toString() === 'OK') {
         const stateAddressComponent = results[0].address_components.find(ac => ac.types.includes('administrative_area_level_1'));
         const state = stateAddressComponent !== undefined ? stateAddressComponent.short_name : null;
@@ -50,9 +52,9 @@ export class GoogleMapsService {
           // Get lat and lng of address and save them in Firestore.
           const lat = results[0].geometry.location.lat();
           const lng = results[0].geometry.location.lng();
-          orgForm.get('address').get('gpsCoords').get('lat').setValue(lat);
-          orgForm.get('address').get('gpsCoords').get('lng').setValue(lng);
-          this.firestoreService.updateOrg(orgForm, originalOrgName, true);
+          org.address.gpsCoords.lat = lat;
+          org.address.gpsCoords.lng = lng;
+          this.firestoreService.updateOrg(org, originalOrgName, true);
         } else if (state !== 'MI') {
           const message = 'The address provided was not found to be in Michigan. Please input a valid Michigan address.';
           const action = 'OK';

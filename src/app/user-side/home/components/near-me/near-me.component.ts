@@ -17,8 +17,8 @@ export class SubscribeErrorStateMatcher implements ErrorStateMatcher {
   }
 }
 export interface CodedLocation {
-  locationId: any;
-  locationAddress: any;
+  placeId: any;
+  formattedAddress: any;
 }
 
 export interface OrgFilters {
@@ -52,7 +52,7 @@ export class NearMeComponent implements OnInit {
     location: new FormControl('', [Validators.required]),
     serviceCategories: new FormControl([], [Validators.required]),
   });
-  codedLocation: CodedLocation = {locationId: null, locationAddress: null};
+  codedLocation: CodedLocation = {placeId: null, formattedAddress: null};
 
   // Stores orgs found by service categories.
   foundOrgs: any[] = [];
@@ -101,7 +101,7 @@ export class NearMeComponent implements OnInit {
     }
   }
 
-  findServices() {
+  findOrgs() {
     this.searchStatus$.next('searching');
     const address = this.servicesNearMeForm.get('location').value;
     if (address !== '' && this.servicesNearMeForm.get('serviceCategories').value.length > 0) {
@@ -119,7 +119,7 @@ export class NearMeComponent implements OnInit {
         const stateAddressComponent = results[0].address_components.find(ac => ac.types.includes('administrative_area_level_1'));
         const state = stateAddressComponent !== undefined ? stateAddressComponent.short_name : null;
         if (state === 'MI') {
-          this.locationValid(results);
+          this.codedLocation = this.locationValid(results);
         } else if (state !== 'MI') {
           this.locationNotInMichigan();
         }
@@ -129,12 +129,13 @@ export class NearMeComponent implements OnInit {
     });
   }
 
-  locationValid(results) {
+  locationValid(results): CodedLocation {
     const selectedServices = this.servicesNearMeForm.get('serviceCategories').value;
-    this.codedLocation.locationAddress = results[0].formatted_address;
-    this.codedLocation.locationId = results[0].place_id;
     this.selectedServiceCategories = selectedServices.includes('All Services') ? ['All Services'] : selectedServices;
     this.getOrgsByServicesCategories();
+    const formattedAddress = results[0].formatted_address;
+    const placeId = results[0].place_id;
+    return {placeId, formattedAddress};
   }
 
   locationNotInMichigan() {
@@ -166,7 +167,7 @@ export class NearMeComponent implements OnInit {
       foundOrgs.forEach(org => {
 
         this.googleMapsService.distanceMatrixService.getDistanceMatrix({
-            origins: [this.codedLocation.locationAddress],
+            origins: [this.codedLocation.formattedAddress],
             destinations: [org.address.gpsCoords],
             travelMode: google.maps.TravelMode.DRIVING,
             unitSystem: google.maps.UnitSystem.IMPERIAL
@@ -214,7 +215,7 @@ export class NearMeComponent implements OnInit {
   }
 
   tryAnotherSearch() {
-    this.codedLocation = {locationId: null, locationAddress: []};
+    this.codedLocation = {placeId: null, formattedAddress: []};
     this.selectedServiceCategories = [];
     this.foundOrgs = [];
     this.searchStatus$.next('ready');

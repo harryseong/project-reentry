@@ -19,8 +19,7 @@ export class UserService {
   }
 
   login() {
-    this.afAuth.auth.signInWithPopup(new auth.GoogleAuthProvider())
-      .then(() => this.confirmLoginStatus());
+    this.afAuth.auth.signInWithRedirect(new auth.GoogleAuthProvider());
   }
 
   logout() {
@@ -31,13 +30,16 @@ export class UserService {
   }
 
   confirmLoginStatus() {
-    this.afAuth.auth.onAuthStateChanged(user => {
-      if (user) {
-        this.snackBarService.openSnackBar('You are logged in.', 'OK', 4000);
-      } else {
-        this.snackBarService.openSnackBar('You are now logged out.', 'OK', 4000);
-      }
-    });
+    this.afAuth.auth.getRedirectResult()
+      .then(result => {
+        console.log(JSON.stringify(result));
+        if (result.user !== null) {
+          this.user$.next(result.user);
+          this.snackBarService.openSnackBar('You are logged in.', 'OK', 4000);
+        } else {
+          this.snackBarService.openSnackBar('You are now logged out.', 'OK', 4000);
+        }
+      });
   }
 
 }
