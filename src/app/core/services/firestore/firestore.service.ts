@@ -11,6 +11,7 @@ export class FirestoreService {
   currentOrg$ = new BehaviorSubject(null);
   allOrgs$ = new BehaviorSubject(null);
   serviceCategories$ = new BehaviorSubject(null);
+  admins$ = new BehaviorSubject(null);
 
   organizations: AngularFirestoreCollection<any>;
   serviceCategories: AngularFirestoreCollection<any>;
@@ -35,6 +36,14 @@ export class FirestoreService {
     this.organizations.get().toPromise()
       .then(querySnapshot => this.allOrgs$.next(querySnapshot.docs.map(doc => doc.data())))
       .catch(err => this.snackBarService.openSnackBar('Something went wrong. Please refresh the page.', 'OK'));
+  }
+
+  getAllAdmins() {
+    const adminsRef = this.users.ref.where('role', '==', 'admin');
+    const admins = [];
+    adminsRef.get()
+      .then(querySnapshot => querySnapshot.forEach(doc => admins.push(doc.data())))
+      .then(() => console.log(admins));
   }
 
   // Run this once when Home component initiated.

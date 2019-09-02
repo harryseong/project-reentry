@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {FirestoreService} from '../core/services/firestore/firestore.service';
 
 @Component({
   selector: 'app-admin-side',
@@ -7,8 +8,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AdminSideComponent implements OnInit {
 
-  constructor() { }
+  constructor(private db: FirestoreService) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.db.getAllAdmins();
+  }
 
 }

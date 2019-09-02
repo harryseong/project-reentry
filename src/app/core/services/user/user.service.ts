@@ -4,6 +4,7 @@ import {SnackBarService} from '../snack-bar/snack-bar.service';
 import {Router} from '@angular/router';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {BehaviorSubject} from 'rxjs';
+import {FirestoreService} from '../firestore/firestore.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,7 @@ export class UserService {
   isAdmin$ = new BehaviorSubject(null);
 
   constructor(private afAuth: AngularFireAuth,
+              private db: FirestoreService,
               private router: Router,
               private snackBarService: SnackBarService) {
     afAuth.user.subscribe(user => this.user$.next(user));
@@ -36,6 +38,7 @@ export class UserService {
         if (result.user !== null) {
           this.user$.next(result.user);
           this.snackBarService.openSnackBar('You are logged in.', 'OK', 4000);
+          this.router.navigate(['/', 'admin']);
         } else {
           this.snackBarService.openSnackBar('You are now logged out.', 'OK', 4000);
         }

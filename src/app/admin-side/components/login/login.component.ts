@@ -14,13 +14,10 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.user$.value === null) {
-      this.userService.confirmLoginStatus();
-    }
+    this.userService.confirmLoginStatus();
   }
 
   login() {
     this.userService.login();
   }
-
 }
