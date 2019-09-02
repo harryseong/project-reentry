@@ -93,10 +93,12 @@ export class NearMeComponent implements OnInit {
   }
 
   findOrgs() {
-    this.searchStatus$.next('searching');
-    const address = this.servicesNearMeForm.get('location').value;
-    if (address !== '' && this.servicesNearMeForm.get('serviceCategories').value.length > 0) {
-      this.codeAddress(address);
+    if (this.servicesNearMeForm.valid) {
+      this.searchStatus$.next('searching');
+      const address = this.servicesNearMeForm.get('location').value;
+      if (address !== '' && this.servicesNearMeForm.get('serviceCategories').value.length > 0) {
+        this.codeAddress(address);
+      }
     }
   }
 
@@ -115,7 +117,7 @@ export class NearMeComponent implements OnInit {
           this.locationNotInMichigan();
         }
       } else {
-        return this.locationInvalid(results, status);
+        this.locationInvalid(results, status);
       }
     });
   }
@@ -130,8 +132,7 @@ export class NearMeComponent implements OnInit {
   }
 
   locationNotInMichigan() {
-    this.searchStatus$.next('done');
-    this.servicesNearMeForm.get('location').reset();
+    this.searchStatus$.next('ready');
     const message = 'The location provided was not found to be in Michigan. Please input a Michigan city or address.';
     const action = 'OK';
     this.zone.run(() => this.snackBarService.openSnackBar(message, action));
@@ -139,25 +140,20 @@ export class NearMeComponent implements OnInit {
   }
 
   locationInvalid(results, status) {
-    this.searchStatus$.next('done');
-    this.servicesNearMeForm.get('location').reset();
+    this.searchStatus$.next('ready');
     const message = results.length === 0 ? 'The provided location is not valid. Please try again.' :
       'The app could not reach geocoding services. Please refresh the page and try again.';
     const action = 'OK';
     this.zone.run(() => this.snackBarService.openSnackBar(message, action));
     console.warn('Geocode was not successful for the following reason: ' + status);
-    return null;
   }
 
   getOrgsByServicesCategories() {
     const foundOrgs = this.db.getOrgsByServiceCategories(this.selectedServiceCategories);
-
     if (foundOrgs.length > 0) {
       const foundOrgsWithDist = [];
       let orgCount = 0;
       foundOrgs.forEach(org => {
-
-        console.log('TEST: ' + JSON.stringify(this.codedLocation));
         this.googleMapsService.distanceMatrixService.getDistanceMatrix({
             origins: [this.codedLocation.formattedAddress],
             destinations: [org.address.gpsCoords],
@@ -177,7 +173,6 @@ export class NearMeComponent implements OnInit {
             }
           }
         );
-
       });
     }
   }
