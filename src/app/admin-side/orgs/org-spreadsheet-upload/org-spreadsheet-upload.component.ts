@@ -3,7 +3,7 @@ import {SnackBarService} from '../../../core/services/snack-bar/snack-bar.servic
 import * as papa from 'papaparse';
 import {FirestoreService} from '../../../core/services/firestore/firestore.service';
 import {OrgService} from '../../../core/services/org/org.service';
-import {Org} from '../../../core/interfaces/org';
+import {Org} from '../../../shared/interfaces/org';
 
 @Component({
   selector: 'app-org-spreadsheet-upload',

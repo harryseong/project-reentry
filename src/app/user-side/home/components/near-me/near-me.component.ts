@@ -1,32 +1,14 @@
 import {Component, NgZone, OnInit} from '@angular/core';
-import { ErrorStateMatcher } from '@angular/material/core';
-import {FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from '@angular/forms';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {animate, style, transition, trigger} from '@angular/animations';
 import {FirestoreService} from '../../../../core/services/firestore/firestore.service';
 import {SnackBarService} from '../../../../core/services/snack-bar/snack-bar.service';
 import {GoogleMapsService} from '../../../../core/services/google-maps/google-maps.service';
 import {BehaviorSubject} from 'rxjs';
+import {CodedLocation} from '../../../../shared/interfaces/coded-location';
+import {OrgFilters} from '../../../../shared/interfaces/org-filters';
 declare var google: any;
-
-/** Error when invalid control is dirty, touched, or submitted. */
-export class SubscribeErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-    const isSubmitted = form && form.submitted;
-    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
-  }
-}
-export interface CodedLocation {
-  placeId: any;
-  formattedAddress: any;
-}
-
-export interface OrgFilters {
-  distanceRadius: number;
-  includeReligiousOrgs: boolean;
-  noEligibilityRequirements: boolean;
-  showOnlyOrgsWithTransport: boolean;
-}
 
 @Component({
   selector: 'app-near-me',
@@ -43,15 +25,11 @@ export interface OrgFilters {
 })
 export class NearMeComponent implements OnInit {
   geocoder = new google.maps.Geocoder();
-
   serviceCategories$ = new BehaviorSubject([]);
   selectedServiceCategories: any[] = [];
   selectAll = false;
 
-  servicesNearMeForm = new FormGroup({
-    location: new FormControl('', [Validators.required]),
-    serviceCategories: new FormControl([], [Validators.required]),
-  });
+  servicesNearMeForm: FormGroup;
   codedLocation: CodedLocation = {placeId: null, formattedAddress: null};
 
   // Stores orgs found by service categories.
@@ -71,12 +49,21 @@ export class NearMeComponent implements OnInit {
     this.serviceCategories$ = db.serviceCategories$;
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.loadServicesNearMeForm();
+  }
+
+  loadServicesNearMeForm() {
+    this.servicesNearMeForm = new FormGroup({
+      location: new FormControl('', [Validators.required]),
+      serviceCategories: new FormControl([], [Validators.required]),
+    });
+  }
 
   selectAllToggle() {
     const selectedServicesCategories = this.servicesNearMeForm.get('serviceCategories');
     if (selectedServicesCategories.value.includes('All Services')) {
-      selectedServicesCategories.setValue([...this.serviceCategories$.value.map(service => service.service), 'All Services']);
+      selectedServicesCategories.setValue([...this.serviceCategories$.value.map(service => service.name), 'All Services']);
       this.selectAll = true;
     } else {
       selectedServicesCategories.setValue([]);
@@ -92,12 +79,12 @@ export class NearMeComponent implements OnInit {
       const index = selectedServiceCategories.indexOf('All Services');
       if (index > -1) {
         selectedServiceCategories.splice(index, 1);
-        this.servicesNearMeForm.get('serviceCategoryOptions').setValue(selectedServiceCategories);
+        this.servicesNearMeForm.get('serviceCategories').setValue(selectedServiceCategories);
       }
     } else if (this.selectAll === false && selectedServiceCategories.length === this.serviceCategories$.value.length) {
       this.selectAll = true;
       selectedServiceCategories.push('All Services');
-      this.servicesNearMeForm.get('serviceCategoryOptions').setValue(selectedServiceCategories);
+      this.servicesNearMeForm.get('serviceCategories').setValue(selectedServiceCategories);
     }
   }
 
@@ -114,7 +101,7 @@ export class NearMeComponent implements OnInit {
    * @param address: city or address of user.
    */
   codeAddress(address: string) {
-    this.geocoder.geocode( { address}, (results, status) => {
+    this.geocoder.geocode({address}, (results, status) => {
       if (status.toString() === 'OK') {
         const stateAddressComponent = results[0].address_components.find(ac => ac.types.includes('administrative_area_level_1'));
         const state = stateAddressComponent !== undefined ? stateAddressComponent.short_name : null;
@@ -160,10 +147,10 @@ export class NearMeComponent implements OnInit {
 
   getOrgsByServicesCategories() {
     const foundOrgs = this.db.getOrgsByServiceCategories(this.selectedServiceCategories);
-    const foundOrgsWithDist = [];
-    let orgCount = 0;
 
     if (foundOrgs.length > 0) {
+      const foundOrgsWithDist = [];
+      let orgCount = 0;
       foundOrgs.forEach(org => {
 
         this.googleMapsService.distanceMatrixService.getDistanceMatrix({
@@ -222,7 +209,7 @@ export class NearMeComponent implements OnInit {
     this.filteredOrgs$.next([]);
     this.orgFilters = {distanceRadius: 25, noEligibilityRequirements: false, includeReligiousOrgs: true, showOnlyOrgsWithTransport: false};
     this.showFilterControls = false;
-    this.servicesNearMeForm.get('location').reset();
-    this.servicesNearMeForm.get('serviceCategories').reset();
+    this.servicesNearMeForm.get('location').reset('');
+    this.servicesNearMeForm.get('serviceCategories').reset([]);
   }
 }
