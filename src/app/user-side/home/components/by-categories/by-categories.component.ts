@@ -8,16 +8,14 @@ import {FirestoreService} from '../../../../core/services/firestore/firestore.se
   styleUrls: ['./by-categories.component.scss']
 })
 export class ByCategoriesComponent implements OnInit {
-  serviceCategories: string[] = [];
+  serviceCategories$ = null;
 
   constructor(private db: FirestoreService,
               private router: Router) {
+    this.serviceCategories$ = db.serviceCategories$;
   }
 
-  ngOnInit() {
-    this.db.serviceCategories.valueChanges()
-      .subscribe(serviceCategories => this.serviceCategories = this.db._sort(serviceCategories, 'service'));
-  }
+  ngOnInit() {}
 
   selectCategory(category: string) {
     this.router.navigate(['orgs', 'category', category]);
