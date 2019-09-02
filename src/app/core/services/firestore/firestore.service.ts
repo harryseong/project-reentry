@@ -40,7 +40,7 @@ export class FirestoreService {
   getAllServiceCategories() {
     this.serviceCategories.get().toPromise()
       .then(querySnapshot => {
-        const sortedServiceCategories = this._sort(querySnapshot.docs.map(doc => doc.data()), 'service');
+        const sortedServiceCategories = this._sort(querySnapshot.docs.map(doc => doc.data()), 'name');
         this.serviceCategories$.next(sortedServiceCategories);
       })
       .catch(err => this.snackBarService.openSnackBar('Something went wrong. Please refresh the page.', 'OK'));

@@ -37,8 +37,12 @@ export class NearMeComponent implements OnInit {
   filteredOrgs$ = new BehaviorSubject([]);
   searchStatus$ = new BehaviorSubject('ready');
 
-  orgFilters: OrgFilters = {distanceRadius: 25, noEligibilityRequirements: false,
-    includeReligiousOrgs: true, showOnlyOrgsWithTransport: false};
+  orgFilters: OrgFilters = {
+    distanceRadius: 25,
+    noEligibilityRequirements: false,
+    includeReligiousOrgs: true,
+    showOnlyOrgsWithTransport: false
+  };
   showFilterControls = false;
 
   constructor(private db: FirestoreService,
