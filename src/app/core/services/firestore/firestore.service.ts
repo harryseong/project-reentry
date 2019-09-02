@@ -8,6 +8,7 @@ import {BehaviorSubject} from 'rxjs';
   providedIn: 'root'
 })
 export class FirestoreService {
+  currentOrg$ = new BehaviorSubject(null);
   allOrgs$ = new BehaviorSubject(null);
   serviceCategories$ = new BehaviorSubject(null);
 
@@ -47,8 +48,7 @@ export class FirestoreService {
   }
 
   getOrg(orgName: string) {
-    const allOrgs = this.allOrgs$.value;
-    return allOrgs.find(org => org.name === orgName);
+    this.currentOrg$.next(this.allOrgs$.value.find(org => org.name === orgName));
   }
 
   getOrgsByServiceCategories(serviceCategories: any[]) {
@@ -114,10 +114,10 @@ export class FirestoreService {
   updateCategoryViewCount(category: string) {
     const year = new Date().getFullYear();
     const month = new Date().getMonth();
-    const query = this.serviceCategories.ref.where('service', '==', category);
+    const query = this.serviceCategories.ref.where('name', '==', category);
     query.get().then(querySnapshot => {
       if (querySnapshot.empty) {
-        console.log('no documents found');
+        console.warn('no documents found');
       } else {
         querySnapshot.forEach(docSnapshot => {
           const id = docSnapshot.id;

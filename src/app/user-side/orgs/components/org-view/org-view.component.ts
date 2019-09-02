@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import {animate, style, transition, trigger} from '@angular/animations';
 import {ActivatedRoute} from '@angular/router';
 import {FirestoreService} from '../../../../core/services/firestore/firestore.service';
+import {Subscription} from 'rxjs';
 declare var google: any;
 
 @Component({
@@ -17,24 +18,40 @@ declare var google: any;
     ])
   ]
 })
-export class OrgViewComponent implements OnInit {
-  orgName: string;
-  org = null;
-  loading = true;
+export class OrgViewComponent implements OnInit, AfterViewInit, OnDestroy {
+  currentOrg$ = null;
+  currentOrgSubscription$: Subscription;
   daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
   constructor(private db: FirestoreService,
-              private route: ActivatedRoute) { }
-
-  ngOnInit() {
-    this.orgName = this.route.snapshot.params.org_id;
-    this.org = this.db.getOrg(this.orgName);
-    this.loadMap();
-    this.db.updateOrgViewCount(this.orgName);
+              private route: ActivatedRoute) {
+    this.currentOrg$ = db.currentOrg$;
   }
 
-  loadMap() {
-    const gpsCoords = this.org.address.gpsCoords;
+  ngOnInit() {
+    this.loadOrg();
+    this.currentOrgSubscription$ = this.db.currentOrg$.subscribe(org => {
+      if (org !== null) {
+        this.db.updateOrgViewCount(org.name);
+      }
+    });
+  }
+
+  ngAfterViewInit() {
+    this.loadMap(this.currentOrg$.value);
+  }
+
+  ngOnDestroy() {
+    this.currentOrgSubscription$.unsubscribe();
+  }
+
+  loadOrg() {
+    const orgName = this.route.snapshot.params.org_id;
+    this.db.getOrg(orgName);
+  }
+
+  loadMap(org) {
+    const gpsCoords = org.address.gpsCoords;
     const mapOption = {
       zoom: 15, mapTypeId: google.maps.MapTypeId.ROADMAP, draggable: false,
       clickableIcons: false, streetViewControl: false, streetViewControlOptions: false
@@ -42,6 +59,5 @@ export class OrgViewComponent implements OnInit {
     const map = new google.maps.Map(document.getElementById('gMap'), mapOption);
     const marker = new google.maps.Marker({map, position: gpsCoords});
     map.setCenter(gpsCoords);
-    this.loading = false;
   }
 }
