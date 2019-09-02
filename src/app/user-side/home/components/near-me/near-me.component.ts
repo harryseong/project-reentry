@@ -110,7 +110,7 @@ export class NearMeComponent implements OnInit {
         const stateAddressComponent = results[0].address_components.find(ac => ac.types.includes('administrative_area_level_1'));
         const state = stateAddressComponent !== undefined ? stateAddressComponent.short_name : null;
         if (state === 'MI') {
-          this.codedLocation = this.locationValid(results);
+          this.locationValid(results);
         } else if (state !== 'MI') {
           this.locationNotInMichigan();
         }
@@ -120,13 +120,13 @@ export class NearMeComponent implements OnInit {
     });
   }
 
-  locationValid(results): CodedLocation {
+  locationValid(results) {
     const selectedServices = this.servicesNearMeForm.get('serviceCategories').value;
     this.selectedServiceCategories = selectedServices.includes('All Services') ? ['All Services'] : selectedServices;
-    this.getOrgsByServicesCategories();
     const formattedAddress = results[0].formatted_address;
     const placeId = results[0].place_id;
-    return {placeId, formattedAddress};
+    this.codedLocation = {placeId, formattedAddress};
+    this.getOrgsByServicesCategories();
   }
 
   locationNotInMichigan() {
@@ -157,6 +157,7 @@ export class NearMeComponent implements OnInit {
       let orgCount = 0;
       foundOrgs.forEach(org => {
 
+        console.log('TEST: ' + JSON.stringify(this.codedLocation));
         this.googleMapsService.distanceMatrixService.getDistanceMatrix({
             origins: [this.codedLocation.formattedAddress],
             destinations: [org.address.gpsCoords],
