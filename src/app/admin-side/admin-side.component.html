@@ -1,5 +1,9 @@
 <app-nav></app-nav>
 
-<div class="container">
+<ng-template #progressSpinner>
+  <app-progress-spinner></app-progress-spinner>
+</ng-template>
+
+<ng-container *ngIf="db.admins$ | async; else progressSpinner">
   <router-outlet></router-outlet>
-</div>
+</ng-container>

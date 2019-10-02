@@ -8,9 +8,11 @@ import {UserService} from '../../../core/services/user/user.service';
 })
 export class LoginComponent implements OnInit {
   user$ = null;
+  isAdmin$ = null;
 
   constructor(private userService: UserService) {
     this.user$ = userService.user$;
+    this.isAdmin$ = userService.isAdmin$;
   }
 
   ngOnInit() {
@@ -19,5 +21,9 @@ export class LoginComponent implements OnInit {
 
   login() {
     this.userService.login();
+  }
+
+  logout() {
+    this.userService.logout();
   }
 }

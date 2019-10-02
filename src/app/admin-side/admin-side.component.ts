@@ -8,10 +8,9 @@ import {FirestoreService} from '../core/services/firestore/firestore.service';
 })
 export class AdminSideComponent implements OnInit {
 
-  constructor(private db: FirestoreService) { }
+  constructor(public db: FirestoreService) { }
 
   ngOnInit() {
     this.db.getAllAdmins();
   }
-
 }

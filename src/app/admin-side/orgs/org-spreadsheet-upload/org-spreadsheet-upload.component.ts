@@ -41,7 +41,7 @@ export class OrgSpreadsheetUploadComponent implements OnInit {
         const csvOrgs = results.data;
         for (const csvOrg of csvOrgs) {
           const org = this.orgService.processCsvOrg(csvOrg);
-          this.saveOrg(org);
+          // this.saveOrg(org);
           orgCount++;
         }
         this.snackBarService.openSnackBar('Successfully uploaded file. ' + orgCount + ' orgs uploaded.', 'OK');

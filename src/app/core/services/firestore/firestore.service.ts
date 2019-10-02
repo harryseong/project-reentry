@@ -40,10 +40,10 @@ export class FirestoreService {
 
   getAllAdmins() {
     const adminsRef = this.users.ref.where('role', '==', 'admin');
-    const admins = [];
     adminsRef.get()
-      .then(querySnapshot => querySnapshot.forEach(doc => admins.push(doc.data())))
-      .then(() => console.log(admins));
+      .then(querySnapshot => querySnapshot.docs.map(doc => doc.data()))
+      .then(admins => this.admins$.next(admins))
+      .catch(err => this.snackBarService.openSnackBar('Something went wrong. Please refresh the page.', 'OK'));
   }
 
   // Run this once when Home component initiated.

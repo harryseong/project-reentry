@@ -20,37 +20,38 @@ export interface Org {
   description: string;
   eligibilityRequirements: string;
   hours: {
-    Friday: {
+    specifyHours: boolean;
+    friday: {
       end: string,
       open: boolean,
       start: string,
     },
-    Monday: {
+    monday: {
       end: string,
       open: boolean,
       start: string,
     },
-    Saturday: {
+    saturday: {
       end: string,
       open: boolean,
       start: string,
     },
-    Sunday: {
+    sunday: {
       end: string,
       open: boolean,
       start: string,
     },
-    Thursday: {
+    thursday: {
       end: string,
       open: boolean,
       start: string,
     },
-    Tuesday: {
+    tuesday: {
       end: string,
       open: boolean,
       start: string,
     },
-    Wednesday: {
+    wednesday: {
       end: string,
       open: boolean,
       start: string,
@@ -61,7 +62,6 @@ export interface Org {
   payment: string;
   seniorRequirements: string;
   services: any[];
-  specifyHours: boolean;
   transportation: string;
   viewData: any;
   website: string;
