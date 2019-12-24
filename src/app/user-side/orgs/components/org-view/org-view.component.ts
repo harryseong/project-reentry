@@ -3,6 +3,7 @@ import {animate, style, transition, trigger} from '@angular/animations';
 import {ActivatedRoute} from '@angular/router';
 import {FirestoreService} from '../../../../core/services/firestore/firestore.service';
 import {Subscription} from 'rxjs';
+import {Constants} from '../../../../shared/constants/constants';
 declare var google: any;
 
 @Component({
@@ -21,7 +22,7 @@ declare var google: any;
 export class OrgViewComponent implements OnInit, AfterViewInit, OnDestroy {
   currentOrg$ = null;
   currentOrgSubscription$: Subscription;
-  daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  daysOfWeek = Constants.DAYS_OF_WEEK;
 
   constructor(private db: FirestoreService,
               private route: ActivatedRoute) {

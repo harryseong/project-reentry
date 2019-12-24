@@ -120,10 +120,10 @@ export class FirestoreService {
     });
   }
 
-  updateCategoryViewCount(category: string) {
+  updateServiceCategoryViewCount(serviceCategory: string) {
     const year = new Date().getFullYear();
     const month = new Date().getMonth();
-    const query = this.serviceCategories.ref.where('name', '==', category);
+    const query = this.serviceCategories.ref.where('name', '==', serviceCategory);
     query.get().then(querySnapshot => {
       if (querySnapshot.empty) {
         console.warn('no documents found');
