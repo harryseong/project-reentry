@@ -34,6 +34,8 @@ export class OrgSpreadsheetUploadComponent implements OnInit {
   }
 
   processCsv(file: File) {
+    const noServices = [];
+
     let orgCount = 0;
     papa.parse(file, {
       complete: results => {
@@ -41,9 +43,15 @@ export class OrgSpreadsheetUploadComponent implements OnInit {
         const csvOrgs = results.data;
         for (const csvOrg of csvOrgs) {
           const org = this.orgService.processCsvOrg(csvOrg);
+          if (org.services.length === 0) {
+            noServices.push(org);
+          }
+
+          // Get address here and save org.
           // this.saveOrg(org);
           orgCount++;
         }
+        console.log('NO SERVICES LISTED: ' + JSON.stringify(noServices.map(s => s.name)));
         this.snackBarService.openSnackBar('Successfully uploaded file. ' + orgCount + ' orgs uploaded.', 'OK');
       }
     });
