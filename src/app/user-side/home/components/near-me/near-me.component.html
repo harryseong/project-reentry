@@ -111,7 +111,7 @@
       <!--List of Services-->
       <mat-card class="org-card mat-elevation-z0" *ngFor="let org of filteredOrgs$ | async; last as isLast">
         <div class="org-name">
-          <a [routerLink]="['/service/view', org.name]">{{org.name}}</a>
+          <a [routerLink]="['/orgs', org.name]">{{org.name}}</a>
         </div>
 
         <div fxLayout="row" fxLayoutGap="1em" fxLayout.xs="column">
