@@ -8,8 +8,8 @@ import {BehaviorSubject} from 'rxjs';
   providedIn: 'root'
 })
 export class FirestoreService {
-  currentOrg$ = new BehaviorSubject(null);
   allOrgs$ = new BehaviorSubject(null);
+  currentOrg$ = new BehaviorSubject(null);
   serviceCategories$ = new BehaviorSubject(null);
   admins$ = new BehaviorSubject(null);
 
@@ -31,18 +31,20 @@ export class FirestoreService {
     this.users = db.collection<any>('users');
   }
 
+  /**
+   * Sort an array of objects according to the defined parameter.
+   * @param objectArray: Array of objects to sort.
+   * @param parameter: String name of parameter by which to sort array of objects.
+   */
+  _sort(objectArray: any[], parameter: string): string[] {
+    return Object.assign([], objectArray)
+      .sort((a, b) => (a[parameter] > b[parameter]) ? 1 : ((b[parameter] > a[parameter] ? -1 : 0)));
+  }
+
   // Run this once when Home component initiated.
   getAllOrgs() {
     this.organizations.get().toPromise()
       .then(querySnapshot => this.allOrgs$.next(querySnapshot.docs.map(doc => doc.data())))
-      .catch(err => this.snackBarService.openSnackBar('Something went wrong. Please refresh the page.', 'OK'));
-  }
-
-  getAllAdmins() {
-    const adminsRef = this.users.ref.where('role', '==', 'admin');
-    adminsRef.get()
-      .then(querySnapshot => querySnapshot.docs.map(doc => doc.data()))
-      .then(admins => this.admins$.next(admins))
       .catch(err => this.snackBarService.openSnackBar('Something went wrong. Please refresh the page.', 'OK'));
   }
 
@@ -56,6 +58,10 @@ export class FirestoreService {
       .catch(err => this.snackBarService.openSnackBar('Something went wrong. Please refresh the page.', 'OK'));
   }
 
+  /**
+   * Find single organization from allOrgs$ and store in currentOrg$.
+   * @param orgName: String name of organization.
+   */
   getOrg(orgName: string) {
     this.currentOrg$.next(this.allOrgs$.value.find(org => org.name === orgName));
   }
@@ -66,14 +72,14 @@ export class FirestoreService {
       allOrgs : allOrgs.filter(org => org.services.some(sc => serviceCategories.includes(sc)));
   }
 
-  _sort(array: any[], parameter: string): string[] {
-    return Object.assign([], array)
-      .sort((a, b) => (a[parameter] > b[parameter]) ? 1 : ((b[parameter] > a[parameter] ? -1 : 0)));
+  saveOrg(org: any) {
+    this.organizations.add(org)
+      .then(() => console.log('New organization was successfully saved: ' + org.name));
   }
 
-  saveOrg(orgForm: any, showSnackBar: boolean) {
+  saveOrgFromForm(orgForm: any, showSnackBar: boolean) {
     this.organizations.add(orgForm.value)
-      .then( () => {
+      .then(() => {
         console.log('New organization was successfully saved: ' + orgForm.get('name').value);
         if (showSnackBar === true) {
           const message = 'New organization was successfully saved.';
@@ -120,6 +126,10 @@ export class FirestoreService {
     });
   }
 
+  /**
+   * Update view count of the service category whenever user visits service category page.
+   * @param serviceCategory: String name of service category.
+   */
   updateServiceCategoryViewCount(serviceCategory: string) {
     const year = new Date().getFullYear();
     const month = new Date().getMonth();
@@ -166,6 +176,10 @@ export class FirestoreService {
     });
   }
 
+  /**
+   * Update view count of the organization whenever user visits organization page.
+   * @param orgName: String name of organization.
+   */
   updateOrgViewCount(orgName: string) {
     const year = new Date().getFullYear();
     const month = new Date().getMonth();
@@ -210,5 +224,16 @@ export class FirestoreService {
         });
       }
     });
+  }
+
+  /**
+   * Get a list of all admins.
+   */
+  getAllAdmins() {
+    const adminsRef = this.users.ref.where('role', '==', 'admin');
+    adminsRef.get()
+      .then(querySnapshot => querySnapshot.docs.map(doc => doc.data()))
+      .then(admins => this.admins$.next(admins))
+      .catch(err => this.snackBarService.openSnackBar('Something went wrong. Please refresh the page.', 'OK'));
   }
 }

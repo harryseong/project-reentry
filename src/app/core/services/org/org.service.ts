@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import {Org} from '../../../shared/interfaces/org';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({providedIn: 'root'})
 export class OrgService {
-  csvOrgDict = {
+
+  /**
+   * Dictionary of CSV column indices to organization fields.
+   */
+  csvOrgFieldDict = {
     name: 0,
     description: 1,
     streetAddress1: 2,
@@ -58,81 +60,110 @@ export class OrgService {
     additionalNotes: 49
   };
 
+  csvOrgServiceDict = {
+    clothing: 'Clothing',
+    medicalCare: 'Medical Care',
+    mentalHealth: 'Mental Health',
+    publicTransportation: 'Public Transportation',
+    techSupport: 'Tech Support',
+    financialLiteracy: 'Financial Literacy',
+    substanceUse: 'Substance Use',
+    religiousOrganization: 'Religious Organization',
+    housingSupport: 'Housing Support',
+    parenting: 'Parenting',
+    volunteeringOpportunities: 'Volunteering Opportunities',
+    legalAssistance: 'Legal Assistance',
+    publicBenefitAssistance: 'Public Benefit Assistance',
+    employment: 'Employment',
+    education: 'Education',
+    supportNetworksAndMentoring: 'Support Networks And Mentoring',
+    domesticViolenceSexualAssault: 'Domestic Violence/Sexual Assault'
+  };
+
   constructor() { }
 
-  processCsvOrg(csvOrg): Org {
+  /**
+   * Maps csvOrg object to Org object to be saved in the Firestore database.
+   * @param csvOrg: Each row of the uploaded CSV file representing an organization.
+   */
+  csvOrgMapper(csvOrg): Org {
     const org: Org = {
-      additionalNotes: csvOrg[this.csvOrgDict.additionalNotes],
+      additionalNotes: csvOrg[this.csvOrgFieldDict.additionalNotes],
       address: {
-        city: csvOrg[this.csvOrgDict.city],
+        city: csvOrg[this.csvOrgFieldDict.city],
           gpsCoords: {
             lat: null,
             lng: null,
         },
-        state: csvOrg[this.csvOrgDict.state],
-          streetAddress1: csvOrg[this.csvOrgDict.streetAddress1],
-          streetAddress2: csvOrg[this.csvOrgDict.streetAddress2],
-          zipCode: csvOrg[this.csvOrgDict.zipCode]
+        state: csvOrg[this.csvOrgFieldDict.state],
+          streetAddress1: csvOrg[this.csvOrgFieldDict.streetAddress1],
+          streetAddress2: csvOrg[this.csvOrgFieldDict.streetAddress2],
+          zipCode: csvOrg[this.csvOrgFieldDict.zipCode]
       },
-      bringWithYou: csvOrg[this.csvOrgDict.bringWithYou],
+      bringWithYou: csvOrg[this.csvOrgFieldDict.bringWithYou],
       contact: {
-        email: csvOrg[this.csvOrgDict.email],
-        name: csvOrg[this.csvOrgDict.name],
-        phone: csvOrg[this.csvOrgDict.phone]
+        email: csvOrg[this.csvOrgFieldDict.email],
+        name: csvOrg[this.csvOrgFieldDict.name],
+        phone: csvOrg[this.csvOrgFieldDict.phone]
       },
-      description: csvOrg[this.csvOrgDict.description],
-      eligibilityRequirements: csvOrg[this.csvOrgDict.eligibilityRequirements],
+      description: csvOrg[this.csvOrgFieldDict.description],
+      eligibilityRequirements: csvOrg[this.csvOrgFieldDict.eligibilityRequirements],
       hours: {
-        specifyHours: csvOrg[this.csvOrgDict.specifyHours]  === 'Y',
+        specifyHours: csvOrg[this.csvOrgFieldDict.specifyHours]  === 'Y',
         sunday: {
-          end: csvOrg[this.csvOrgDict.sundayEnd],
+          end: csvOrg[this.csvOrgFieldDict.sundayEnd],
           open: false,
-          start: csvOrg[this.csvOrgDict.sundayStart],
+          start: csvOrg[this.csvOrgFieldDict.sundayStart],
         },
         monday: {
-          end: csvOrg[this.csvOrgDict.mondayEnd],
+          end: csvOrg[this.csvOrgFieldDict.mondayEnd],
           open: false,
-          start: csvOrg[this.csvOrgDict.mondayStart],
+          start: csvOrg[this.csvOrgFieldDict.mondayStart],
         },
         tuesday: {
-          end: csvOrg[this.csvOrgDict.tuesdayEnd],
+          end: csvOrg[this.csvOrgFieldDict.tuesdayEnd],
           open: false,
-          start: csvOrg[this.csvOrgDict.tuesdayStart],
+          start: csvOrg[this.csvOrgFieldDict.tuesdayStart],
         },
         wednesday: {
-          end: csvOrg[this.csvOrgDict.wednesdayEnd],
+          end: csvOrg[this.csvOrgFieldDict.wednesdayEnd],
           open: false,
-          start: csvOrg[this.csvOrgDict.wednesdayStart],
+          start: csvOrg[this.csvOrgFieldDict.wednesdayStart],
         },
         thursday: {
-          end: csvOrg[this.csvOrgDict.thursdayEnd],
+          end: csvOrg[this.csvOrgFieldDict.thursdayEnd],
           open: false,
-          start: csvOrg[this.csvOrgDict.thursdayStart],
+          start: csvOrg[this.csvOrgFieldDict.thursdayStart],
         },
         friday: {
-          end: csvOrg[this.csvOrgDict.fridayEnd],
+          end: csvOrg[this.csvOrgFieldDict.fridayEnd],
           open: false,
-          start: csvOrg[this.csvOrgDict.fridayStart],
+          start: csvOrg[this.csvOrgFieldDict.fridayStart],
         },
         saturday: {
-          end: csvOrg[this.csvOrgDict.saturdayEnd],
+          end: csvOrg[this.csvOrgFieldDict.saturdayEnd],
           open: false,
-          start: csvOrg[this.csvOrgDict.saturdayStart],
+          start: csvOrg[this.csvOrgFieldDict.saturdayStart],
         },
       },
-      languages: (csvOrg[this.csvOrgDict.languages] !== undefined && csvOrg[this.csvOrgDict.languages].length) > 0 ? csvOrg[this.csvOrgDict.languages].split(',') : null,
-      name: csvOrg[this.csvOrgDict.name],
-      payment: csvOrg[this.csvOrgDict.payment],
-      seniorRequirements: csvOrg[this.csvOrgDict.seniorRequirements],
+      languages: (csvOrg[this.csvOrgFieldDict.languages] !== undefined && csvOrg[this.csvOrgFieldDict.languages].length) > 0 ?
+        csvOrg[this.csvOrgFieldDict.languages].split(',') : null,
+      name: csvOrg[this.csvOrgFieldDict.name],
+      payment: csvOrg[this.csvOrgFieldDict.payment],
+      seniorRequirements: csvOrg[this.csvOrgFieldDict.seniorRequirements],
       services: this.extractServices(csvOrg),
       transportation: null,
       viewData: null,
-      website: csvOrg[this.csvOrgDict.website],
+      website: csvOrg[this.csvOrgFieldDict.website],
     };
-    console.log(org);
+    // console.log(org);
     return org;
   }
 
+  /**
+   * Extracts from csvOrg a list of services offered by the organization.
+   * @param csvOrg: Each row of the uploaded CSV file representing an organization.
+   */
   extractServices(csvOrg): string[] {
     const services = [];
     const serviceOptions = [
@@ -156,8 +187,8 @@ export class OrgService {
     ];
 
     serviceOptions.forEach(o => {
-      if (csvOrg[this.csvOrgDict[o]] === 'Y') {
-        services.push(o);
+      if (csvOrg[this.csvOrgFieldDict[o]] === 'Y') {
+        services.push(this.csvOrgServiceDict[o]);
       }
     });
 

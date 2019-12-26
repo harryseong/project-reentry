@@ -4,6 +4,7 @@ import * as papa from 'papaparse';
 import {FirestoreService} from '../../../core/services/firestore/firestore.service';
 import {OrgService} from '../../../core/services/org/org.service';
 import {Org} from '../../../shared/interfaces/org';
+import {GoogleMapsService} from '../../../core/services/google-maps/google-maps.service';
 
 @Component({
   selector: 'app-org-spreadsheet-upload',
@@ -13,6 +14,7 @@ import {Org} from '../../../shared/interfaces/org';
 export class OrgSpreadsheetUploadComponent implements OnInit {
 
   constructor(private db: FirestoreService,
+              private googleMapsService: GoogleMapsService,
               private orgService: OrgService,
               private snackBarService: SnackBarService) { }
 
@@ -34,7 +36,10 @@ export class OrgSpreadsheetUploadComponent implements OnInit {
   }
 
   processCsv(file: File) {
-    const noServices = [];
+    console.log('CSV file upload started.');
+
+    const noAddress: string[] = [];
+    const noServices: string[] = [];
 
     let orgCount = 0;
     papa.parse(file, {
@@ -42,22 +47,47 @@ export class OrgSpreadsheetUploadComponent implements OnInit {
         results.data.shift();
         const csvOrgs = results.data;
         for (const csvOrg of csvOrgs) {
-          const org = this.orgService.processCsvOrg(csvOrg);
-          if (org.services.length === 0) {
-            noServices.push(org);
-          }
+          const org = this.orgService.csvOrgMapper(csvOrg);
 
-          // Get address here and save org.
-          // this.saveOrg(org);
-          orgCount++;
+          // If csvOrg has services, code address and save in FireStore database.
+          // Else add to "noServices" array if csvOrg has no services.
+          if (org.services.length > 0) {
+            if (org.address.city !== null && org.address.city !== '' &&
+              org.address.state !== null && org.address.state !== '' &&
+              org.address.zipCode !== null) {
+              const orgAddressString: string =
+                org.address.streetAddress1 +
+                (org.address.streetAddress2 !== null || org.address.streetAddress2 !== '' ? (org.address.streetAddress2 + ', ') : null) +
+                org.address.city + ', ' +
+                org.address.state + ' ' +
+                org.address.zipCode;
+
+              console.log('Organization address string: ' + orgAddressString);
+
+              // Get address here and save org.
+              this.googleMapsService.codeAddressAndSave(orgAddressString, org);
+
+              orgCount++;
+            } else {
+              noAddress.push(org.name);
+            }
+          } else {
+            noServices.push(org.name);
+          }
         }
-        console.log('NO SERVICES LISTED: ' + JSON.stringify(noServices.map(s => s.name)));
+
+        // If csvOrgs without addresses are detected, warn.
+        if (noAddress.length > 0) {
+          console.warn('The following csvOrgs do not have addresses: ' + JSON.stringify(noAddress));
+        }
+
+        // If csvOrgs without services are detected, warn.
+        if (noServices.length > 0) {
+          console.warn('The following csvOrgs do not have any listed services: ' + JSON.stringify(noServices));
+        }
+
         this.snackBarService.openSnackBar('Successfully uploaded file. ' + orgCount + ' orgs uploaded.', 'OK');
       }
     });
-  }
-
-  saveOrg(org: Org) {
-    this.db.organizations.add(org);
   }
 }
