@@ -1,84 +1,9 @@
 import { Injectable } from '@angular/core';
 import {Org} from '../../../shared/interfaces/org';
+import {Constants} from '../../../shared/constants/constants';
 
 @Injectable({providedIn: 'root'})
 export class OrgService {
-
-  /**
-   * Dictionary of CSV column indices to organization fields.
-   */
-  csvOrgFieldDict = {
-    name: 0,
-    description: 1,
-    streetAddress1: 2,
-    streetAddress2: 3,
-    city: 4,
-    state: 5,
-    zipCode: 6,
-    contactName: 7,
-    phone: 8,
-    email: 9,
-    website: 10,
-    specifyHours: 11,
-    sundayStart: 12,
-    sundayEnd: 13,
-    mondayStart: 14,
-    mondayEnd: 15,
-    tuesdayStart: 16,
-    tuesdayEnd: 17,
-    wednesdayStart: 18,
-    wednesdayEnd: 19,
-    thursdayStart: 20,
-    thursdayEnd: 21,
-    fridayStart: 22,
-    fridayEnd: 23,
-    saturdayStart: 24,
-    saturdayEnd: 25,
-    clothing: 26,
-    medicalCare: 27,
-    mentalHealth: 28,
-    publicTransportation: 29,
-    techSupport: 30,
-    financialLiteracy: 31,
-    substanceUse: 32,
-    religiousOrganization: 33,
-    housingSupport: 34,
-    parenting: 35,
-    volunteeringOpportunities: 36,
-    legalAssistance: 37,
-    publicBenefitAssistance: 38,
-    employment: 39,
-    education: 40,
-    supportNetworksAndMentoring: 41,
-    domesticViolenceSexualAssault: 42,
-    payment: 43,
-    transportation: 44,
-    languages: 45,
-    seniorRequirements: 46,
-    eligibilityRequirements: 47,
-    bringWithYou: 48,
-    additionalNotes: 49
-  };
-
-  csvOrgServiceDict = {
-    clothing: 'Clothing',
-    medicalCare: 'Medical Care',
-    mentalHealth: 'Mental Health',
-    publicTransportation: 'Public Transportation',
-    techSupport: 'Tech Support',
-    financialLiteracy: 'Financial Literacy',
-    substanceUse: 'Substance Use',
-    religiousOrganization: 'Religious Organization',
-    housingSupport: 'Housing Support',
-    parenting: 'Parenting',
-    volunteeringOpportunities: 'Volunteering Opportunities',
-    legalAssistance: 'Legal Assistance',
-    publicBenefitAssistance: 'Public Benefit Assistance',
-    employment: 'Employment',
-    education: 'Education',
-    supportNetworksAndMentoring: 'Support Networks And Mentoring',
-    domesticViolenceSexualAssault: 'Domestic Violence/Sexual Assault'
-  };
 
   constructor() { }
 
@@ -88,73 +13,73 @@ export class OrgService {
    */
   csvOrgMapper(csvOrg): Org {
     const org: Org = {
-      additionalNotes: csvOrg[this.csvOrgFieldDict.additionalNotes],
+      additionalNotes: csvOrg[Constants.CSV_ORG_FIELD_DICT.additionalNotes],
       address: {
-        city: csvOrg[this.csvOrgFieldDict.city],
+        city: csvOrg[Constants.CSV_ORG_FIELD_DICT.city],
           gpsCoords: {
             lat: null,
             lng: null,
         },
-        state: csvOrg[this.csvOrgFieldDict.state],
-          streetAddress1: csvOrg[this.csvOrgFieldDict.streetAddress1],
-          streetAddress2: csvOrg[this.csvOrgFieldDict.streetAddress2],
-          zipCode: csvOrg[this.csvOrgFieldDict.zipCode]
+        state: csvOrg[Constants.CSV_ORG_FIELD_DICT.state],
+          streetAddress1: csvOrg[Constants.CSV_ORG_FIELD_DICT.streetAddress1],
+          streetAddress2: csvOrg[Constants.CSV_ORG_FIELD_DICT.streetAddress2],
+          zipCode: csvOrg[Constants.CSV_ORG_FIELD_DICT.zipCode]
       },
-      bringWithYou: csvOrg[this.csvOrgFieldDict.bringWithYou],
+      bringWithYou: csvOrg[Constants.CSV_ORG_FIELD_DICT.bringWithYou],
       contact: {
-        email: csvOrg[this.csvOrgFieldDict.email],
-        name: csvOrg[this.csvOrgFieldDict.name],
-        phone: csvOrg[this.csvOrgFieldDict.phone]
+        email: csvOrg[Constants.CSV_ORG_FIELD_DICT.email],
+        name: csvOrg[Constants.CSV_ORG_FIELD_DICT.name],
+        phone: csvOrg[Constants.CSV_ORG_FIELD_DICT.phone]
       },
-      description: csvOrg[this.csvOrgFieldDict.description],
-      eligibilityRequirements: csvOrg[this.csvOrgFieldDict.eligibilityRequirements],
+      description: csvOrg[Constants.CSV_ORG_FIELD_DICT.description],
+      eligibilityRequirements: csvOrg[Constants.CSV_ORG_FIELD_DICT.eligibilityRequirements],
       hours: {
-        specifyHours: csvOrg[this.csvOrgFieldDict.specifyHours]  === 'Y',
+        specifyHours: csvOrg[Constants.CSV_ORG_FIELD_DICT.specifyHours]  === 'Y',
         sunday: {
-          end: csvOrg[this.csvOrgFieldDict.sundayEnd],
+          end: csvOrg[Constants.CSV_ORG_FIELD_DICT.sundayEnd],
           open: false,
-          start: csvOrg[this.csvOrgFieldDict.sundayStart],
+          start: csvOrg[Constants.CSV_ORG_FIELD_DICT.sundayStart],
         },
         monday: {
-          end: csvOrg[this.csvOrgFieldDict.mondayEnd],
+          end: csvOrg[Constants.CSV_ORG_FIELD_DICT.mondayEnd],
           open: false,
-          start: csvOrg[this.csvOrgFieldDict.mondayStart],
+          start: csvOrg[Constants.CSV_ORG_FIELD_DICT.mondayStart],
         },
         tuesday: {
-          end: csvOrg[this.csvOrgFieldDict.tuesdayEnd],
+          end: csvOrg[Constants.CSV_ORG_FIELD_DICT.tuesdayEnd],
           open: false,
-          start: csvOrg[this.csvOrgFieldDict.tuesdayStart],
+          start: csvOrg[Constants.CSV_ORG_FIELD_DICT.tuesdayStart],
         },
         wednesday: {
-          end: csvOrg[this.csvOrgFieldDict.wednesdayEnd],
+          end: csvOrg[Constants.CSV_ORG_FIELD_DICT.wednesdayEnd],
           open: false,
-          start: csvOrg[this.csvOrgFieldDict.wednesdayStart],
+          start: csvOrg[Constants.CSV_ORG_FIELD_DICT.wednesdayStart],
         },
         thursday: {
-          end: csvOrg[this.csvOrgFieldDict.thursdayEnd],
+          end: csvOrg[Constants.CSV_ORG_FIELD_DICT.thursdayEnd],
           open: false,
-          start: csvOrg[this.csvOrgFieldDict.thursdayStart],
+          start: csvOrg[Constants.CSV_ORG_FIELD_DICT.thursdayStart],
         },
         friday: {
-          end: csvOrg[this.csvOrgFieldDict.fridayEnd],
+          end: csvOrg[Constants.CSV_ORG_FIELD_DICT.fridayEnd],
           open: false,
-          start: csvOrg[this.csvOrgFieldDict.fridayStart],
+          start: csvOrg[Constants.CSV_ORG_FIELD_DICT.fridayStart],
         },
         saturday: {
-          end: csvOrg[this.csvOrgFieldDict.saturdayEnd],
+          end: csvOrg[Constants.CSV_ORG_FIELD_DICT.saturdayEnd],
           open: false,
-          start: csvOrg[this.csvOrgFieldDict.saturdayStart],
+          start: csvOrg[Constants.CSV_ORG_FIELD_DICT.saturdayStart],
         },
       },
-      languages: (csvOrg[this.csvOrgFieldDict.languages] !== undefined && csvOrg[this.csvOrgFieldDict.languages].length) > 0 ?
-        csvOrg[this.csvOrgFieldDict.languages].split(',') : null,
-      name: csvOrg[this.csvOrgFieldDict.name],
-      payment: csvOrg[this.csvOrgFieldDict.payment],
-      seniorRequirements: csvOrg[this.csvOrgFieldDict.seniorRequirements],
+      languages: (csvOrg[Constants.CSV_ORG_FIELD_DICT.languages] !== undefined && csvOrg[Constants.CSV_ORG_FIELD_DICT.languages].length) > 0 ?
+        csvOrg[Constants.CSV_ORG_FIELD_DICT.languages].split(',') : null,
+      name: csvOrg[Constants.CSV_ORG_FIELD_DICT.name],
+      payment: csvOrg[Constants.CSV_ORG_FIELD_DICT.payment],
+      seniorRequirements: csvOrg[Constants.CSV_ORG_FIELD_DICT.seniorRequirements],
       services: this.extractServices(csvOrg),
       transportation: null,
       viewData: null,
-      website: csvOrg[this.csvOrgFieldDict.website],
+      website: csvOrg[Constants.CSV_ORG_FIELD_DICT.website],
     };
     // console.log(org);
     return org;
@@ -187,8 +112,8 @@ export class OrgService {
     ];
 
     serviceOptions.forEach(o => {
-      if (csvOrg[this.csvOrgFieldDict[o]] === 'Y') {
-        services.push(this.csvOrgServiceDict[o]);
+      if (csvOrg[Constants.CSV_ORG_FIELD_DICT[o]] === 'Y') {
+        services.push(Constants.CSV_ORG_SERVICE_DICT[o]);
       }
     });
 
