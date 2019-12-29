@@ -52,12 +52,12 @@
         <div>Not specified</div>
       </ng-template>
 
-      <div *ngIf="org.specifyHours==true; else noHours">
+      <div *ngIf="org.hours.specifyHours==true; else noHours">
         <table id="hours-table">
           <tr *ngFor="let day of daysOfWeek">
             <th>{{day}}</th>
-            <td>{{org.hours[day]['open']==true ?
-                (org.hours[day]['start'] | convertTime) + ' - ' + (org.hours[day]['end'] | convertTime) : 'Closed'}}
+            <td>{{org['hours'][day.toLowerCase()]['open']==true ?
+                (org['hours'][day.toLowerCase()]['start'] | convertTime) + ' - ' + (org['hours'][day.toLowerCase()]['end'] | convertTime) : 'Closed'}}
             </td>
           </tr>
         </table>
