@@ -13,7 +13,7 @@ export class OrgService {
    */
   csvOrgMapper(csvOrg): Org {
     const org: Org = {
-      additionalNotes: csvOrg[Constants.CSV_ORG_FIELD_DICT.additionalNotes],
+      additionalNotes: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.additionalNotes], null),
       address: {
         city: csvOrg[Constants.CSV_ORG_FIELD_DICT.city],
           gpsCoords: {
@@ -25,60 +25,67 @@ export class OrgService {
           streetAddress2: csvOrg[Constants.CSV_ORG_FIELD_DICT.streetAddress2],
           zipCode: csvOrg[Constants.CSV_ORG_FIELD_DICT.zipCode]
       },
-      bringWithYou: csvOrg[Constants.CSV_ORG_FIELD_DICT.bringWithYou],
+      bringWithYou: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.bringWithYou], null),
       contact: {
-        email: csvOrg[Constants.CSV_ORG_FIELD_DICT.email],
-        name: csvOrg[Constants.CSV_ORG_FIELD_DICT.name],
-        phone: csvOrg[Constants.CSV_ORG_FIELD_DICT.phone]
+        email: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.email], null),
+        name: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.name], null),
+        phone: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.phone], null)
       },
-      description: csvOrg[Constants.CSV_ORG_FIELD_DICT.description],
-      eligibilityRequirements: csvOrg[Constants.CSV_ORG_FIELD_DICT.eligibilityRequirements],
+      description: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.description], null),
+      eligibilityRequirements: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.eligibilityRequirements], null),
       hours: {
         specifyHours: csvOrg[Constants.CSV_ORG_FIELD_DICT.specifyHours]  === 'Y',
         sunday: {
-          open: !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.sundayStart]) && !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.sundayEnd]),
+          open: !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.sundayStart]) &&
+            !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.sundayEnd]),
           start: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.sundayStart], null),
           end: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.sundayEnd], null)
         },
         monday: {
-          open: !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.mondayStart]) && !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.mondayEnd]),
+          open: !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.mondayStart]) &&
+            !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.mondayEnd]),
           start: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.mondayStart], null),
           end: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.mondayEnd], null)
         },
         tuesday: {
-          open: !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.tuesdayStart]) && !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.tuesdayEnd]),
+          open: !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.tuesdayStart])
+            && !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.tuesdayEnd]),
           start: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.tuesdayStart], null),
           end: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.tuesdayEnd], null)
         },
         wednesday: {
-          open: !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.wednesdayStart]) && !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.wednesdayEnd]),
+          open: !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.wednesdayStart]) &&
+            !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.wednesdayEnd]),
           start: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.wednesdayStart], null),
           end: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.wednesdayEnd], null)
         },
         thursday: {
-          open: !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.thursdayStart]) && !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.thursdayEnd]),
+          open: !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.thursdayStart]) &&
+            !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.thursdayEnd]),
           start: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.thursdayStart], null),
           end: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.thursdayEnd], null)
         },
         friday: {
-          open: !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.fridayStart]) && !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.fridayEnd]),
+          open: !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.fridayStart]) &&
+            !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.fridayEnd]),
           start: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.fridayStart], null),
           end: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.fridayEnd], null)
         },
         saturday: {
-          open: !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.saturdayStart]) && !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.saturdayEnd]),
+          open: !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.saturdayStart]) &&
+            !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.saturdayEnd]),
           start: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.saturdayStart], null),
           end: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.saturdayEnd], null)
         },
       },
       languages: this.extractServices(csvOrg),
       name: csvOrg[Constants.CSV_ORG_FIELD_DICT.name],
-      payment: csvOrg[Constants.CSV_ORG_FIELD_DICT.payment],
-      seniorRequirements: csvOrg[Constants.CSV_ORG_FIELD_DICT.seniorRequirements],
+      payment: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.payment], null),
+      seniorRequirements: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.seniorRequirements], null),
       services: this.extractServices(csvOrg),
-      transportation: null,
+      transportation: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.transportation], null),
       viewData: {},
-      website: csvOrg[Constants.CSV_ORG_FIELD_DICT.website],
+      website: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.website], null)
     };
     return org;
   }
