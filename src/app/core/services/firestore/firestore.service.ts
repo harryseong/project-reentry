@@ -74,7 +74,8 @@ export class FirestoreService {
 
   saveOrg(org: any) {
     this.organizations.add(org)
-      .then(() => console.log('New organization was successfully saved: ' + org.name));
+      .then(() => console.log('New organization was successfully saved: ' + org.name))
+      .catch(err => console.error(err));
   }
 
   saveOrgFromForm(orgForm: any, showSnackBar: boolean) {

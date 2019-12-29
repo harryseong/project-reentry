@@ -34,7 +34,7 @@ export class GoogleMapsService {
         }
       } else {
         console.warn('Geocode was not successful for the following reason: ' + status);
-        const message = results.length === 0 ? 'The provided orgAddressString is not valid. Please try again.' :
+        const message = (results !== null && results.length)  ? 'The provided orgAddressString is not valid. Please try again.' :
           'The app could not reach geocoding services. Please refresh the page and try again.';
         const action = 'OK';
         this.snackBarService.openSnackBar(message, action);
@@ -42,7 +42,7 @@ export class GoogleMapsService {
     });
   }
 
-  codeAddressAndSave(orgAddressString: string, org: Org) {
+  codeAddressAndSave(orgAddressString: string, org: Org, showSnackBar: boolean) {
     this.geocoder.geocode({address: orgAddressString}, (results, status) => {
       if (status.toString() === 'OK') {
         const stateAddressComponent = results[0].address_components.find(ac => ac.types.includes('administrative_area_level_1'));
@@ -56,16 +56,20 @@ export class GoogleMapsService {
           this.firestoreService.saveOrg(org);
         } else if (state !== 'MI') {
           console.warn('The org address string provided was not found to be in Michigan: ' + orgAddressString);
-          const message = 'The org address string provided was not found to be in Michigan. Please input a valid Michigan address.';
-          const action = 'OK';
-          this.snackBarService.openSnackBar(message, action);
+          if (showSnackBar === true) {
+            const message = 'The org address string provided was not found to be in Michigan. Please input a valid Michigan address.';
+            const action = 'OK';
+            this.snackBarService.openSnackBar(message, action);
+          }
         }
       } else {
         console.warn('Geocode was not successful for the following reason: ' + status);
-        const message = results.length === 0 ? 'The provided orgAddressString is not valid. Please try again.' :
-          'The app could not reach geocoding services. Please refresh the page and try again.';
-        const action = 'OK';
-        this.snackBarService.openSnackBar(message, action);
+        if (showSnackBar === true) {
+          const message = (results !== null && results.length) === 0 ? 'The provided orgAddressString is not valid. Please try again.' :
+            'The app could not reach geocoding services. Please refresh the page and try again.';
+          const action = 'OK';
+          this.snackBarService.openSnackBar(message, action);
+        }
       }
     });
   }
