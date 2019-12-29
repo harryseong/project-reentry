@@ -7,7 +7,6 @@ import * as moment from 'moment';
 export class ConvertTimePipe implements PipeTransform {
 
   transform(time: string): any {
-    return moment(time, 'HH:mm').format('h:mm A');
+    return moment(time, 'h:mm A').format('h:mm A');
   }
-
 }

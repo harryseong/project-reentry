@@ -36,53 +36,64 @@ export class OrgService {
       hours: {
         specifyHours: csvOrg[Constants.CSV_ORG_FIELD_DICT.specifyHours]  === 'Y',
         sunday: {
-          end: csvOrg[Constants.CSV_ORG_FIELD_DICT.sundayEnd],
-          open: csvOrg[Constants.CSV_ORG_FIELD_DICT.sundayEnd] !== null && csvOrg[Constants.CSV_ORG_FIELD_DICT.sundayEnd] !== '',
-          start: csvOrg[Constants.CSV_ORG_FIELD_DICT.sundayStart],
+          open: !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.sundayStart]) && !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.sundayEnd]),
+          start: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.sundayStart], null),
+          end: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.sundayEnd], null)
         },
         monday: {
-          end: csvOrg[Constants.CSV_ORG_FIELD_DICT.mondayEnd],
-          open: csvOrg[Constants.CSV_ORG_FIELD_DICT.mondayEnd] !== null && csvOrg[Constants.CSV_ORG_FIELD_DICT.mondayEnd] !== '',
-          start: csvOrg[Constants.CSV_ORG_FIELD_DICT.mondayStart],
+          open: !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.mondayStart]) && !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.mondayEnd]),
+          start: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.mondayStart], null),
+          end: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.mondayEnd], null)
         },
         tuesday: {
-          end: csvOrg[Constants.CSV_ORG_FIELD_DICT.tuesdayEnd],
-          open: csvOrg[Constants.CSV_ORG_FIELD_DICT.tuesdayEnd] !== null && csvOrg[Constants.CSV_ORG_FIELD_DICT.tuesdayEnd] !== '',
-          start: csvOrg[Constants.CSV_ORG_FIELD_DICT.tuesdayStart],
+          open: !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.tuesdayStart]) && !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.tuesdayEnd]),
+          start: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.tuesdayStart], null),
+          end: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.tuesdayEnd], null)
         },
         wednesday: {
-          end: csvOrg[Constants.CSV_ORG_FIELD_DICT.wednesdayEnd],
-          open: csvOrg[Constants.CSV_ORG_FIELD_DICT.wednesdayEnd] !== null && csvOrg[Constants.CSV_ORG_FIELD_DICT.wednesdayEnd] !== '',
-          start: csvOrg[Constants.CSV_ORG_FIELD_DICT.wednesdayStart],
+          open: !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.wednesdayStart]) && !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.wednesdayEnd]),
+          start: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.wednesdayStart], null),
+          end: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.wednesdayEnd], null)
         },
         thursday: {
-          end: csvOrg[Constants.CSV_ORG_FIELD_DICT.thursdayEnd],
-          open: csvOrg[Constants.CSV_ORG_FIELD_DICT.thursdayEnd] !== null && csvOrg[Constants.CSV_ORG_FIELD_DICT.thursdayEnd] !== '',
-          start: csvOrg[Constants.CSV_ORG_FIELD_DICT.thursdayStart],
+          open: !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.thursdayStart]) && !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.thursdayEnd]),
+          start: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.thursdayStart], null),
+          end: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.thursdayEnd], null)
         },
         friday: {
-          end: csvOrg[Constants.CSV_ORG_FIELD_DICT.fridayEnd],
-          open: csvOrg[Constants.CSV_ORG_FIELD_DICT.fridayEnd] !== null && csvOrg[Constants.CSV_ORG_FIELD_DICT.fridayEnd] !== '',
-          start: csvOrg[Constants.CSV_ORG_FIELD_DICT.fridayStart],
+          open: !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.fridayStart]) && !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.fridayEnd]),
+          start: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.fridayStart], null),
+          end: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.fridayEnd], null)
         },
         saturday: {
-          end: csvOrg[Constants.CSV_ORG_FIELD_DICT.saturdayEnd],
-          open: csvOrg[Constants.CSV_ORG_FIELD_DICT.saturdayEnd] !== null && csvOrg[Constants.CSV_ORG_FIELD_DICT.saturdayEnd] !== '',
-          start: csvOrg[Constants.CSV_ORG_FIELD_DICT.saturdayStart],
+          open: !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.saturdayStart]) && !this.isEmpty(csvOrg[Constants.CSV_ORG_FIELD_DICT.saturdayEnd]),
+          start: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.saturdayStart], null),
+          end: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.saturdayEnd], null)
         },
       },
-      languages: (csvOrg[Constants.CSV_ORG_FIELD_DICT.languages] !== undefined && csvOrg[Constants.CSV_ORG_FIELD_DICT.languages].length) > 0 ?
-        csvOrg[Constants.CSV_ORG_FIELD_DICT.languages].split(',') : null,
+      languages: this.extractServices(csvOrg),
       name: csvOrg[Constants.CSV_ORG_FIELD_DICT.name],
       payment: csvOrg[Constants.CSV_ORG_FIELD_DICT.payment],
       seniorRequirements: csvOrg[Constants.CSV_ORG_FIELD_DICT.seniorRequirements],
       services: this.extractServices(csvOrg),
       transportation: null,
-      viewData: null,
+      viewData: {},
       website: csvOrg[Constants.CSV_ORG_FIELD_DICT.website],
     };
-    // console.log(org);
     return org;
+  }
+
+  /**
+   * Extracts from csvOrg a list of languages spoken by the organization.
+   * @param csvOrg: Each row of the uploaded CSV file representing an organization.
+   */
+  extractLanguages(csvOrg): string[] {
+    const languages = [];
+    if (csvOrg[Constants.CSV_ORG_FIELD_DICT.languages] !== undefined && csvOrg[Constants.CSV_ORG_FIELD_DICT.languages].length > 0) {
+      languages.push(csvOrg[Constants.CSV_ORG_FIELD_DICT.languages].split(','));
+    }
+
+    return languages.sort((a: string, b: string ) => a >= b ? 1 : -1);
   }
 
   /**
@@ -111,12 +122,29 @@ export class OrgService {
       'domesticViolenceSexualAssault'
     ];
 
-    serviceOptions.forEach(o => {
-      if (csvOrg[Constants.CSV_ORG_FIELD_DICT[o]] === 'Y') {
-        services.push(Constants.CSV_ORG_SERVICE_DICT[o]);
+    serviceOptions.forEach(serviceOption => {
+      if (csvOrg[Constants.CSV_ORG_FIELD_DICT[serviceOption]] === 'Y') {
+        services.push(Constants.CSV_ORG_SERVICE_DICT[serviceOption]);
       }
     });
 
-    return services;
+    return services.sort((a: string, b: string) => a >= b ? 1 : -1);
+  }
+
+  /**
+   * Returns text if is not empty. If empty, returns the specified default text.
+   * @param text: String text.
+   * @param defaultText: Specified default text to return if text is empty.
+   */
+  defaultText(text: string, defaultText: string | null): string | null {
+    return (text !== null && text !== '') ? text : defaultText;
+  }
+
+  /**
+   * Checks if text is empty and return boolean value.
+   * @param text: String text to check if empty.
+   */
+  isEmpty(text: string): boolean {
+    return (text === null || text === '');
   }
 }
