@@ -60,10 +60,11 @@ export class FirestoreService {
 
   /**
    * Find single organization from allOrgs$ and store in currentOrg$.
+   * @param orgCity: String city of organization.
    * @param orgName: String name of organization.
    */
-  getOrg(orgName: string) {
-    this.currentOrg$.next(this.allOrgs$.value.find(org => org.name === orgName));
+  getOrg(orgCity: string, orgName: string) {
+    this.currentOrg$.next(this.allOrgs$.value.find(org => org.address.city === orgCity && org.name === orgName));
   }
 
   getOrgsByServiceCategories(serviceCategories: any[]) {

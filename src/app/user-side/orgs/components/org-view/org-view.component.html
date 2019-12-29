@@ -47,7 +47,7 @@
     <div fxLayout="column" class="org-section" *ngIf="org">
       <mat-divider></mat-divider>
       <h4><i class="far fa-clock fa-fw"></i> Hours</h4>
-      <div *ngIf="org.specifyHours==true; else noHours">
+      <div *ngIf="org.specifyHours===true; else noHours">
         <table id="hours-table">
           <tr *ngFor="let day of daysOfWeek">
             <th>{{day}}</th>
@@ -81,10 +81,20 @@
       <mat-divider></mat-divider>
       <h4><i class="fas fa-info-circle fa-fw"></i> Other Information</h4>
 
-      <div>
+      <ng-template #noOtherInfo>
+        <div>N/A</div>
+      </ng-template>
+
+      <div *ngIf="org.languages != null && org.languages.length > 0 &&
+                  org.bringWithYou != null && org.bringWithYou != '' &&
+                  org.payment != null && org.payment != '' &&
+                  org.transportation != null && org.transportation != '' &&
+                  org.eligibilityRequirements != null && org.eligibilityRequirements != '' &&
+                  org.seniorRequirements != null && org.seniorRequirements != '' &&
+                  org.additionalNotes != null && org.additionalNotes != ''; else noOtherInfo">
         <table id="other-info-table">
           <tr *ngIf="org.languages != null && org.languages.length > 0">
-            <th>Other Languages Spoken</th>
+            <th>Other Languages Spoken:</th>
             <td>
               <span *ngFor="let language of org.languages; last as isLast">
                 {{language}}<span *ngIf="!isLast">, </span>
@@ -92,28 +102,28 @@
             </td>
           </tr>
           <tr>
-            <th>What to Bring</th>
-            <td>{{org.bringWithYou=='' ? 'None specified' : org.bringWithYou}}</td>
+            <th *ngIf="org.bringWithYou != null && org.bringWithYou != ''">What to Bring:</th>
+            <td>{{org.bringWithYou}}</td>
           </tr>
           <tr *ngIf="org.payment != null && org.payment != ''">
             <th>Payment</th>
             <td>{{org.payment ? 'Yes' : 'No'}}</td>
           </tr>
           <tr *ngIf="org.transportation != null && org.transportation != ''">
-            <th>Transportation Provided</th>
+            <th>Transportation Provided:</th>
             <td>{{org.transportation ? 'Yes' : 'No'}}</td>
           </tr>
           <tr *ngIf="org.eligibilityRequirements != null && org.eligibilityRequirements != ''">
-            <th>Eligibility Requirements</th>
+            <th>Eligibility Requirements:</th>
             <td>{{org.eligibilityRequirements ? 'Yes' : 'No'}}</td>
           </tr>
           <tr *ngIf="org.seniorRequirements != null && org.seniorRequirements != ''">
-            <th>Senior Requirements</th>
+            <th>Senior Requirements:</th>
             <td>{{org.seniorRequirements ? 'Yes' : 'No'}}</td>
           </tr>
-          <tr>
-            <th>Additional Notes</th>
-            <td>{{org.additionalNotes == '' ? 'None' : org.additionalNotes}}</td>
+          <tr *ngIf="org.additionalNotes != null && org.additionalNotes != ''">
+            <th>Additional Notes:</th>
+            <td>{{org.additionalNotes}}</td>
           </tr>
         </table>
       </div>

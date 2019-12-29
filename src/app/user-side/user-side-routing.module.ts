@@ -14,7 +14,7 @@ const routes: Routes = [
       {path: 'about', component: AboutComponent},
       {path: 'orgs', component: OrgsComponent, children: [
           {path: 'category/:category_id', component: OrgCategoryComponent},
-          {path: ':org_id', component: OrgViewComponent}
+          {path: ':org_city/:org_name', component: OrgViewComponent}
         ]}
     ]}
 ];

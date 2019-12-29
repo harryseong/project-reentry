@@ -47,8 +47,9 @@ export class OrgViewComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   loadOrg() {
-    const orgName = this.route.snapshot.params.org_id;
-    this.db.getOrg(orgName);
+    const orgCity = this.route.snapshot.params.org_city;
+    const orgName = this.route.snapshot.params.org_name;
+    this.db.getOrg(orgCity, orgName);
   }
 
   loadMap(org) {
