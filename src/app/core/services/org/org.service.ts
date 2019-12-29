@@ -1,30 +1,33 @@
 import { Injectable } from '@angular/core';
 import {Org} from '../../../shared/interfaces/org';
 import {Constants} from '../../../shared/constants/constants';
+import {SnackBarService} from '../snack-bar/snack-bar.service';
 
 @Injectable({providedIn: 'root'})
 export class OrgService {
 
-  constructor() { }
+  constructor(private snackBarService: SnackBarService) {}
 
   /**
    * Maps csvOrg object to Org object to be saved in the Firestore database.
    * @param csvOrg: Each row of the uploaded CSV file representing an organization.
    */
-  csvOrgMapper(csvOrg): Org {
+  mapCsvOrgToOrg(csvOrg): Org {
     const org: Org = {
       additionalNotes: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.additionalNotes], null),
       address: {
         city: csvOrg[Constants.CSV_ORG_FIELD_DICT.city],
-          gpsCoords: {
-            lat: null,
-            lng: null,
+        county: null,
+        gpsCoords: {
+          lat: null,
+          lng: null
         },
         state: csvOrg[Constants.CSV_ORG_FIELD_DICT.state],
-          streetAddress1: csvOrg[Constants.CSV_ORG_FIELD_DICT.streetAddress1],
-          streetAddress2: csvOrg[Constants.CSV_ORG_FIELD_DICT.streetAddress2],
-          zipCode: csvOrg[Constants.CSV_ORG_FIELD_DICT.zipCode]
+        streetAddress1: csvOrg[Constants.CSV_ORG_FIELD_DICT.streetAddress1],
+        streetAddress2: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.streetAddress2], null),
+        zipCode: csvOrg[Constants.CSV_ORG_FIELD_DICT.zipCode]
       },
+      formattedAddress: null,
       bringWithYou: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.bringWithYou], null),
       contact: {
         email: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.email], null),
@@ -78,7 +81,7 @@ export class OrgService {
           end: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.saturdayEnd], null)
         },
       },
-      languages: this.extractServices(csvOrg),
+      languages: this.extractLanguages(csvOrg),
       name: csvOrg[Constants.CSV_ORG_FIELD_DICT.name],
       payment: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.payment], null),
       seniorRequirements: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.seniorRequirements], null),
@@ -88,6 +91,66 @@ export class OrgService {
       website: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.website], null)
     };
     return org;
+  }
+
+  /**
+   * Maps data from Google Geocoder API response to Org object.
+   * @param org: Org object.
+   * @param addressComponents: Geocoder address components.
+   * @param geometryLocation: Geocoder geometry location containing latitude, longitude data.
+   * @param formattedAddress: Geocoder
+   * @param showSnackBar: boolean flag to determine whether or not to show snackBar confirmation and warnings.
+   */
+  mapGeocodeDataToOrg(org: Org, addressComponents, geometryLocation, formattedAddress: string, showSnackBar: boolean) {
+    // State geocoder address components.
+    const stateAddressComponent = addressComponents.find(ac => ac.types.includes('administrative_area_level_1'));
+    const state = stateAddressComponent !== undefined ? stateAddressComponent.short_name : null;
+
+    if (state === 'MI') {
+      // Geocode address components.
+      const streetNumberAddressComponent = addressComponents.find(ac => ac.types.includes('street_number'));
+      const streetNameAddressComponent = addressComponents.find(ac => ac.types.includes('route'));
+      const cityAddressComponent = addressComponents.find(ac => ac.types.includes('locality'));
+      const countyAddressComponent = addressComponents.find(ac => ac.types.includes('administrative_area_level_2'));
+
+      // Address components.
+      const streetNumber = streetNumberAddressComponent !== undefined ? streetNumberAddressComponent.long_name : null;
+      const streetName = streetNameAddressComponent !== undefined ? streetNameAddressComponent.long_name : null;
+      const city = cityAddressComponent !== undefined ? cityAddressComponent.long_name : null;
+      const county = countyAddressComponent !== undefined ? countyAddressComponent.long_name : null;
+
+      // Latitude, longitude components.
+      const lat = geometryLocation.lat();
+      const lng = geometryLocation.lng();
+
+      // Map geocode data to org address map.
+      org.formattedAddress = formattedAddress;
+      org.address.streetAddress1 = streetNumber + ' ' + streetName;
+      org.address.city = city;
+      org.address.county = county;
+      org.address.state = state;
+      org.address.gpsCoords.lat = lat;
+      org.address.gpsCoords.lng = lng;
+    } else if (state !== 'MI') {
+      console.warn('The address provided was not found to be in Michigan: ' + formattedAddress);
+
+      if (showSnackBar === true) {
+        const message = 'The org address string provided was not found to be in Michigan. Please input a valid Michigan address.';
+        const action = 'OK';
+        this.snackBarService.openSnackBar(message, action);
+      }
+    }
+  }
+
+  /**
+   * Extract orgAddressString from Org object.
+   * @param org: Org object.
+   */
+  extractOrgAddressString(org: Org): string {
+    return this.defaultText(org.address.streetAddress1, null) + ', ' +
+      this.defaultText(org.address.city, null) + ', ' +
+      this.defaultText(org.address.state, null) + ' ' +
+      org.address.zipCode;
   }
 
   /**
@@ -144,7 +207,7 @@ export class OrgService {
    * @param defaultText: Specified default text to return if text is empty.
    */
   defaultText(text: string, defaultText: string | null): string | null {
-    return (text !== null && text !== '') ? text : defaultText;
+    return (text !== null && text.trim() !== '') ? text.trim() : defaultText;
   }
 
   /**
@@ -152,6 +215,6 @@ export class OrgService {
    * @param text: String text to check if empty.
    */
   isEmpty(text: string): boolean {
-    return (text === null || text === '');
+    return (text === null || text.trim() === '');
   }
 }

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {FirestoreService} from '../firestore/firestore.service';
 import {SnackBarService} from '../snack-bar/snack-bar.service';
 import {Org} from '../../../shared/interfaces/org';
+import {OrgService} from '../org/org.service';
 declare var google: any;
 
 @Injectable({
@@ -12,55 +13,19 @@ export class GoogleMapsService {
   distanceMatrixService = new google.maps.DistanceMatrixService();
 
   constructor(private firestoreService: FirestoreService,
-              private snackBarService: SnackBarService) {
-  }
+              private orgService: OrgService,
+              private snackBarService: SnackBarService) {}
 
-  codeAddress(orgAddressString: string, org: Org) {
+  codeAddress(org: Org, showSnackBar: boolean) {
+    const orgAddressString = this.orgService.extractOrgAddressString(org);
+    console.log('Organization address string: ' + orgAddressString);
     this.geocoder.geocode({address: orgAddressString}, (results, status) => {
       if (status.toString() === 'OK') {
-        const stateAddressComponent = results[0].address_components.find(ac => ac.types.includes('administrative_area_level_1'));
-        const state = stateAddressComponent !== undefined ? stateAddressComponent.short_name : null;
-        if (state === 'MI') {
-          // Get lat and lng of orgAddressString and save them in Firestore.
-          const lat = results[0].geometry.location.lat();
-          const lng = results[0].geometry.location.lng();
-          org.address.gpsCoords.lat = lat;
-          org.address.gpsCoords.lng = lng;
-        } else if (state !== 'MI') {
-          console.warn('The org address string provided was not found to be in Michigan: ' + orgAddressString);
-          const message = 'The org address string provided was not found to be in Michigan. Please input a valid Michigan address.';
-          const action = 'OK';
-          this.snackBarService.openSnackBar(message, action);
-        }
-      } else {
-        console.warn('Geocode was not successful for the following reason: ' + status);
-        const message = (results !== null && results.length)  ? 'The provided orgAddressString is not valid. Please try again.' :
-          'The app could not reach geocoding services. Please refresh the page and try again.';
-        const action = 'OK';
-        this.snackBarService.openSnackBar(message, action);
-      }
-    });
-  }
-
-  codeAddressAndSave(orgAddressString: string, org: Org, showSnackBar: boolean) {
-    this.geocoder.geocode({address: orgAddressString}, (results, status) => {
-      if (status.toString() === 'OK') {
-        const stateAddressComponent = results[0].address_components.find(ac => ac.types.includes('administrative_area_level_1'));
-        const state = stateAddressComponent !== undefined ? stateAddressComponent.short_name : null;
-        if (state === 'MI') {
-          // Get lat and lng of orgAddressString and save them in Firestore.
-          const lat = results[0].geometry.location.lat();
-          const lng = results[0].geometry.location.lng();
-          org.address.gpsCoords.lat = lat;
-          org.address.gpsCoords.lng = lng;
-          this.firestoreService.saveOrg(org);
-        } else if (state !== 'MI') {
-          console.warn('The org address string provided was not found to be in Michigan: ' + orgAddressString);
-          if (showSnackBar === true) {
-            const message = 'The org address string provided was not found to be in Michigan. Please input a valid Michigan address.';
-            const action = 'OK';
-            this.snackBarService.openSnackBar(message, action);
-          }
+        if (results !== null && results.length > 0) {
+          this.orgService.mapGeocodeDataToOrg(org, results[0].address_components,
+            results[0].geometry.location, results[0].formatted_address, showSnackBar);
+        } else {
+          console.warn('No geocode results found for orgAddressString: ' + orgAddressString);
         }
       } else {
         console.warn('Geocode was not successful for the following reason: ' + status);
@@ -74,30 +39,50 @@ export class GoogleMapsService {
     });
   }
 
-  codeAddressAndUpdate(orgAddressString: string, originalOrgName: string, org: Org) {
-    this.geocoder.geocode( {address: orgAddressString}, (results, status) => {
+  codeAddressAndSave(org: Org, showSnackBar: boolean) {
+    const orgAddressString = this.orgService.extractOrgAddressString(org);
+    console.log('Organization address string: ' + orgAddressString);
+    this.geocoder.geocode({address: orgAddressString}, (results, status) => {
       if (status.toString() === 'OK') {
-        const stateAddressComponent = results[0].address_components.find(ac => ac.types.includes('administrative_area_level_1'));
-        const state = stateAddressComponent !== undefined ? stateAddressComponent.short_name : null;
-        if (state === 'MI') {
-          // Get lat and lng of orgAddressString and save them in Firestore.
-          const lat = results[0].geometry.location.lat();
-          const lng = results[0].geometry.location.lng();
-          org.address.gpsCoords.lat = lat;
-          org.address.gpsCoords.lng = lng;
-          this.firestoreService.updateOrg(org, originalOrgName, true);
-        } else if (state !== 'MI') {
-          console.warn('The org address string provided was not found to be in Michigan: ' + orgAddressString);
-          const message = 'The org address string provided was not found to be in Michigan. Please input a valid Michigan address.';
+        if (results !== null && results.length > 0) {
+          this.orgService.mapGeocodeDataToOrg(org, results[0].address_components,
+            results[0].geometry.location, results[0].formatted_address, showSnackBar);
+        } else {
+          console.warn('No geocode results found for orgAddressString: ' + orgAddressString);
+        }
+        this.firestoreService.saveOrg(org);
+      } else {
+        console.warn('Geocode was not successful for the following reason: ' + status);
+        if (showSnackBar === true) {
+          const message = (results !== null && results.length) === 0 ? 'The provided orgAddressString is not valid. Please try again.' :
+            'The app could not reach geocoding services. Please refresh the page and try again.';
           const action = 'OK';
           this.snackBarService.openSnackBar(message, action);
         }
+      }
+    });
+  }
+
+  codeAddressAndUpdate(originalOrgName: string, org: Org, showSnackBar: boolean) {
+    const orgAddressString = this.orgService.extractOrgAddressString(org);
+    console.log('Organization address string: ' + orgAddressString);
+    this.geocoder.geocode( {address: orgAddressString}, (results, status) => {
+      if (status.toString() === 'OK') {
+        if (results !== null && results.length > 0) {
+          this.orgService.mapGeocodeDataToOrg(org, results[0].address_components,
+            results[0].geometry.location, results[0].formatted_address, showSnackBar);
+        } else {
+          console.warn('No geocode results found for orgAddressString: ' + orgAddressString);
+        }
+        this.firestoreService.updateOrg(org, originalOrgName, true);
       } else {
-        const message = results.length === 0 ? 'The provided orgAddressString is not valid. Please try again.' :
-          'The app could not reach geocoding services. Please refresh the page and try again.';
-        const action = 'OK';
-        this.snackBarService.openSnackBar(message, action);
         console.warn('Geocode was not successful for the following reason: ' + status);
+        if (showSnackBar === true) {
+          const message = (results !== null && results.length) === 0 ? 'The provided orgAddressString is not valid. Please try again.' :
+            'The app could not reach geocoding services. Please refresh the page and try again.';
+          const action = 'OK';
+          this.snackBarService.openSnackBar(message, action);
+        }
         return null;
       }
     });

@@ -2,6 +2,7 @@ export interface Org {
   additionalNotes: string;
   address: {
     city: string,
+    county: string,
     gpsCoords: {
       lat: number,
       lng: number,
@@ -19,6 +20,7 @@ export interface Org {
   };
   description: string;
   eligibilityRequirements: string;
+  formattedAddress: string;
   hours: {
     specifyHours: boolean;
     friday: {
