@@ -215,7 +215,7 @@ export class FirestoreService {
               });
             }
           };
-          if (data.viewData !== undefined) {
+          if (data.viewData !== undefined && data.viewData !== null) {
             incrementCount();
           } else {
             data.viewData = {};
