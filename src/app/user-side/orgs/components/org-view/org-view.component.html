@@ -19,7 +19,7 @@
       </div>
     </div>
 
-    <!--Address and map-->
+    <!--Address and Map-->
     <div fxLayout="column" class="org-section">
       <div *ngIf="org">
         <mat-divider></mat-divider>
@@ -47,7 +47,12 @@
     <div fxLayout="column" class="org-section" *ngIf="org">
       <mat-divider></mat-divider>
       <h4><i class="far fa-clock fa-fw"></i> Hours</h4>
-      <div *ngIf="org.specifyHours===true; else noHours">
+
+      <ng-template #noHours>
+        <div>Not specified</div>
+      </ng-template>
+
+      <div *ngIf="org.specifyHours==true; else noHours">
         <table id="hours-table">
           <tr *ngFor="let day of daysOfWeek">
             <th>{{day}}</th>
@@ -57,17 +62,16 @@
           </tr>
         </table>
       </div>
-      <ng-template #noHours>
-        <div>Not specified.</div>
-      </ng-template>
     </div>
 
+    <!--Website-->
     <div fxLayout="column" class="org-section" *ngIf="org && org.website != null && org.website != ''">
       <mat-divider></mat-divider>
       <h4><i class="fas fa-globe fa-fw"></i> Website</h4>
       <div><a href="{{org.website}}" target="_blank">{{org.website}}</a></div>
     </div>
 
+    <!--Contact-->
     <div fxLayout="column" class="org-section" *ngIf="org && ((org.contact.name != null && org.contact.name != '') ||
          (org.contact.email != null && org.contact.email != '') || (org.contact.phone != null && org.contact.phone != ''))">
       <mat-divider></mat-divider>
@@ -77,6 +81,7 @@
       <div *ngIf="org.contact.phone!=null"><a href="tel:{{org.contact.phone}}" >{{org.contact.phone}}</a></div>
     </div>
 
+    <!--Other Information-->
     <div fxLayout="column" class="org-section" *ngIf="org">
       <mat-divider></mat-divider>
       <h4><i class="fas fa-info-circle fa-fw"></i> Other Information</h4>
@@ -101,32 +106,39 @@
               </span>
             </td>
           </tr>
+
           <tr>
             <th *ngIf="org.bringWithYou != null && org.bringWithYou != ''">What to Bring:</th>
             <td>{{org.bringWithYou}}</td>
           </tr>
+
           <tr *ngIf="org.payment != null && org.payment != ''">
             <th>Payment</th>
             <td>{{org.payment ? 'Yes' : 'No'}}</td>
           </tr>
+
           <tr *ngIf="org.transportation != null && org.transportation != ''">
             <th>Transportation Provided:</th>
             <td>{{org.transportation ? 'Yes' : 'No'}}</td>
           </tr>
+
           <tr *ngIf="org.eligibilityRequirements != null && org.eligibilityRequirements != ''">
             <th>Eligibility Requirements:</th>
             <td>{{org.eligibilityRequirements ? 'Yes' : 'No'}}</td>
           </tr>
+
           <tr *ngIf="org.seniorRequirements != null && org.seniorRequirements != ''">
             <th>Senior Requirements:</th>
             <td>{{org.seniorRequirements ? 'Yes' : 'No'}}</td>
           </tr>
+
           <tr *ngIf="org.additionalNotes != null && org.additionalNotes != ''">
             <th>Additional Notes:</th>
             <td>{{org.additionalNotes}}</td>
           </tr>
         </table>
       </div>
+
     </div>
   </div>
 </ng-container>
