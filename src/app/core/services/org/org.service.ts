@@ -16,14 +16,14 @@ export class OrgService {
     const org: Org = {
       additionalNotes: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.additionalNotes], null),
       address: {
-        city: csvOrg[Constants.CSV_ORG_FIELD_DICT.city],
+        city: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.city], null),
         county: null,
         gpsCoords: {
           lat: null,
           lng: null
         },
-        state: csvOrg[Constants.CSV_ORG_FIELD_DICT.state],
-        streetAddress1: csvOrg[Constants.CSV_ORG_FIELD_DICT.streetAddress1],
+        state: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.state], null),
+        streetAddress1: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.streetAddress1], null),
         streetAddress2: this.defaultText(csvOrg[Constants.CSV_ORG_FIELD_DICT.streetAddress2], null),
         zipCode: csvOrg[Constants.CSV_ORG_FIELD_DICT.zipCode]
       },

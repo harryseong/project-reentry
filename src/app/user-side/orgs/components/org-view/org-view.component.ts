@@ -1,9 +1,10 @@
 import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import {animate, style, transition, trigger} from '@angular/animations';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {FirestoreService} from '../../../../core/services/firestore/firestore.service';
-import {Subscription} from 'rxjs';
+import {BehaviorSubject, Subscription} from 'rxjs';
 import {Constants} from '../../../../shared/constants/constants';
+import {Org} from '../../../../shared/interfaces/org';
 declare var google: any;
 
 @Component({
@@ -20,12 +21,13 @@ declare var google: any;
   ]
 })
 export class OrgViewComponent implements OnInit, AfterViewInit, OnDestroy {
-  currentOrg$ = null;
+  currentOrg$: BehaviorSubject<Org> = null;
   currentOrgSubscription$: Subscription;
   daysOfWeek = Constants.DAYS_OF_WEEK;
 
   constructor(private db: FirestoreService,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private router: Router) {
     this.currentOrg$ = db.currentOrg$;
   }
 
@@ -61,5 +63,9 @@ export class OrgViewComponent implements OnInit, AfterViewInit, OnDestroy {
     const map = new google.maps.Map(document.getElementById('gMap'), mapOption);
     const marker = new google.maps.Marker({map, position: gpsCoords});
     map.setCenter(gpsCoords);
+  }
+
+  viewServiceCategory(serviceCategory) {
+    this.router.navigate(['/', 'orgs', 'category', serviceCategory]);
   }
 }
