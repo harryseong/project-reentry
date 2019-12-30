@@ -1,5 +1,13 @@
-.subheader-text {
-  font-size: 1.2em;
-  font-weight: 500;
+.subheader-div {
   margin: 0.5em 0 1em 0;
+
+  .subheader-text {
+    font-size: 1.2em;
+    font-weight: 500;
+  }
+
+  .subheader-sub-text {
+    font-size: 0.8em;
+    font-style: italic;
+  }
 }

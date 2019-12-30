@@ -1,3 +1,4 @@
-<div class="subheader-text">
-  {{subheaderText}}
+<div class="subheader-div" fxLayout="column" fxLayoutGap="0.1em">
+  <div class="subheader-text">{{subheaderText}}</div>
+  <div class="subheader-sub-text" *ngIf="subheaderSubText != null">{{subheaderSubText}}</div>
 </div>

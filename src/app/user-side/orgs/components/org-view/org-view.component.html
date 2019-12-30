@@ -4,14 +4,15 @@
 
 <ng-container *ngIf="currentOrg$ | async as org; else progressSpinner">
   <div [@transitionAnimations]>
-    <app-subheader [subheaderText]="org.name"></app-subheader>
+    <app-subheader [subheaderText]="org.name" [subheaderSubText]="org.address.city + ', ' + org.address.county"></app-subheader>
 
-    <div fxLayout="column" fxLayoutGap="0" class="org-section">
+    <div fxLayout="column" fxLayoutGap="1em" class="org-section">
       <div fxLayout="column" fxLayoutGap="0.2em">
         <div *ngIf="org.description != null && org.description != ''">{{org.description}}</div>
       </div>
 
       <div *ngIf="org.services!=null">
+        <mat-divider></mat-divider>
         <h4 id="services-header"><i class="fas fa-concierge-bell fa-fw"></i> Services Provided</h4>
         <mat-chip-list>
           <mat-chip class="serviceCategoryChips" *ngFor="let serviceCategory of org.services" (click)="viewServiceCategory(serviceCategory)"

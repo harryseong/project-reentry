@@ -26,7 +26,7 @@ export class OrgCategoryComponent implements OnInit {
 
   tableFilter = new FormControl('');
   dataSource: MatTableDataSource<any>;
-  displayedColumns: string[] = ['name', 'services', 'city'];
+  displayedColumns: string[] = ['name', 'city', 'county'];
 
   constructor(private db: FirestoreService,
               private route: ActivatedRoute,
@@ -65,6 +65,8 @@ export class OrgCategoryComponent implements OnInit {
           return TableService.compare(a.name, b.name, isAsc);
         case 'city':
           return TableService.compare(a.address.city, b.address.city, isAsc);
+        case 'county':
+          return TableService.compare(a.address.county, b.address.county, isAsc);
         default:
           return 0;
       }

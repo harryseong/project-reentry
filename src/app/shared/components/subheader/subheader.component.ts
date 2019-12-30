@@ -7,6 +7,7 @@ import {Component, Input, OnInit} from '@angular/core';
 })
 export class SubheaderComponent implements OnInit {
   @Input() subheaderText: string;
+  @Input() subheaderSubText: string;
 
   constructor() { }
 
