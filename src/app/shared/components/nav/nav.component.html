@@ -1,9 +1,10 @@
 <nav>
-  <mat-toolbar class="nav-toolbar mat-elevation-z1" fxLayout="row">
-    <button mat-button [routerLink]="['']" id="logo-button">
-      Project Reentry
-    </button>
+  <mat-toolbar class="nav-toolbar mat-elevation-z1" fxLayout="row" fxLayoutAlign="space-between">
+    <div fxLayout="row">
+      <button mat-button [routerLink]="['']"><span><i class="fas fa-home fa-fw"></i> Home</span></button>
+      <button mat-button [routerLink]="['/', 'about']"><span><i class="fas fa-info-circle fa-fw"></i> About Us</span></button>
+    </div>
 
-    <button mat-button [routerLink]="['/', 'about']">About Us</button>
+    <button mat-button (click)="goBack()"><span><i class="fas fa-arrow-left fa-fw"></i> Back</span></button>
   </mat-toolbar>
 </nav>
