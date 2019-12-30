@@ -1,3 +1,7 @@
+.mat-toolbar-single-row.mobile {
+  padding: 0;
+}
+
 .nav-toolbar {
   position: fixed;
   top: 0;
@@ -5,4 +9,8 @@
   background-color: #ffffff;
   z-index: 100;
   height: 2em;
+
+  #logo {
+    font-weight: 700;
+  }
 }
