@@ -86,13 +86,13 @@
         <div>N/A</div>
       </ng-template>
 
-      <div *ngIf="org.languages != null && org.languages.length > 0 &&
-                  org.bringWithYou != null && org.bringWithYou != '' &&
-                  org.payment != null && org.payment != '' &&
-                  org.transportation != null && org.transportation != '' &&
-                  org.eligibilityRequirements != null && org.eligibilityRequirements != '' &&
-                  org.seniorRequirements != null && org.seniorRequirements != '' &&
-                  org.additionalNotes != null && org.additionalNotes != ''; else noOtherInfo">
+      <div *ngIf="(org.languages != null && org.languages.length > 0) ||
+                  (org.bringWithYou != null && org.bringWithYou != '') ||
+                  (org.payment != null && org.payment != '') ||
+                  (org.transportation != null && org.transportation != '') ||
+                  (org.eligibilityRequirements != null && org.eligibilityRequirements != '') ||
+                  (org.seniorRequirements != null && org.seniorRequirements != '') ||
+                  (org.additionalNotes != null && org.additionalNotes != ''); else noOtherInfo">
         <table id="other-info-table">
           <tr *ngIf="org.languages != null && org.languages.length > 0">
             <th>Other Languages Spoken:</th>
@@ -109,8 +109,8 @@
           </tr>
 
           <tr *ngIf="org.payment != null && org.payment != ''">
-            <th>Payment</th>
-            <td>{{org.payment ? 'Yes' : 'No'}}</td>
+            <th>Payment:</th>
+            <td>{{org.payment}}</td>
           </tr>
 
           <tr *ngIf="org.transportation != null && org.transportation != ''">
