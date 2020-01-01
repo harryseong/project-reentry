@@ -19,5 +19,4 @@ export class UserSideComponent implements OnInit {
     this.db.getAllOrgs();
     this.db.getAllServiceCategories();
   }
-
 }
