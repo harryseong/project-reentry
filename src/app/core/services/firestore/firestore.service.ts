@@ -17,8 +17,6 @@ export class FirestoreService {
 
   organizations: AngularFirestoreCollection<any>;
   serviceCategories: AngularFirestoreCollection<any>;
-  services: AngularFirestoreCollection<any>;  // TODO: Remove this.
-
   languages: AngularFirestoreCollection<any>;
   counties: AngularFirestoreCollection<any>;
   users: AngularFirestoreCollection<any>;

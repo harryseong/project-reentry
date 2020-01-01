@@ -171,12 +171,16 @@ export class OrgService {
    * @param csvOrg: Each row of the uploaded CSV file representing an organization.
    */
   extractLanguages(csvOrg): string[] {
-    const languages = [];
-    if (csvOrg[Constants.CSV_ORG_FIELD_DICT.languages] !== undefined && csvOrg[Constants.CSV_ORG_FIELD_DICT.languages].length > 0) {
-      languages.push(csvOrg[Constants.CSV_ORG_FIELD_DICT.languages].split(','));
+    const languagesString: string = csvOrg[Constants.CSV_ORG_FIELD_DICT.languages];
+    let languages = [];
+    if (languagesString !== undefined && languagesString !== null && languagesString.trim() !== '') {
+      languages = csvOrg[Constants.CSV_ORG_FIELD_DICT.languages].split(',');
+      if (languages.length > 1) {
+        languages.sort((a: string, b: string ) => a >= b ? 1 : -1);
+      }
     }
 
-    return languages.sort((a: string, b: string ) => a >= b ? 1 : -1);
+    return languages;
   }
 
   /**
