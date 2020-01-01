@@ -9,8 +9,7 @@ export class OrgsComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
-  }
+  ngOnInit() { }
 
   onActivate(event) {
     const scrollToTop = window.setInterval(() => {

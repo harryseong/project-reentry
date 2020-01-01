@@ -5,7 +5,7 @@
   <div fxLayout="column" fxFlex="50" fxFlex.sm="80" fxFlex.xs="95">
     <app-header></app-header>
 
-    <router-outlet *ngIf="(allOrgs$ | async) && (serviceCategories$ | async); else progressSpinner"></router-outlet>
+    <router-outlet (activate)="onActivate($event)" *ngIf="(allOrgs$ | async) && (serviceCategories$ | async); else progressSpinner"></router-outlet>
 
     <ng-template #progressSpinner>
       <app-progress-spinner></app-progress-spinner>
