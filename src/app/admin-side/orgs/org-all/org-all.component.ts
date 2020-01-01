@@ -12,7 +12,7 @@ import {SnackBarService} from '../../../core/services/snack-bar/snack-bar.servic
   styleUrls: ['./org-all.component.scss']
 })
 export class OrgAllComponent implements OnInit {
-  displayedColumns: string[] = ['name', 'services', 'city'];
+  displayedColumns: string[] = ['name', 'services', 'city', 'county'];
   dataSource: MatTableDataSource<any>;
   orgList: any[] = [];
   serviceList: any[] = [];

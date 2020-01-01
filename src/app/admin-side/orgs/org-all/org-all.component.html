@@ -3,16 +3,15 @@
 </ng-template>
 
 <ng-container *ngIf="orgList; else progressSpinner">
-  <div fxLayoutAlign="center center">
+  <div fxLayoutAlign="start">
     <div fxLayout="column" class="content">
 
-      <div fxLayout="row wrap" fxLayoutAlign="start center">
+      <div fxLayout="row wrap" fxLayoutAlign="space-between">
         <div class="page-header"><i class="fas fa-landmark fa-fw"></i>&nbsp;Organizations</div>
-        <span class="spacer"></span>
 
         <input type="file" (change)="uploadOrgCsv($event.target.files)">
 
-        <button mat-stroked-button routerLink="/admin/organization/new" routerLinkActive="active">
+        <button mat-stroked-button routerLink="/admin/orgs/new" routerLinkActive="active">
           <span><i class="fas fa-plus fa-fw"></i>&nbsp;NEW</span>
         </button>
       </div>
@@ -26,11 +25,12 @@
 
       <div class="overflow-x-scroll">
         <table mat-table [dataSource]="dataSource" matSort (matSortChange)="sortData($event)">
+
           <!-- Name Column -->
           <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
             <td mat-cell *matCellDef="let element">
-              <a [routerLink]="['/admin/organs/view', element.address.city, element.name]">{{element.name}}</a>
+              <a [routerLink]="['/', 'admin', 'orgs', 'view', element.address.city, element.name]">{{element.name}}</a>
             </td>
           </ng-container>
 

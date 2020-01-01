@@ -1,9 +1,13 @@
 <app-nav></app-nav>
 
-<ng-template #progressSpinner>
-  <app-progress-spinner></app-progress-spinner>
-</ng-template>
+<div class="container" fxLayoutAlign="center center" fxLayout="row">
+  <div fxLayout="column" fxFlex="50" fxFlex.sm="80" fxFlex.xs="95">
+    <ng-template #progressSpinner>
+      <app-progress-spinner></app-progress-spinner>
+    </ng-template>
 
-<ng-container *ngIf="db.admins$ | async; else progressSpinner">
-  <router-outlet></router-outlet>
-</ng-container>
+    <ng-container *ngIf="(db.admins$ | async) && (db.allOrgs$ | async) && (db.serviceCategories$ | async); else progressSpinner">
+      <router-outlet></router-outlet>
+    </ng-container>
+  </div>
+</div>

@@ -1,8 +1,11 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {FirestoreService} from '../../../core/services/firestore/firestore.service';
 import {animate, style, transition, trigger} from '@angular/animations';
 import {DialogService} from '../../../core/services/dialog/dialog.service';
+import {Constants} from '../../../shared/constants/constants';
+import {BehaviorSubject} from 'rxjs';
+import {Org} from '../../../shared/interfaces/org';
 declare var google: any;
 
 @Component({
@@ -18,41 +21,41 @@ declare var google: any;
     ])
   ]
 })
-export class OrgViewComponent implements OnInit {
-  orgName = '';
-  org: any = null;
-  daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-  pageReady = false;
+export class OrgViewComponent implements OnInit, AfterViewInit {
+  currentOrg$: BehaviorSubject<Org> = null;
+  daysOfWeek = Constants.DAYS_OF_WEEK;
 
   constructor(private db: FirestoreService,
               private dialogService: DialogService,
-              private route: ActivatedRoute) { }
+              private route: ActivatedRoute) {
+    this.currentOrg$ = db.currentOrg$;
+  }
 
   ngOnInit() {
-    this.orgName = this.route.snapshot.params['name'];
-    const query = this.db.organizations.ref.where('name', '==', this.orgName);
-    query.get().then(querySnapshot => {
-      if (querySnapshot.empty) {
-        console.warn('no documents found');
-      } else {
-        querySnapshot.forEach(docSnapshot => {
-          this.db.organizations.doc(docSnapshot.id).ref.get().then(
-            org => {
-              this.org = org.data();
-              this.pageReady = true;
-              const gpsCoords = this.org.address.gpsCoords;
-              const mapOption = {zoom: 15, mapTypeId: google.maps.MapTypeId.ROADMAP, draggable: false, clickableIcons: false,
-                streetViewControl: false, streetViewControlOptions: false};
-              const map = new google.maps.Map(document.getElementById('gMap'), mapOption);
-              map.setCenter(gpsCoords);
-              const marker = new google.maps.Marker({
-                map,
-                position: gpsCoords
-              });
-            });
-        });
-      }
-    });
+    this.loadOrg();
+  }
+
+  ngAfterViewInit() {
+    this.loadMap(this.currentOrg$.value);
+  }
+
+  loadOrg() {
+    const orgCity = this.route.snapshot.params.org_city;
+    const orgName = this.route.snapshot.params.org_name;
+    this.db.getOrg(orgCity, orgName);
+    console.log('CITY: ' + orgCity);
+    console.log('NAME: ' + orgName);
+  }
+
+  loadMap(org) {
+    const gpsCoords = org.address.gpsCoords;
+    const mapOption = {
+      zoom: 15, mapTypeId: google.maps.MapTypeId.ROADMAP, draggable: false,
+      clickableIcons: false, streetViewControl: false, streetViewControlOptions: false
+    };
+    const map = new google.maps.Map(document.getElementById('gMap'), mapOption);
+    const marker = new google.maps.Marker({map, position: gpsCoords});
+    map.setCenter(gpsCoords);
   }
 
   openOrgDeleteDialog(orgName: string) {
