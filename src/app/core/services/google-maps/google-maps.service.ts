@@ -41,7 +41,6 @@ export class GoogleMapsService {
 
   codeAddressAndSave(org: Org, showSnackBar: boolean) {
     const orgAddressString = this.orgService.extractOrgAddressString(org);
-    console.log('Organization address string: ' + orgAddressString);
     this.geocoder.geocode({address: orgAddressString}, (results, status) => {
       if (status.toString() === 'OK') {
         if (results !== null && results.length > 0) {
@@ -52,7 +51,7 @@ export class GoogleMapsService {
         }
         this.firestoreService.saveOrg(org);
       } else {
-        console.warn('Geocode was not successful for the following reason: ' + status);
+        console.warn('Geocode for "' + org.name + '" was not successful for the following reason: ' + status);
         if (showSnackBar === true) {
           const message = (results !== null && results.length) === 0 ? 'The provided orgAddressString is not valid. Please try again.' :
             'The app could not reach geocoding services. Please refresh the page and try again.';
@@ -65,7 +64,6 @@ export class GoogleMapsService {
 
   codeAddressAndUpdate(originalOrgName: string, org: Org, showSnackBar: boolean) {
     const orgAddressString = this.orgService.extractOrgAddressString(org);
-    console.log('Organization address string: ' + orgAddressString);
     this.geocoder.geocode( {address: orgAddressString}, (results, status) => {
       if (status.toString() === 'OK') {
         if (results !== null && results.length > 0) {

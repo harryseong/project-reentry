@@ -3,6 +3,8 @@ import {AngularFirestore, AngularFirestoreCollection} from '@angular/fire/firest
 import {Router} from '@angular/router';
 import {SnackBarService} from '../snack-bar/snack-bar.service';
 import {BehaviorSubject} from 'rxjs';
+import {Org} from '../../../shared/interfaces/org';
+import {OrgService} from '../org/org.service';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +24,7 @@ export class FirestoreService {
   users: AngularFirestoreCollection<any>;
 
   constructor(private db: AngularFirestore,
+              private orgService: OrgService,
               private router: Router,
               private snackBarService: SnackBarService) {
     this.organizations = db.collection<any>('organizations');
@@ -73,10 +76,16 @@ export class FirestoreService {
       allOrgs : allOrgs.filter(org => org.services.some(sc => serviceCategories.includes(sc)));
   }
 
-  saveOrg(org: any) {
+  saveOrg(org: Org) {
     this.organizations.add(org)
-      .then(() => console.log('New organization was successfully saved: ' + org.name))
-      .catch(err => console.error(err));
+      .then(() => {
+        console.log('New organization was successfully saved: ' + org.name);
+        this.orgService.updateOrgSaveSuccessCount();
+      })
+      .catch(err => {
+        console.error('Error saving organization: ' + org.name);
+        console.error('Error: ' + err);
+      });
   }
 
   saveOrgFromForm(orgForm: any, showSnackBar: boolean) {

@@ -11,7 +11,6 @@ import {GoogleMapsService} from '../../../core/services/google-maps/google-maps.
   styleUrls: ['./org-spreadsheet-upload.component.scss']
 })
 export class OrgSpreadsheetUploadComponent implements OnInit {
-  private savedOrgCount: number;
 
   constructor(private db: FirestoreService,
               private googleMapsService: GoogleMapsService,
@@ -40,7 +39,7 @@ export class OrgSpreadsheetUploadComponent implements OnInit {
   processCsv(file: File) {
     console.log('CSV file upload started.');
 
-    this.savedOrgCount = 0;
+    this.orgService.resetOrgSaveSuccessCount();
     const noAddress: string[] = [];
     const noServices: string[] = [];
 
@@ -48,6 +47,7 @@ export class OrgSpreadsheetUploadComponent implements OnInit {
       complete: async results => {
         results.data.shift();
         const csvOrgs = results.data;
+        console.log('Number of orgs in CSV: ' + csvOrgs.length);
         for (const csvOrg of csvOrgs) {
           const org = this.orgService.mapCsvOrgToOrg(csvOrg);
 
@@ -57,9 +57,9 @@ export class OrgSpreadsheetUploadComponent implements OnInit {
             if (org.address.city !== null && org.address.city !== '' &&
               org.address.state !== null && org.address.state !== '' && org.address.zipCode !== null) {
 
+              // 1 second delay to prevent reaching Geocode API quota.
               await this.sleep(1000);
               this.googleMapsService.codeAddressAndSave(org, false);
-              this.savedOrgCount++;
             } else {
               noAddress.push(org.name);
             }
@@ -78,7 +78,7 @@ export class OrgSpreadsheetUploadComponent implements OnInit {
           console.warn('The following csvOrgs do not have any listed services: ' + JSON.stringify(noServices));
         }
 
-        this.snackBarService.openSnackBar('Successfully uploaded file. ' + this.savedOrgCount + ' orgs uploaded.', 'OK');
+        this.snackBarService.openSnackBar('CSV file upload complete.', 'OK');
       }
     });
   }

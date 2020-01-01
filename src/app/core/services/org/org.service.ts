@@ -2,11 +2,24 @@ import { Injectable } from '@angular/core';
 import {Org} from '../../../shared/interfaces/org';
 import {Constants} from '../../../shared/constants/constants';
 import {SnackBarService} from '../snack-bar/snack-bar.service';
+import {BehaviorSubject} from 'rxjs';
 
 @Injectable({providedIn: 'root'})
 export class OrgService {
+  orgSaveSuccessCount$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
   constructor(private snackBarService: SnackBarService) {}
+
+  updateOrgSaveSuccessCount(): void {
+    let orgSaveSuccessCount = this.orgSaveSuccessCount$.value;
+    orgSaveSuccessCount++;
+    this.orgSaveSuccessCount$.next(orgSaveSuccessCount);
+    console.log('Orgs successfully saved in this batch: ' + orgSaveSuccessCount);
+  }
+
+  resetOrgSaveSuccessCount(): void {
+    this.orgSaveSuccessCount$.next(0);
+  }
 
   /**
    * Maps csvOrg object to Org object to be saved in the Firestore database.
@@ -172,29 +185,10 @@ export class OrgService {
    */
   extractServices(csvOrg): string[] {
     const services = [];
-    const serviceOptions = [
-      'clothing',
-      'medicalCare',
-      'mentalHealth',
-      'publicTransportation',
-      'techSupport',
-      'financialLiteracy',
-      'substanceUse',
-      'religiousOrganization',
-      'housingSupport',
-      'parenting',
-      'volunteeringOpportunities',
-      'legalAssistance',
-      'publicBenefitAssistance',
-      'employment',
-      'education',
-      'supportNetworksAndMentoring',
-      'domesticViolenceSexualAssault'
-    ];
 
-    serviceOptions.forEach(serviceOption => {
-      if (csvOrg[Constants.CSV_ORG_FIELD_DICT[serviceOption]] === 'Y') {
-        services.push(Constants.CSV_ORG_SERVICE_DICT[serviceOption]);
+    Constants.ORG_SERVICE_CATEGORIES.forEach(serviceCategory => {
+      if (csvOrg[Constants.CSV_ORG_FIELD_DICT[serviceCategory]] === 'Y') {
+        services.push(Constants.CSV_ORG_SERVICE_DICT[serviceCategory]);
       }
     });
 

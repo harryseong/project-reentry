@@ -9,6 +9,28 @@ export class Constants {
     'Saturday'
   ];
 
+  // Org service categories.
+  static ORG_SERVICE_CATEGORIES: string[] = [
+    'clothing',
+    'food',
+    'medicalCare',
+    'mentalHealth',
+    'publicTransport',
+    'techSupport',
+    'financialLiteracy',
+    'substanceUse',
+    'religiousOrganization',
+    'housingSupport',
+    'parenting',
+    'volunteerOpportunities',
+    'legalAssistance',
+    'publicBenefitAssistance',
+    'employment',
+    'education',
+    'supportNetworksAndMentoring',
+    'domesticViolenceSexualAssault'
+  ];
+
   // Dictionary of CSV column indices to organization fields.
   static CSV_ORG_FIELD_DICT = {
     name: 0,
@@ -57,7 +79,7 @@ export class Constants {
     domesticViolenceSexualAssault: 43,
     payment: 44,
     transportation: 45,
-    languages: 45,
+    languages: 46,
     seniorRequirements: 47,
     eligibilityRequirements: 48,
     bringWithYou: 49,
