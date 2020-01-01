@@ -1,0 +1,54 @@
+<div mat-dialog-title fxLayout="row" fxLayoutAlign="space-between">
+  <span>{{editMode ? 'Edit Language' : (createMode ?  'New Language' : 'Languages')}}</span>
+  <span class="spacer"></span>
+  <span *ngIf="!editMode && !createMode">
+    <button mat-icon-button (click)="cancel()">
+      <i class="fas fa-times fa-fw"></i>
+    </button>
+  </span>
+</div>
+
+<div mat-dialog-content fxLayout="column">
+
+  <table *ngIf="!editMode && !createMode">
+    <tr *ngFor="let language of languages; last as isLast">
+      <td [class]="isLast ? 'last' : ''">
+        <div fxLayout="row" fxLayoutAlign="space-between">
+          <span>{{language.language}}</span>
+          <span class="no-wrap">
+            <button mat-icon-button class="edit-button" (click)="enableEditMode(language.language)">
+              <i class="far fa-edit fa-fw"></i>
+            </button>
+            <button mat-icon-button class="delete-button" (click)="delete(language.language)">
+              <i class="far fa-trash-alt fa-fw"></i>
+            </button>
+          </span>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <form [formGroup]="languageForm" *ngIf="editMode || createMode" fxLayout="column">
+    <mat-form-field>
+      <mat-label>Language</mat-label>
+      <input matInput type="text" [required]="true" formControlName="language">
+    </mat-form-field>
+  </form>
+
+</div>
+
+<div mat-dialog-actions fxLayoutAlign="end" fxLayoutGap="0.5em">
+  <button mat-stroked-button (click)="enableCreateMode()" *ngIf="!editMode && !createMode">
+    <span><i class="fas fa-plus"></i> New Language</span>
+  </button>
+
+  <div fxLayout="row" fxLayoutGap="0.5em" fxLayoutAlign="end" *ngIf="editMode || createMode">
+    <button type="button" mat-stroked-button (click)="editMode ? endEditMode() : endCreateMode()">
+      <span><i class="fas fa-times fa-fw"></i> Cancel</span>
+    </button>
+    <button type="button" mat-stroked-button [disabled]="!languageForm.valid"
+            (click)="editMode ? update() : save()">
+      <span><i class="far fa-save fa-fw"></i> Save</span>
+    </button>
+  </div>
+</div>

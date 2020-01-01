@@ -12,6 +12,9 @@ import { HeaderComponent } from './components/header/header.component';
 import { ProgressSpinnerComponent } from './components/progress-spinner/progress-spinner.component';
 import {HelpDialogComponent} from './components/dialogs/help-dialog/help-dialog.component';
 import { SubheaderComponent } from './components/subheader/subheader.component';
+import { LanguagesDialogComponent } from './components/dialogs/admin/languages-dialog/languages-dialog.component';
+import { ServiceCategoriesDialogComponent } from './components/dialogs/admin/service-categories-dialog/service-categories-dialog.component';
+import {OrgDeleteDialogComponent} from './components/dialogs/admin/org-delete-dialog/org-delete-dialog.component';
 
 
 @NgModule({
@@ -21,7 +24,10 @@ import { SubheaderComponent } from './components/subheader/subheader.component';
     FooterComponent,
     ProgressSpinnerComponent,
     HelpDialogComponent,
-    SubheaderComponent
+    SubheaderComponent,
+    LanguagesDialogComponent,
+    ServiceCategoriesDialogComponent,
+    OrgDeleteDialogComponent
   ],
   imports: [
     CommonModule,
@@ -43,10 +49,13 @@ import { SubheaderComponent } from './components/subheader/subheader.component';
     ReactiveFormsModule,
     RouterModule,
     ProgressSpinnerComponent,
-    SubheaderComponent,
+    SubheaderComponent
   ],
   entryComponents: [
-    HelpDialogComponent
+    HelpDialogComponent,
+    LanguagesDialogComponent,
+    ServiceCategoriesDialogComponent,
+    OrgDeleteDialogComponent
   ]
 })
 export class SharedModule { }

@@ -9,6 +9,13 @@ export class Constants {
     'Saturday'
   ];
 
+  static PAYMENT_OPTIONS: string[] = [
+    'Free',
+    'Insurance',
+    'Medicaid',
+    'Sliding Scale'
+  ];
+
   // Org service categories.
   static ORG_SERVICE_CATEGORIES: string[] = [
     'clothing',

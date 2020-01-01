@@ -49,6 +49,8 @@ export class OrgSpreadsheetUploadComponent implements OnInit {
         const csvOrgs = results.data;
         console.log('Number of orgs in CSV: ' + csvOrgs.length);
         for (const csvOrg of csvOrgs) {
+
+          // Map csvOrg to Org object.
           const org = this.orgService.mapCsvOrgToOrg(csvOrg);
 
           // If csvOrg has services, code address and save in FireStore database.
