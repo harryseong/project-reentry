@@ -45,7 +45,10 @@ export class FirestoreService {
   // Run this once when Home component initiated.
   getAllOrgs() {
     this.organizations.get().toPromise()
-      .then(querySnapshot => this.allOrgs$.next(querySnapshot.docs.map(doc => doc.data())))
+      .then(querySnapshot => {
+        const sortedOrgs = this._sort(querySnapshot.docs.map(doc => doc.data()), 'name');
+        this.allOrgs$.next(sortedOrgs);
+      })
       .catch(err => this.snackBarService.openSnackBar('Something went wrong. Please refresh the page.', 'OK'));
   }
 
