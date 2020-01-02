@@ -10,6 +10,7 @@ import {OrgSpreadsheetUploadComponent} from './orgs/org-spreadsheet-upload/org-s
 import {OrgAllComponent} from './orgs/org-all/org-all.component';
 import {OrgCreateComponent} from './orgs/org-create/org-create.component';
 import {OrgViewComponent} from './orgs/org-view/org-view.component';
+import {OrgEditComponent} from './orgs/org-edit/org-edit.component';
 
 
 const routes: Routes = [
@@ -19,6 +20,7 @@ const routes: Routes = [
       {path: 'orgs', component: OrgsComponent, children: [
           {path: 'new', component: OrgCreateComponent},
           {path: 'view/:org_city/:org_name', component: OrgViewComponent},
+          {path: 'edit/:org_city/:org_name', component: OrgEditComponent},
           {path: 'upload_csv', component: OrgSpreadsheetUploadComponent},
           {path: '', component: OrgAllComponent},
         ]},

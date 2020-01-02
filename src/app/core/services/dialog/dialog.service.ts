@@ -39,9 +39,9 @@ export class DialogService {
     });
   }
 
-  openOrgDeleteDialog(orgName: string) {
+  openOrgDeleteDialog(orgCity: string, orgName: string) {
     this.dialog.open(OrgDeleteDialogComponent, {
-      data: {orgName},
+      data: {orgCity, orgName},
       width: '30em',
       autoFocus: false
     });

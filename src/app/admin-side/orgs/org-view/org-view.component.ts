@@ -43,8 +43,6 @@ export class OrgViewComponent implements OnInit, AfterViewInit {
     const orgCity = this.route.snapshot.params.org_city;
     const orgName = this.route.snapshot.params.org_name;
     this.db.getOrg(orgCity, orgName);
-    console.log('CITY: ' + orgCity);
-    console.log('NAME: ' + orgName);
   }
 
   loadMap(org) {
@@ -58,7 +56,7 @@ export class OrgViewComponent implements OnInit, AfterViewInit {
     map.setCenter(gpsCoords);
   }
 
-  openOrgDeleteDialog(orgName: string) {
-      this.dialogService.openOrgDeleteDialog(orgName);
+  openOrgDeleteDialog(orgCity: string, orgName: string) {
+      this.dialogService.openOrgDeleteDialog(orgCity, orgName);
   }
 }
