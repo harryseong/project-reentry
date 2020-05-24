@@ -25,12 +25,12 @@ export class UserService {
   }
 
   login() {
-    this.afAuth.auth.signInWithRedirect(new auth.GoogleAuthProvider())
+    this.afAuth.signInWithRedirect(new auth.GoogleAuthProvider())
       .then(() => this.confirmLoginStatus());
   }
 
   logout() {
-    this.afAuth.auth.signOut()
+    this.afAuth.signOut()
       .then(() => {
         this.user$.next(null);
         this.isAdmin$.next(null);
@@ -40,7 +40,7 @@ export class UserService {
   }
 
   confirmLoginStatus() {
-    this.afAuth.auth.getRedirectResult()
+    this.afAuth.getRedirectResult()
       .then(result => {
         console.log('LOGGED IN USER:');
         console.log(JSON.stringify(result));
@@ -52,5 +52,4 @@ export class UserService {
         }
       });
   }
-
 }
