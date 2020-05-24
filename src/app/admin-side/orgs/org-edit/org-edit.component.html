@@ -13,16 +13,11 @@
       </button>
     </div>
 
-    <div fxLayout="column" fxLayoutGap="1em" fxLayoutAlign="center center" fxFill class="progress-spinner" *ngIf="!org">
-      <mat-spinner [diameter]="75"></mat-spinner>
-      <div>Loading...</div>
-    </div>
-
     <form fxLayout="column" fxLayoutGap="1.5em" [formGroup]="orgForm">
 
       <div fxLayout="column" fxLayoutGap="1.5em">
         <div fxLayout="row">
-          <mat-form-field fxFlex="100">
+          <mat-form-field fxFlex="50" fxFlex.xs="100">
             <mat-label>Organization Name</mat-label>
             <input matInput [required]="true" formControlName="name" [errorStateMatcher]="matcher">
             <mat-error *ngIf="orgForm.get('name').hasError('required')">
@@ -32,7 +27,7 @@
         </div>
 
         <div fxLayout="row">
-          <mat-form-field fxFlex="100">
+          <mat-form-field fxFlex="50" fxFlex.xs="100">
             <mat-label>Description</mat-label>
             <textarea matInput rows="1" formControlName="description"></textarea>
             <mat-hint>Enter a brief description about the organization.</mat-hint>
@@ -267,13 +262,13 @@
               <mat-option [value]=false>No</mat-option>
             </mat-select>
             <mat-error *ngIf="orgForm.get('eligibilityRequirements').hasError('required')">
-              Select a an eligibility requirements option.
+              Select an eligibility requirements option.
             </mat-error>
           </mat-form-field>
         </div>
 
         <div fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="1.5em" fxLayoutGap.xs="0.5em">
-          <mat-form-field fxFlex="100">
+          <mat-form-field fxFlex="50" fxFlex.xs="100">
             <mat-label>What to Bring</mat-label>
             <input matInput type="url" formControlName="bringWithYou">
             <mat-hint>Enter a list of things that should be brought when visiting this organization.</mat-hint>
@@ -281,7 +276,7 @@
         </div>
 
         <div fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="1.5em" fxLayoutGap.xs="0.5em">
-          <mat-form-field fxFill>
+          <mat-form-field fxFlex="50" fxFlex.xs="100">
             <mat-label>Additional Notes</mat-label>
             <textarea matInput rows="1" formControlName="additionalNotes"></textarea>
             <mat-hint>Enter any other additional notes about the organization.</mat-hint>

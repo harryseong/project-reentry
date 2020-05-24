@@ -10,16 +10,22 @@
 
         <div fxLayout="column" fxLayoutGap="0.2em">
           <div fxLayout="row wrap" fxLayoutAlign="space-between end">
-            <h2 class="page-header page-header-org">[Admin] {{org.name}}</h2>
+            <div fxLayoutAlign="start end">
+              <h2 class="page-header page-header-org">[Admin] {{org.name}}</h2>
 
-            <div fxLayout="row" fxLayoutGap="0.5em" class="no-wrap edit-delete-div">
-              <button mat-icon-button class="edit-button" [routerLink]="['/', 'admin', 'orgs', 'edit', org.address.city, org.name]">
-                <span fxLayout="row" fxLayoutAlign="center center"><i class="far fa-edit fa-fw"></i></span>
-              </button>
-              <button mat-icon-button class="delete-button" (click)="openOrgDeleteDialog(org.address.city, org.name)">
-                <span fxLayout="row" fxLayoutAlign="center center"><i class="far fa-trash-alt fa-fw"></i></span>
-              </button>
+              <div fxLayout="row" fxLayoutGap="0.5em" class="no-wrap edit-delete-div">
+                <button mat-icon-button class="edit-button" [routerLink]="['/', 'admin', 'orgs', 'edit', org.address.city, org.name]">
+                  <span fxLayout="row" fxLayoutAlign="center center"><i class="far fa-edit fa-fw"></i></span>
+                </button>
+                <button mat-icon-button class="delete-button" (click)="openOrgDeleteDialog(org.address.city, org.name)">
+                  <span fxLayout="row" fxLayoutAlign="center center"><i class="far fa-trash-alt fa-fw"></i></span>
+                </button>
+              </div>
             </div>
+
+            <button type="button" mat-stroked-button [routerLink]="['/', 'admin', 'orgs']">
+              <span><i class="fas fa-list"></i> View All Orgs</span>
+            </button>
           </div>
 
           <div *ngIf="org.description != null && org.description != ''">{{org.description}}</div>
