@@ -1,5 +1,4 @@
-<div fxLayoutAlign="center center">
-  <div fxLayout="column" class="content">
+<div fxLayout="column" class="content">
 
     <ng-template #progressSpinner>
       <app-progress-spinner></app-progress-spinner>
@@ -10,8 +9,8 @@
       <div fxLayout="column" fxLayoutGap="0" class="org-section">
 
         <div fxLayout="column" fxLayoutGap="0.2em">
-          <div fxLayout="row wrap" fxLayoutAlign="space-between">
-            <div class="page-header page-header-org">{{org.name}}</div>
+          <div fxLayout="row wrap" fxLayoutAlign="space-between end">
+            <h2 class="page-header page-header-org">[Admin] {{org.name}}</h2>
 
             <div fxLayout="row" fxLayoutGap="0.5em" class="no-wrap edit-delete-div">
               <button mat-icon-button class="edit-button" [routerLink]="['/', 'admin', 'orgs', 'edit', org.address.city, org.name]">
@@ -133,4 +132,3 @@
       </div>
     </div>
   </div>
-</div>
