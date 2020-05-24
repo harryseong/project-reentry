@@ -25,7 +25,7 @@ export class OrgViewComponent implements OnInit, AfterViewInit {
   currentOrg$: BehaviorSubject<Org> = null;
   daysOfWeek = Constants.DAYS_OF_WEEK;
 
-  constructor(private db: FirestoreService,
+  constructor(public db: FirestoreService,
               private dialogService: DialogService,
               private route: ActivatedRoute) {
     this.currentOrg$ = db.currentOrg$;
