@@ -45,21 +45,21 @@
             </td>
           </ng-container>
 
-          <!-- City Column -->
-          <ng-container matColumnDef="city">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> City </th>
-            <td mat-cell *matCellDef="let element">
-              <span *ngIf="element.address.city == ''">n/a</span>
-              <span *ngIf="element.address.city != ''">{{element.address.city}}</span>
-            </td>
-          </ng-container>
-
           <!-- County Column -->
           <ng-container matColumnDef="county">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> County </th>
             <td mat-cell *matCellDef="let element">
               <span *ngIf="element.address.county == ''">n/a</span>
               <span *ngIf="element.address.county != ''">{{element.address.county}}</span>
+            </td>
+          </ng-container>
+
+          <!-- City Column -->
+          <ng-container matColumnDef="city">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> City </th>
+            <td mat-cell *matCellDef="let element">
+              <span *ngIf="element.address.city == ''">n/a</span>
+              <span *ngIf="element.address.city != ''">{{element.address.city}}</span>
             </td>
           </ng-container>
 

@@ -13,7 +13,7 @@ import {TableService} from '../../../core/services/table/table.service';
   styleUrls: ['./org-all.component.scss']
 })
 export class OrgAllComponent implements OnInit {
-  displayedColumns: string[] = ['name', 'services', 'city', 'county'];
+  displayedColumns: string[] = ['name', 'services', 'county', 'city'];
   dataSource: MatTableDataSource<any>;
   orgList: any[] = [];
   serviceList: any[] = [];
@@ -60,18 +60,14 @@ export class OrgAllComponent implements OnInit {
       const isAsc = sort.direction === 'asc';
       switch (sort.active) {
         case 'name':
-          return this.compare(a.name, b.name, isAsc);
+          return TableService.compare(a.name, b.name, isAsc);
         case 'city':
-          return this.compare(a.address.city, b.address.city, isAsc);
+          return TableService.compare(a.address.city, b.address.city, isAsc);
         default:
           return 0;
       }
     });
     this.dataSource = new MatTableDataSource(this.orgList);
-  }
-
-  compare(a: number | string, b: number | string, isAsc: boolean) {
-    return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
   }
 
   applyFilter(filterValue: string) {
@@ -119,6 +115,5 @@ export class OrgAllComponent implements OnInit {
   }
 
   createSaveOrg(csvOrg) {
-
   }
 }
