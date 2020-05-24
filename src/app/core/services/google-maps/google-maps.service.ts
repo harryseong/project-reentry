@@ -21,7 +21,7 @@ export class GoogleMapsService {
    * @param org: Org JSON object
    * @param showSnackBar: boolean
    */
-  codeAddress(org: Org, showSnackBar: boolean) {
+  codeAddress(org: Org, showSnackBar: boolean): void {
     const orgAddressString = this.orgService.extractOrgAddressString(org);
     console.log('Organization address string: ' + orgAddressString);
     this.geocoder.geocode({address: orgAddressString}, (results, status) => {
@@ -46,7 +46,7 @@ export class GoogleMapsService {
    * @param org: Org JSON object
    * @param showSnackBar: boolean
    */
-  codeAddressAndSave(org: Org, showSnackBar: boolean) {
+  codeAddressAndSave(org: Org, showSnackBar: boolean): void {
     const orgAddressString = this.orgService.extractOrgAddressString(org);
     this.geocoder.geocode({address: orgAddressString}, (results, status) => {
       if (status.toString() === 'OK') {
@@ -72,7 +72,7 @@ export class GoogleMapsService {
    * @param org: Org JSON object
    * @param showSnackBar: boolean
    */
-  codeAddressAndUpdate(originalOrgName: string, org: Org, showSnackBar: boolean) {
+  codeAddressAndUpdate(originalOrgName: string, org: Org, showSnackBar: boolean): void {
     const orgAddressString = this.orgService.extractOrgAddressString(org);
     this.geocoder.geocode( {address: orgAddressString}, (results, status) => {
       if (status.toString() === 'OK') {
