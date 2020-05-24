@@ -5,6 +5,7 @@ import {FirestoreService} from '../../../core/services/firestore/firestore.servi
 import {Router} from '@angular/router';
 import * as papa from 'papaparse';
 import {SnackBarService} from '../../../core/services/snack-bar/snack-bar.service';
+import {TableService} from '../../../core/services/table/table.service';
 
 @Component({
   selector: 'app-org-all',
@@ -30,7 +31,7 @@ export class OrgAllComponent implements OnInit {
         // Set custom filter predicate for searching nested fields of organization objects.
         this.dataSource.filterPredicate = (data, filter: string)  => {
           const accumulator = (currentTerm, key) => {
-            return this.nestedFilterCheck(currentTerm, data, key);
+            return TableService.nestedFilterCheck(currentTerm, data, key);
           };
           const dataStr = Object.keys(data).reduce(accumulator, '').toLowerCase();
           // Transform the filter by converting it to lowercase and removing whitespace.
@@ -79,19 +80,6 @@ export class OrgAllComponent implements OnInit {
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
-  }
-
-  nestedFilterCheck(search, data, key) {
-    if (typeof data[key] === 'object') {
-      for (const k in data[key]) {
-        if (data[key][k] !== null) {
-          search = this.nestedFilterCheck(search, data[key], k);
-        }
-      }
-    } else {
-      search += data[key];
-    }
-    return search;
   }
 
   viewOrg(orgCity: string, orgName: string) {

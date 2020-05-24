@@ -8,7 +8,7 @@ export class TableService {
     return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
   }
 
-  nestedFilterCheck(search, data, key) {
+  static nestedFilterCheck(search, data, key) {
     if (typeof data[key] === 'object') {
       for (const k in data[key]) {
         if (data[key][k] !== null) {
