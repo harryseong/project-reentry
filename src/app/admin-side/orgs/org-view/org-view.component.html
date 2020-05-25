@@ -6,30 +6,29 @@
 
     <div *ngIf="(db.currentOrg$ | async) as org; else progressSpinner" [@transitionAnimations]>
 
-      <div fxLayout="column" fxLayoutGap="0" class="org-section">
+      <div fxLayout="column" fxLayoutGap="0.2em">
+        <div fxLayout="row wrap" fxLayoutAlign="space-between end">
+          <div fxLayoutAlign="start end">
+            <h2 class="page-header page-header-org"><i class="fas fa-user-cog fa-fw"></i> {{org.name}}</h2>
 
-        <div fxLayout="column" fxLayoutGap="0.2em">
-          <div fxLayout="row wrap" fxLayoutAlign="space-between end">
-            <div fxLayoutAlign="start end">
-              <h2 class="page-header page-header-org"><i class="fas fa-user-cog fa-fw"></i> {{org.name}}</h2>
-
-              <div fxLayout="row" fxLayoutGap="0.5em" class="no-wrap edit-delete-div">
-                <button mat-icon-button class="edit-button" matTooltip="Edit" [routerLink]="['/', 'admin', 'orgs', 'edit', org.address.city, org.name]">
-                  <span fxLayout="row" fxLayoutAlign="center center"><i class="far fa-edit fa-fw"></i></span>
-                </button>
-                <button mat-icon-button class="delete-button" matTooltip="Delete" (click)="openOrgDeleteDialog(org.address.city, org.name)">
-                  <span fxLayout="row" fxLayoutAlign="center center"><i class="far fa-trash-alt fa-fw"></i></span>
-                </button>
-              </div>
+            <div fxLayout="row" fxLayoutGap="0.5em" class="no-wrap edit-delete-div">
+              <button mat-icon-button class="edit-button" matTooltip="Edit" [routerLink]="['/', 'admin', 'orgs', 'edit', org.address.city, org.name]">
+                <span fxLayout="row" fxLayoutAlign="center center"><i class="far fa-edit fa-fw"></i></span>
+              </button>
+              <button mat-icon-button class="delete-button" matTooltip="Delete" (click)="openOrgDeleteDialog(org.address.city, org.name)">
+                <span fxLayout="row" fxLayoutAlign="center center"><i class="far fa-trash-alt fa-fw"></i></span>
+              </button>
             </div>
-
-            <button type="button" mat-stroked-button [routerLink]="['/', 'admin', 'orgs']">
-              <span><i class="fas fa-list"></i> View All Orgs</span>
-            </button>
           </div>
 
-          <div *ngIf="org.description != null && org.description != ''">{{org.description}}</div>
+          <button type="button" mat-stroked-button [routerLink]="['/', 'admin', 'orgs']">
+            <span><i class="fas fa-list"></i> View All Orgs</span>
+          </button>
         </div>
+      </div>
+
+      <div fxLayout="column" fxLayoutGap="0" class="org-section">
+        <div *ngIf="org.description != null && org.description != ''">{{org.description}}</div>
 
         <div *ngIf="org.services!=null">
           <h4 id="services-header"><i class="fas fa-concierge-bell fa-fw"></i> Services Provided</h4>
