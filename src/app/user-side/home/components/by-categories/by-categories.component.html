@@ -1,4 +1,4 @@
-<div fxLayout="row wrap" fxLayoutAlign="center">
+<div fxLayout="row wrap" fxLayoutAlign="center" [@transitionAnimations]>
   <div fxFlex="45" fxFlex.xs="90" class="category-tile" *ngFor="let service of (serviceCategories$ | async)" (click)="selectCategory(service.name)">
     {{service.name}}
   </div>
