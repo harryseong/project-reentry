@@ -60,15 +60,21 @@ export class UserService {
   }
 
   checkIfUserExists(afAuthUser: any) {
-    const user = this.db.users.ref.where('email', '==', afAuthUser.providerData[0].email);
-    if (user === undefined || user === null) {
-      this.saveNewUser(afAuthUser)
-    }
+    this.db.users.doc(afAuthUser.email).ref.get()
+      .then(userDoc => {
+        if (!userDoc.exists) {
+          this.saveNewUser(afAuthUser)
+        }
+      });
   }
 
   saveNewUser(afAuthUser: any) {
-    const user = {email: afAuthUser.providerData[0].email, role: 'user', uid: afAuthUser.uid};
-    console.log('User does not exist in Firestore DB. Saving user: ' + user);
-    this.db.users.add(user)
+    const user = {
+      name: afAuthUser.providerData[0].displayName,
+      email: afAuthUser.providerData[0].email,
+      role: 'user'
+    };
+    console.log('User does not exist in Firestore DB. Saving user: ' + JSON.stringify(user));
+    this.db.users.doc(afAuthUser.email).set(user);
   }
 }
