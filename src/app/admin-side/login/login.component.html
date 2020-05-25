@@ -1,0 +1,40 @@
+<ng-template #loggedOut>
+  <div fxLayout="column" fxLayoutGap="1em">
+    <div>
+      Login to access Project Reentry admin features.
+    </div>
+    <button mat-stroked-button (click)="login()">
+      <i class="fas fa-sign-in-alt"></i> LOGIN
+    </button>
+  </div>
+</ng-template>
+
+<ng-container *ngIf="user$ | async as user; else loggedOut">
+  <div fxLayout="column" fxLayoutGap="0.8em">
+
+    <div fxLayout="row" fxLayoutGap="0.5em">
+      <img [src]="user.photoURL" alt="admin_photo" class="admin-photo mat-elevation-z2">
+
+      <div fxLayout="column" fxLayoutGap="0.4em">
+        <span class="admin-name">{{user.displayName}}</span>
+
+        <div>
+          <div class="admin-info"><strong>Email:</strong> {{user.email}}</div>
+          <div class="admin-info"><strong>Role:</strong> {{(isAdmin$ | async) ? 'admin' : 'user'}}</div>
+        </div>
+      </div>
+    </div>
+
+    <div fxLayout="column" fxLayoutGap="0.5em" *ngIf="!(isAdmin$ | async)">
+      <h4>Non-Admin User</h4>
+      <div>
+        You are not an admin and do not have access to Project Reentry admin features. If you need to be made an admin,
+        please reach out to an admin of the application.
+      </div>
+    </div>
+
+    <button mat-stroked-button (click)="logout()">
+      <i class="fas fa-sign-out-alt fa-fw"></i> LOGOUT
+    </button>
+  </div>
+</ng-container>

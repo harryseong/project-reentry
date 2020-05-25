@@ -1,0 +1,35 @@
+[debug] [2020-05-25T21:13:45.437Z] ----------------------------------------------------------------------
+[debug] [2020-05-25T21:13:45.439Z] Command:       /usr/local/bin/node /usr/local/bin/firebase deploy
+[debug] [2020-05-25T21:13:45.439Z] CLI Version:   7.11.0
+[debug] [2020-05-25T21:13:45.439Z] Platform:      darwin
+[debug] [2020-05-25T21:13:45.439Z] Node Version:  v12.16.3
+[debug] [2020-05-25T21:13:45.441Z] Time:          Mon May 25 2020 16:13:45 GMT-0500 (Central Daylight Time)
+[debug] [2020-05-25T21:13:45.442Z] ----------------------------------------------------------------------
+[debug] [2020-05-25T21:13:45.442Z] 
+[debug] [2020-05-25T21:13:45.450Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-05-25T21:13:45.451Z] > authorizing via signed-in user
+[debug] [2020-05-25T21:13:45.451Z] [iam] checking project project-reentry for permissions ["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2020-05-25T21:13:45.452Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/project-reentry:testIamPermissions  
+
+[debug] [2020-05-25T21:13:45.560Z] <<< HTTP RESPONSE 200
+[debug] [2020-05-25T21:13:45.562Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/project-reentry  
+ 
+[debug] [2020-05-25T21:13:45.761Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Deploying to 'project-reentry'...
+[info] 
+[info] i  deploying firestore, hosting
+[info] i  firestore: reading indexes from firestore.indexes.json...
+[info] i  cloud.firestore: checking firestore.rules for compilation errors...
+[debug] [2020-05-25T21:13:45.766Z] >>> HTTP REQUEST POST https://firebaserules.googleapis.com/v1/projects/project-reentry:test  
+
+[debug] [2020-05-25T21:13:45.907Z] <<< HTTP RESPONSE 200
+[warn] ⚠  [W] undefined:undefined - Ruleset uses old version (version [1]). Please update to the latest version (version [2]).
+[info] ✔  cloud.firestore: rules file firestore.rules compiled successfully
+[debug] [2020-05-25T21:13:45.912Z] >>> HTTP REQUEST POST https://firebasehosting.googleapis.com/v1beta1/sites/project-reentry/versions  
+
+[debug] [2020-05-25T21:13:46.466Z] <<< HTTP RESPONSE 200
+[debug] [2020-05-25T21:13:46.468Z] >>> HTTP REQUEST GET https://firebaserules.googleapis.com/v1/projects/project-reentry/releases?pageSize=10&pageToken=  
+ 
+[debug] [2020-05-25T21:13:46.468Z] >>> HTTP REQUEST GET https://firestore.googleapis.com/v1beta2/projects/project-reentry/databases/(default)/collectionGroups/-/indexes  
+ 

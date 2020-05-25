@@ -16,7 +16,12 @@ export class GoogleMapsService {
               private orgService: OrgService,
               private snackBarService: SnackBarService) {}
 
-  codeAddress(org: Org, showSnackBar: boolean) {
+  /**
+   * Unused method for debugging purposes.
+   * @param org: Org JSON object
+   * @param showSnackBar: boolean
+   */
+  codeAddress(org: Org, showSnackBar: boolean): void {
     const orgAddressString = this.orgService.extractOrgAddressString(org);
     console.log('Organization address string: ' + orgAddressString);
     this.geocoder.geocode({address: orgAddressString}, (results, status) => {
@@ -30,16 +35,18 @@ export class GoogleMapsService {
       } else {
         console.warn('Geocode was not successful for the following reason: ' + status);
         if (showSnackBar === true) {
-          const message = (results !== null && results.length) === 0 ? 'The provided orgAddressString is not valid. Please try again.' :
-            'The app could not reach geocoding services. Please refresh the page and try again.';
-          const action = 'OK';
-          this.snackBarService.openSnackBar(message, action);
+          this.showGeocodeErrorSnackBar(results);
         }
       }
     });
   }
 
-  codeAddressAndSave(org: Org, showSnackBar: boolean) {
+  /**
+   * Takes address of Org JSON object, geocodes the address, and then saves the new org in Firebase DB.
+   * @param org: Org JSON object
+   * @param showSnackBar: boolean
+   */
+  codeAddressAndSave(org: Org, showSnackBar: boolean): void {
     const orgAddressString = this.orgService.extractOrgAddressString(org);
     this.geocoder.geocode({address: orgAddressString}, (results, status) => {
       if (status.toString() === 'OK') {
@@ -49,20 +56,23 @@ export class GoogleMapsService {
         } else {
           console.warn('No geocode results found for orgAddressString: ' + orgAddressString);
         }
-        this.firestoreService.saveOrg(org);
+        this.firestoreService.saveOrgFromForm(org, showSnackBar);
       } else {
         console.warn('Geocode for "' + org.name + '" was not successful for the following reason: ' + status);
         if (showSnackBar === true) {
-          const message = (results !== null && results.length) === 0 ? 'The provided orgAddressString is not valid. Please try again.' :
-            'The app could not reach geocoding services. Please refresh the page and try again.';
-          const action = 'OK';
-          this.snackBarService.openSnackBar(message, action);
+          this.showGeocodeErrorSnackBar(results);
         }
       }
     });
   }
 
-  codeAddressAndUpdate(originalOrgName: string, org: Org, showSnackBar: boolean) {
+  /**
+   * Takes address of Org JSON object, geocodes the address, and then updates the existing org in Firebase DB.
+   * @param originalOrgName: string
+   * @param org: Org JSON object
+   * @param showSnackBar: boolean
+   */
+  codeAddressAndUpdate(org: Org, originalOrgCity: string, originalOrgName: string, showSnackBar: boolean): void {
     const orgAddressString = this.orgService.extractOrgAddressString(org);
     this.geocoder.geocode( {address: orgAddressString}, (results, status) => {
       if (status.toString() === 'OK') {
@@ -72,17 +82,25 @@ export class GoogleMapsService {
         } else {
           console.warn('No geocode results found for orgAddressString: ' + orgAddressString);
         }
-        this.firestoreService.updateOrg(org, originalOrgName, true);
+        this.firestoreService.updateOrg(org, originalOrgCity, originalOrgName, true);
       } else {
         console.warn('Geocode was not successful for the following reason: ' + status);
         if (showSnackBar === true) {
-          const message = (results !== null && results.length) === 0 ? 'The provided orgAddressString is not valid. Please try again.' :
-            'The app could not reach geocoding services. Please refresh the page and try again.';
-          const action = 'OK';
-          this.snackBarService.openSnackBar(message, action);
+          this.showGeocodeErrorSnackBar(results);
         }
         return null;
       }
     });
+  }
+
+  /**
+   * Displays snackbar for geocoding-related errors.
+   * @param results: Results from call to Google geocoding API.
+   */
+  private showGeocodeErrorSnackBar(results: any[]): void {
+    const message = (results !== null && results.length) === 0 ? 'The provided orgAddressString is not valid. Please try again.' :
+      'The app could not reach geocoding services. Please refresh the page and try again.';
+    const action = 'OK';
+    this.snackBarService.openSnackBar(message, action);
   }
 }

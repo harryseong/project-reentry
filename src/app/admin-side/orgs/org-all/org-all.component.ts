@@ -5,6 +5,7 @@ import {FirestoreService} from '../../../core/services/firestore/firestore.servi
 import {Router} from '@angular/router';
 import * as papa from 'papaparse';
 import {SnackBarService} from '../../../core/services/snack-bar/snack-bar.service';
+import {TableService} from '../../../core/services/table/table.service';
 
 @Component({
   selector: 'app-org-all',
@@ -12,7 +13,7 @@ import {SnackBarService} from '../../../core/services/snack-bar/snack-bar.servic
   styleUrls: ['./org-all.component.scss']
 })
 export class OrgAllComponent implements OnInit {
-  displayedColumns: string[] = ['name', 'services', 'city', 'county'];
+  displayedColumns: string[] = ['name', 'services', 'county', 'city'];
   dataSource: MatTableDataSource<any>;
   orgList: any[] = [];
   serviceList: any[] = [];
@@ -30,7 +31,7 @@ export class OrgAllComponent implements OnInit {
         // Set custom filter predicate for searching nested fields of organization objects.
         this.dataSource.filterPredicate = (data, filter: string)  => {
           const accumulator = (currentTerm, key) => {
-            return this.nestedFilterCheck(currentTerm, data, key);
+            return TableService.nestedFilterCheck(currentTerm, data, key);
           };
           const dataStr = Object.keys(data).reduce(accumulator, '').toLowerCase();
           // Transform the filter by converting it to lowercase and removing whitespace.
@@ -59,18 +60,14 @@ export class OrgAllComponent implements OnInit {
       const isAsc = sort.direction === 'asc';
       switch (sort.active) {
         case 'name':
-          return this.compare(a.name, b.name, isAsc);
+          return TableService.compare(a.name, b.name, isAsc);
         case 'city':
-          return this.compare(a.address.city, b.address.city, isAsc);
+          return TableService.compare(a.address.city, b.address.city, isAsc);
         default:
           return 0;
       }
     });
     this.dataSource = new MatTableDataSource(this.orgList);
-  }
-
-  compare(a: number | string, b: number | string, isAsc: boolean) {
-    return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
   }
 
   applyFilter(filterValue: string) {
@@ -79,19 +76,6 @@ export class OrgAllComponent implements OnInit {
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
-  }
-
-  nestedFilterCheck(search, data, key) {
-    if (typeof data[key] === 'object') {
-      for (const k in data[key]) {
-        if (data[key][k] !== null) {
-          search = this.nestedFilterCheck(search, data[key], k);
-        }
-      }
-    } else {
-      search += data[key];
-    }
-    return search;
   }
 
   viewOrg(orgCity: string, orgName: string) {
@@ -131,6 +115,5 @@ export class OrgAllComponent implements OnInit {
   }
 
   createSaveOrg(csvOrg) {
-
   }
 }

@@ -7,6 +7,7 @@
     <div fxLayout="row" fxHide.xs>
       <button mat-button [routerLink]="['']"><span><i class="fas fa-home fa-fw"></i> Home</span></button>
       <button mat-button [routerLink]="['/', 'about']"><span><i class="fas fa-info-circle fa-fw"></i> About Us</span></button>
+      <button mat-button [routerLink]="['/', 'admin']" *ngIf="isAdmin$ | async"><span><i class="fas fa-user-cog fa-fw"></i> Admin</span></button>
     </div>
 
     <button mat-button (click)="goBack()"><span><i class="fas fa-arrow-left fa-fw"></i> Back</span></button>
@@ -16,4 +17,5 @@
 <mat-menu #navMenu="matMenu">
   <button mat-menu-item [routerLink]="['']"><span><i class="fas fa-home fa-fw"></i> Home</span></button>
   <button mat-menu-item [routerLink]="['/', 'about']"><span><i class="fas fa-info-circle fa-fw"></i> About Us</span></button>
+  <button mat-menu-item [routerLink]="['/', 'admin']" *ngIf="isAdmin$ | async"><span><i class="fas fa-user-cog fa-fw"></i> Admin</span></button>
 </mat-menu>

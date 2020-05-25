@@ -30,8 +30,7 @@ export class OrgCategoryComponent implements OnInit {
   displayedColumns: string[] = ['name', 'city', 'county'];
 
   constructor(private db: FirestoreService,
-              private route: ActivatedRoute,
-              private tableService: TableService) { }
+              private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.serviceCategory = this.route.snapshot.params.category_id;
@@ -46,7 +45,7 @@ export class OrgCategoryComponent implements OnInit {
     // Set custom filter predicate for searching nested fields of organization objects.
     this.dataSource.filterPredicate = (data, filter: string)  => {
       const accumulator = (currentTerm, key) => {
-        return this.tableService.nestedFilterCheck(currentTerm, data, key);
+        return TableService.nestedFilterCheck(currentTerm, data, key);
       };
       const dataStr = Object.keys(data).reduce(accumulator, '').toLowerCase();
       const transformedFilter = filter.trim().toLowerCase();

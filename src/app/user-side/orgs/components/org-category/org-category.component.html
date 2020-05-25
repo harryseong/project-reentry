@@ -13,7 +13,7 @@
       <mat-form-field fxFlex="18em" fxFlex.xs="60">
         <mat-label><i class="fas fa-search"></i> Search</mat-label>
         <input matInput (keyup)="applyFilter($event.target.value)" [formControl]="tableFilter">
-        <mat-hint>Search by name, city, county.</mat-hint>
+        <mat-hint>Search by name, city, county...</mat-hint>
         <button mat-button *ngIf="tableFilter.value.length > 0" matSuffix mat-icon-button aria-label="Clear" (click)="tableFilter.reset('')">
           <i class="fas fa-times"></i>
         </button>

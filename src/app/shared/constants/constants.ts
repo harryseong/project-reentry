@@ -1,4 +1,10 @@
 export class Constants {
+  static REGEX_PATTERN = {
+    phone: '^\\(?([0-9]{3})\\)?[-.●]?([0-9]{3})[-.●]?([0-9]{4})$',
+    url: '^(?:http(s)?:\\/\\/)?[\\w.-]+(?:\\.[\\w\\.-]+)+[\\w\\-\\._~:/?#[\\]@!\\$&\'\\(\\)\\*\\+,;=.]+$',
+    zipCode: '^[0-9]{5}(?:-[0-9]{4})?$'
+  };
+
   static DAYS_OF_WEEK: string[] = [
     'Sunday',
     'Monday',

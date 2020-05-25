@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {UserService} from '../../../core/services/user/user.service';
+import {UserService} from '../../core/services/user/user.service';
+import {BehaviorSubject} from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -7,8 +8,8 @@ import {UserService} from '../../../core/services/user/user.service';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-  user$ = null;
-  isAdmin$ = null;
+  user$: BehaviorSubject<any>;
+  isAdmin$: BehaviorSubject<boolean>;
 
   constructor(private userService: UserService) {
     this.user$ = userService.user$;
@@ -16,7 +17,10 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.userService.confirmLoginStatus();
+    // Only confirm login status if user and admin status has not yet been determined.
+    if (this.user$.value == null || this.isAdmin$.value == null) {
+      this.userService.confirmLoginStatus();
+    }
   }
 
   login() {
