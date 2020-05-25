@@ -11,6 +11,10 @@
   border: 0.05em solid #515151;
 }
 
+.category-tile.mobile {
+  margin: 0.2em;
+}
+
 .category-tile:hover {
   cursor: pointer;
   transition: 0.2s;
