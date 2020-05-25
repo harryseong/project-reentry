@@ -97,7 +97,7 @@ export class FirestoreService {
           const message = 'New organization was successfully saved.';
           const action = 'OK';
           this.snackBarService.openSnackBar(message, action, 4000);
-          this.router.navigate(['/', 'admin', 'organization', 'all']);
+          this.router.navigate(['/', 'admin', 'orgs']);
         }
       });
   }
@@ -120,16 +120,17 @@ export class FirestoreService {
     }
   }
 
-  deleteOrg(orgName: string, showSnackBar: boolean) {
-    const query = this.organizations.ref.where('name', '==', orgName);
+  deleteOrg(orgCity: string, orgName: string, showSnackBar: boolean) {
+    const query = this.organizations.ref.where('address.city', '==', orgCity).where('name', '==', orgName);
     query.get().then(querySnapshot => {
       if (querySnapshot.empty) {
-        console.log('no documents found');
+        console.log('No documents found');
       } else {
+        querySnapshot.forEach(docSnapshot => this.organizations.doc(docSnapshot.id).delete());
         console.log('Organization was deleted: ' + orgName);
+        this.router.navigate(['/admin/orgs']);
+
         if (showSnackBar === true) {
-          querySnapshot.forEach(docSnapshot => this.organizations.doc(docSnapshot.id).delete());
-          this.router.navigate(['/admin/organization/all']);
           const message = orgName + ' has been deleted.';
           const action = 'OK';
           this.snackBarService.openSnackBar(message, action);

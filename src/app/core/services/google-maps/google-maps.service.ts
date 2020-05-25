@@ -56,7 +56,7 @@ export class GoogleMapsService {
         } else {
           console.warn('No geocode results found for orgAddressString: ' + orgAddressString);
         }
-        this.firestoreService.saveOrg(org);
+        this.firestoreService.saveOrgFromForm(org, showSnackBar);
       } else {
         console.warn('Geocode for "' + org.name + '" was not successful for the following reason: ' + status);
         if (showSnackBar === true) {

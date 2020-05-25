@@ -22,7 +22,7 @@
     </div>
 
     <div class="overflow-x-scroll">
-      <table mat-table [dataSource]="dataSource" matSort (matSortChange)="sortData($event)">
+      <table mat-table [dataSource]="dataSource" matSort (matSortChange)="sortData($event)" fxFlex="100">
 
         <!-- Name Column -->
         <ng-container matColumnDef="name">
