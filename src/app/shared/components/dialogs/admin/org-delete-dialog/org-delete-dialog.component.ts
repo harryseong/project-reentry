@@ -18,11 +18,11 @@ export class OrgDeleteDialogComponent {
               private userService: UserService) {}
 
   deleteOrg() {
+    this.firestoreService.deleteOrg(this.data.orgCity, this.data.orgName, true);
     this.dialogRef.close();
-    this.firestoreService.deleteOrg(this.data.orgName, true);
   }
 
-  closeDialog(): void {
+  cancel(): void {
     this.dialogRef.close();
   }
 }

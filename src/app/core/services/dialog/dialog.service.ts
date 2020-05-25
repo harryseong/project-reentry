@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import {MatDialog} from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import {HelpDialogComponent} from '../../../shared/components/dialogs/help-dialog/help-dialog.component';
 import {LanguagesDialogComponent} from '../../../shared/components/dialogs/admin/languages-dialog/languages-dialog.component';
 import {ServiceCategoriesDialogComponent} from '../../../shared/components/dialogs/admin/service-categories-dialog/service-categories-dialog.component';
 import {OrgDeleteDialogComponent} from '../../../shared/components/dialogs/admin/org-delete-dialog/org-delete-dialog.component';
+import {UserDialogComponent} from '../../../shared/components/dialogs/admin/user-dialog/user-dialog.component';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class DialogService {
 
   openHelpDialog() {
     this.dialog.open(HelpDialogComponent, {
-      width: '30em',
+      width: '25em',
       maxWidth: '95%'
     });
   }
@@ -22,9 +23,7 @@ export class DialogService {
   openEditLanguagesDialog(languages: any[]) {
     this.dialog.open(LanguagesDialogComponent, {
       width: '30em',
-      data: {
-        languages
-      },
+      data: {languages},
       autoFocus: false
     });
   }
@@ -32,9 +31,7 @@ export class DialogService {
   openEditServiceCategoriesDialog(serviceCategories: any[]) {
     this.dialog.open(ServiceCategoriesDialogComponent, {
       width: '30em',
-      data: {
-        serviceCategories
-      },
+      data: {serviceCategories},
       autoFocus: false
     });
   }
@@ -42,7 +39,15 @@ export class DialogService {
   openOrgDeleteDialog(orgCity: string, orgName: string) {
     this.dialog.open(OrgDeleteDialogComponent, {
       data: {orgCity, orgName},
-      width: '30em',
+      width: '25em',
+      autoFocus: false
+    });
+  }
+
+  openUserDialog(email: string, role: string) {
+    this.dialog.open(UserDialogComponent, {
+      width: '25em',
+      data: {email, role},
       autoFocus: false
     });
   }

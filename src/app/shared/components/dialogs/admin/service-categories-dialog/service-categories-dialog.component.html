@@ -1,56 +1,51 @@
-<div>
-  <div mat-dialog-title fxLayout="row">
-    <span>{{editMode ? 'Edit Service Category' : (createMode ?  'New Service Category' : 'Service Categories')}}</span>
-    <span class="spacer"></span>
-    <span *ngIf="!editMode && !createMode">
-      <button mat-icon-button (click)="cancel()">
-        <i class="fas fa-times"></i>
-      </button>
-    </span>
-  </div>
-
-  <div mat-dialog-content fxLayout="column">
-
-    <table *ngIf="!editMode && !createMode">
-      <tr *ngFor="let serviceCategory of serviceCategories; last as isLast">
-        <td [class]="isLast ? 'last' : ''">
-          <div fxLayout="row" fxLayoutAlign="space-between">
-            <span>{{serviceCategory.name}}</span>
-            <span class="no-wrap">
-              <button mat-icon-button class="edit-button" (click)="enableEditMode(serviceCategory.name)">
-                <i class="far fa-edit fa-fw"></i>
-              </button>
-              <button mat-icon-button class="delete-button" (click)="delete(serviceCategory.name)">
-                <i class="far fa-trash-alt fa-fw"></i>
-              </button>
-            </span>
-          </div>
-        </td>
-      </tr>
-    </table>
-
-    <form [formGroup]="serviceCategoryForm" *ngIf="editMode || createMode" fxLayout="column">
-      <mat-form-field>
-        <mat-label>Service Category</mat-label>
-        <input matInput type="text" [required]="true" formControlName="name">
-      </mat-form-field>
-    </form>
-
-  </div>
-
-  <div mat-dialog-actions fxLayoutAlign="end" fxLayoutGap="0.5em">
-    <button mat-stroked-button (click)="enableCreateMode()" *ngIf="!editMode && !createMode">
-      <span><i class="fas fa-plus fa-fw"></i> New Service</span>
+<div mat-dialog-title fxLayout="row" fxLayoutAlign="space-between start">
+  <span>{{editMode ? 'Edit Service Category' : (createMode ?  'New Service Category' : 'Service Categories')}}</span>
+  <span *ngIf="!editMode && !createMode">
+    <button mat-icon-button (click)="cancel()">
+      <i class="fas fa-times"></i>
     </button>
+  </span>
+</div>
 
-    <div fxLayout="row" fxLayoutGap="0.5em" fxLayoutAlign="end" *ngIf="editMode || createMode">
-      <button type="button" mat-stroked-button (click)="editMode ? endEditMode() : endCreateMode()">
-        <span><i class="fas fa-times fa-fw"></i> Cancel</span>
-      </button>
-      <button type="button" mat-stroked-button [disabled]="!serviceCategoryForm.valid"
-              (click)="editMode ? update() : save()">
-        <span><i class="far fa-save fa-fw"></i> Save</span>
-      </button>
-    </div>
+<div mat-dialog-content fxLayout="column">
+  <table *ngIf="!editMode && !createMode">
+    <tr *ngFor="let serviceCategory of serviceCategories; last as isLast">
+      <td [class]="isLast ? 'last' : ''">
+        <div fxLayout="row" fxLayoutAlign="space-between">
+          <span>{{serviceCategory.name}}</span>
+          <span class="no-wrap">
+            <button mat-icon-button class="edit-button" (click)="enableEditMode(serviceCategory.name)">
+              <i class="far fa-edit fa-fw"></i>
+            </button>
+            <button mat-icon-button class="delete-button" (click)="delete(serviceCategory.name)">
+              <i class="far fa-trash-alt fa-fw"></i>
+            </button>
+          </span>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <form [formGroup]="serviceCategoryForm" *ngIf="editMode || createMode" fxLayout="column">
+    <mat-form-field>
+      <mat-label>Service Category</mat-label>
+      <input matInput type="text" [required]="true" formControlName="name">
+    </mat-form-field>
+  </form>
+</div>
+
+<div mat-dialog-actions fxLayoutAlign="end" fxLayoutGap="0.5em">
+  <button mat-stroked-button (click)="enableCreateMode()" *ngIf="!editMode && !createMode">
+    <span><i class="fas fa-plus fa-fw"></i> New Service</span>
+  </button>
+
+  <div fxLayout="row" fxLayoutGap="0.2em" fxLayoutAlign="end" *ngIf="editMode || createMode">
+    <button type="button" mat-stroked-button (click)="editMode ? endEditMode() : endCreateMode()">
+      <span><i class="fas fa-times fa-fw"></i> Cancel</span>
+    </button>
+    <button type="button" mat-stroked-button [disabled]="!serviceCategoryForm.valid"
+            (click)="editMode ? update() : save()">
+      <span><i class="far fa-save fa-fw"></i> Save</span>
+    </button>
   </div>
 </div>

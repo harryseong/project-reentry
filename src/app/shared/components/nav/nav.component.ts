@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Location} from '@angular/common';
+import {UserService} from '../../../core/services/user/user.service';
 
 @Component({
   selector: 'app-nav',
@@ -7,8 +8,12 @@ import {Location} from '@angular/common';
   styleUrls: ['./nav.component.scss']
 })
 export class NavComponent implements OnInit {
+  isAdmin$ = null;
 
-  constructor(private location: Location) { }
+  constructor(private location: Location,
+              private userService: UserService) {
+    this.isAdmin$ = this.userService.isAdmin$;
+  }
 
   ngOnInit() {
   }

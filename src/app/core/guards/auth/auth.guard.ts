@@ -12,15 +12,14 @@ export class AuthGuard implements CanActivate {
               private userService: UserService,
               private zone: NgZone) {}
 
-  canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    return true;
-
-    // if (this.userService.isAdmin$.value === true) {
-    //   return true;
-    // } else {
-    //   this.zone.run(() => this.router.navigate(['/', 'admin', 'login']));
-    //   return false;
-    // }
+  canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> |
+      Promise<boolean | UrlTree> | boolean | UrlTree {
+    if (this.userService.isAdmin$.value === true) {
+      return true;
+    } else {
+      this.zone.run(() => this.router.navigate(['/', 'admin']));
+      return false;
+    }
   }
 
 }

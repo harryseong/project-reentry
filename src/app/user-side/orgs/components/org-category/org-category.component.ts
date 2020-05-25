@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {FirestoreService} from '../../../../core/services/firestore/firestore.service';
-import {MatTableDataSource, Sort} from '@angular/material';
+import { Sort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 import {animate, style, transition, trigger} from '@angular/animations';
 import {FormControl} from '@angular/forms';
 import {TableService} from '../../../../core/services/table/table.service';
@@ -29,8 +30,7 @@ export class OrgCategoryComponent implements OnInit {
   displayedColumns: string[] = ['name', 'city', 'county'];
 
   constructor(private db: FirestoreService,
-              private route: ActivatedRoute,
-              private tableService: TableService) { }
+              private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.serviceCategory = this.route.snapshot.params.category_id;
@@ -45,7 +45,7 @@ export class OrgCategoryComponent implements OnInit {
     // Set custom filter predicate for searching nested fields of organization objects.
     this.dataSource.filterPredicate = (data, filter: string)  => {
       const accumulator = (currentTerm, key) => {
-        return this.tableService.nestedFilterCheck(currentTerm, data, key);
+        return TableService.nestedFilterCheck(currentTerm, data, key);
       };
       const dataStr = Object.keys(data).reduce(accumulator, '').toLowerCase();
       const transformedFilter = filter.trim().toLowerCase();

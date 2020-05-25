@@ -1,10 +1,10 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {FirestoreService} from '../../../core/services/firestore/firestore.service';
 import {animate, style, transition, trigger} from '@angular/animations';
 import {DialogService} from '../../../core/services/dialog/dialog.service';
 import {Constants} from '../../../shared/constants/constants';
-import {BehaviorSubject} from 'rxjs';
+import {BehaviorSubject, Subscription} from 'rxjs';
 import {Org} from '../../../shared/interfaces/org';
 declare var google: any;
 
@@ -21,11 +21,12 @@ declare var google: any;
     ])
   ]
 })
-export class OrgViewComponent implements OnInit, AfterViewInit {
+export class OrgViewComponent implements OnInit, AfterViewInit, OnDestroy {
   currentOrg$: BehaviorSubject<Org> = null;
+  currentOrgSubscription: Subscription;
   daysOfWeek = Constants.DAYS_OF_WEEK;
 
-  constructor(private db: FirestoreService,
+  constructor(public db: FirestoreService,
               private dialogService: DialogService,
               private route: ActivatedRoute) {
     this.currentOrg$ = db.currentOrg$;
@@ -36,7 +37,15 @@ export class OrgViewComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.loadMap(this.currentOrg$.value);
+    this.currentOrgSubscription = this.currentOrg$.subscribe(org => {
+      if (org !== null && org !== undefined) {
+        this.loadMap(org)
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.currentOrgSubscription.unsubscribe();
   }
 
   loadOrg() {

@@ -5,7 +5,7 @@
 
   <ng-template #ready>
     <ng-container *ngIf="(searchStatus$ | async) === 'ready'; else done">
-      <form [formGroup]="servicesNearMeForm" [@transitionAnimations] fxFill fxLayout="column" fxLayoutGap="2em" (keydown.enter)="$event.preventDefault()">
+      <form [formGroup]="servicesNearMeForm" [@transitionAnimations] fxFill fxLayout="column" fxLayoutGap="4em" (keydown.enter)="$event.preventDefault()">
 
         <div fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="5%">
           <mat-form-field fxFlex="50%" fxFlex.sm="50%" fxFlex.xs="100%">
@@ -35,12 +35,10 @@
           </mat-form-field>
         </div>
 
-        <div>
-          <button type="button" mat-stroked-button [disabled]="!servicesNearMeForm.valid" id="find-services-button"
-                  (keyup.enter)="findOrgs()" (click)="findOrgs()">
-            <span><i class="fas fa-search"></i> FIND SERVICES NEAR ME</span>
-          </button>
-        </div>
+        <button type="button" mat-stroked-button [disabled]="!servicesNearMeForm.valid" id="find-services-button"
+                (keyup.enter)="findOrgs()" (click)="findOrgs()">
+          <span><i class="fas fa-search"></i> FIND SERVICES NEAR ME</span>
+        </button>
 
       </form>
     </ng-container>
