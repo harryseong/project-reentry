@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {animate, style, transition, trigger} from '@angular/animations';
+import {ActivatedRoute} from '@angular/router';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -14,11 +16,28 @@ import {animate, style, transition, trigger} from '@angular/animations';
     ])
   ],
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   subheaderText = 'Connecting you to the services you need...';
+  navLinks = [
+    {path: '/', label: 'Near Me'},
+    {path: '/categories', label: 'By Categories'},
+  ];
+  activeLink = this.navLinks[0].path;
+  routeSubscription$: Subscription;
 
-  constructor() { }
+  constructor(private route: ActivatedRoute) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.routeSubscription$ = this.route.firstChild.url.subscribe(rsp => {
+      const currentActiveLink = '/' + rsp.toString();
+      if (this.activeLink !== currentActiveLink)
+        this.activeLink = currentActiveLink;
+    });
+  }
 
+  ngOnDestroy(): void {
+    if (this.routeSubscription$ != null) {
+      this.routeSubscription$.unsubscribe();
+    }
+  }
 }

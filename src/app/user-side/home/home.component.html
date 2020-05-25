@@ -1,17 +1,18 @@
 <div [@transitionAnimations]>
   <app-subheader [subheaderText]="subheaderText"></app-subheader>
 
-  <mat-tab-group mat-align-tabs="start">
-    <mat-tab label="Near Me">
-      <div class="mat-tab-content">
-        <app-near-me></app-near-me>
-      </div>
-    </mat-tab>
+  <div fxLayout="column" fxLayoutGap="0.7em">
+    <nav mat-tab-nav-bar>
+      <a mat-tab-link
+         *ngFor="let link of navLinks"
+         [routerLink]="link.path"
+         (click)="activeLink=link.path"
+         [active]="activeLink===link.path">
+        {{link.label}}
+      </a>
+    </nav>
 
-    <mat-tab label="By Categories">
-      <div class="mat-tab-content">
-        <app-by-categories></app-by-categories>
-      </div>
-    </mat-tab>
-  </mat-tab-group>
+    <router-outlet></router-outlet>
+  </div>
+
 </div>
