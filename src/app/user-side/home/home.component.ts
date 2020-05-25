@@ -1,7 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {animate, style, transition, trigger} from '@angular/animations';
-import {ActivatedRoute, NavigationEnd, Router, RouterEvent} from '@angular/router';
-import {filter} from 'rxjs/operators';
+import {ActivatedRoute} from '@angular/router';
 import {Subscription} from 'rxjs';
 
 @Component({
@@ -26,18 +25,19 @@ export class HomeComponent implements OnInit, OnDestroy {
   activeLink = this.navLinks[0].path;
   routeSubscription$: Subscription;
 
-  constructor(private route: ActivatedRoute) {
-  }
+  constructor(private route: ActivatedRoute) {}
 
   ngOnInit() {
-    this.routeSubscription$ = this.route.firstChild.url.subscribe(
-      rsp => {
-        this.activeLink = '/' + rsp.toString();
-      }
-    );
+    this.routeSubscription$ = this.route.firstChild.url.subscribe(rsp => {
+      const currentActiveLink = '/' + rsp.toString();
+      if (this.activeLink !== currentActiveLink)
+        this.activeLink = currentActiveLink;
+    });
   }
 
   ngOnDestroy(): void {
-    this.routeSubscription$.unsubscribe();
+    if (this.routeSubscription$ != null) {
+      this.routeSubscription$.unsubscribe();
+    }
   }
 }
