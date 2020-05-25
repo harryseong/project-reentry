@@ -1,7 +1,7 @@
 <div fxLayout="column" class="content">
 
   <div fxLayout="row wrap" fxLayoutAlign="space-between center">
-    <h2 class="page-header">[Admin] All&nbsp;Organizations</h2>
+    <h2 class="page-header"><i class="fas fa-user-cog fa-fw"></i> All&nbsp;Organizations</h2>
 
     <button mat-stroked-button routerLink="/admin/orgs/new" routerLinkActive="active">
       <span><i class="fas fa-plus fa-fw"></i>&nbsp;NEW</span>
@@ -14,7 +14,7 @@
 
   <ng-container *ngIf="dataSource; else progressSpinner">
     <div fxLayout="row">
-      <mat-form-field fxFlex="18em" fxFlex.xs="50">
+      <mat-form-field fxFlex="35" fxFlex.sm="50" fxFlex.xs="75">
         <mat-label><i class="fas fa-search"></i> Search</mat-label>
         <input matInput (keyup)="applyFilter($event.target.value)">
         <mat-hint>Search by name, services, city, county...</mat-hint>

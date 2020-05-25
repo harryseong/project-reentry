@@ -22,7 +22,7 @@ export class OrgDeleteDialogComponent {
     this.firestoreService.deleteOrg(this.data.orgName, true);
   }
 
-  closeDialog(): void {
+  cancel(): void {
     this.dialogRef.close();
   }
 }

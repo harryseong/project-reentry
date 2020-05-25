@@ -10,8 +10,8 @@ import {FirestoreService} from '../firestore/firestore.service';
   providedIn: 'root'
 })
 export class UserService {
-  user$ = new BehaviorSubject(null);
-  isAdmin$ = new BehaviorSubject(null);
+  user$: BehaviorSubject<any> = new BehaviorSubject(null);
+  isAdmin$: BehaviorSubject<boolean> = new BehaviorSubject(null);
   afUserSubscription$: Subscription;
 
   constructor(private afAuth: AngularFireAuth,

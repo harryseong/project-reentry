@@ -6,7 +6,7 @@
   <div fxLayout="column" class="content" *ngIf="orgForm != null">
 
     <div fxLayout="row wrap" fxLayoutAlign="space-between center">
-      <h2 class="page-header">[Admin] {{org.name}} <i class="far fa-edit fa-fw"></i></h2>
+      <h2 class="page-header"><i class="fas fa-user-cog fa-fw"></i> {{org.name}} <i class="far fa-edit fa-fw"></i></h2>
 
       <button type="button" mat-stroked-button [routerLink]="['/', 'admin', 'orgs', 'view', org.address.city, org.name]">
         <span><i class="fas fa-times fa-fw"></i> CANCEL</span>

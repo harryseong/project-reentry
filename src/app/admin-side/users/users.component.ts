@@ -12,7 +12,7 @@ import {DialogService} from '../../core/services/dialog/dialog.service';
   styleUrls: ['./users.component.scss']
 })
 export class UsersComponent implements OnInit {
-  displayedColumns: string[] = ['email', 'role'];
+  displayedColumns: string[] = ['name', 'email', 'role'];
   dataSource: MatTableDataSource<any>;
   userList: any[] = [];
 
@@ -37,6 +37,8 @@ export class UsersComponent implements OnInit {
     this.userList = data.sort((a, b) => {
       const isAsc = sort.direction === 'asc';
       switch (sort.active) {
+        case 'name':
+          return this.compare(a.name, b.name, isAsc);
         case 'email':
           return this.compare(a.email, b.email, isAsc);
         case 'role':
