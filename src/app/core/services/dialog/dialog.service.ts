@@ -4,6 +4,7 @@ import {HelpDialogComponent} from '../../../shared/components/dialogs/help-dialo
 import {LanguagesDialogComponent} from '../../../shared/components/dialogs/admin/languages-dialog/languages-dialog.component';
 import {ServiceCategoriesDialogComponent} from '../../../shared/components/dialogs/admin/service-categories-dialog/service-categories-dialog.component';
 import {OrgDeleteDialogComponent} from '../../../shared/components/dialogs/admin/org-delete-dialog/org-delete-dialog.component';
+import {UserDialogComponent} from '../../../shared/components/dialogs/admin/user-dialog/user-dialog.component';
 
 @Injectable({
   providedIn: 'root'
@@ -44,6 +45,16 @@ export class DialogService {
       data: {orgCity, orgName},
       width: '30em',
       autoFocus: false
+    });
+  }
+
+  openUserDialog(email: string, role: string) {
+    this.dialog.open(UserDialogComponent, {
+      width: '30em',
+      data: {
+        email,
+        role
+      }
     });
   }
 }

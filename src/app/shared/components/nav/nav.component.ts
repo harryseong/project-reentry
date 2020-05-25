@@ -1,28 +1,21 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Location} from '@angular/common';
-import {ActivatedRoute} from '@angular/router';
-import {BehaviorSubject, Subscription} from 'rxjs';
+import {UserService} from '../../../core/services/user/user.service';
 
 @Component({
   selector: 'app-nav',
   templateUrl: './nav.component.html',
   styleUrls: ['./nav.component.scss']
 })
-export class NavComponent implements OnInit, OnDestroy {
-  isAdminPage$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  activatedRouteSubscription$: Subscription;
+export class NavComponent implements OnInit {
+  isAdmin$ = null;
 
   constructor(private location: Location,
-              private route: ActivatedRoute) { }
-
-  ngOnInit() {
-    this.activatedRouteSubscription$ = this.route.parent.url.subscribe(rsp => {
-      this.isAdminPage$.next(rsp.toString() === 'admin');
-    });
+              private userService: UserService) {
+    this.isAdmin$ = this.userService.isAdmin$;
   }
 
-  ngOnDestroy(): void {
-    this.activatedRouteSubscription$.unsubscribe();
+  ngOnInit() {
   }
 
   goBack() {

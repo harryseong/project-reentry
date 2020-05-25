@@ -1,4 +1,17 @@
-<div fxLayout="row" fxLayoutGap="0.5em">
-  <button mat-stroked-button [routerLink]="['/', 'admin', 'orgs']">Organizations</button>
-  <button mat-stroked-button [routerLink]="['/', 'admin', 'users']">Users</button>
+<div fxLayout="row" fxLayoutAlign="center center">
+  <div fxLayout="column" fxFlex="40" fxFlex.sm="50" fxFlex.xs="95" fxLayoutGap="0.5em">
+
+    <h2><i class="fas fa-user-cog fa-fw"></i> Admin</h2>
+
+    <app-login></app-login>
+
+    <div fxLayout="column" fxLayoutGap="1em" *ngIf="isAdmin$ | async">
+      <h3>Admin-Only Pages</h3>
+
+      <div fxLayout="column" fxLayoutGap="0.5em">
+        <button mat-stroked-button [routerLink]="['/', 'admin', 'orgs']">Manage Organizations</button>
+        <button mat-stroked-button [routerLink]="['/', 'admin', 'users']">Manage Users</button>
+      </div>
+    </div>
+  </div>
 </div>

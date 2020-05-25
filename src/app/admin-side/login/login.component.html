@@ -1,0 +1,28 @@
+<ng-template #loggedOut>
+  <div fxLayout="column" fxLayoutGap="1em">
+    <div>
+      Log in to access Project Reentry admin features.
+    </div>
+    <button mat-stroked-button (click)="login()">LOGIN</button>
+  </div>
+</ng-template>
+
+<ng-container *ngIf="user$ | async as user; else loggedOut">
+  <div fxLayout="column" fxLayoutGap="1em">
+
+    <div fxLayout="row" fxLayoutGap="0.5em">
+      <img [src]="user.photoURL" alt="admin_photo" class="admin-photo mat-elevation-z2">
+
+      <div fxLayout="column" fxLayoutGap="0.4em">
+        <span class="admin-name">{{user.displayName}}</span>
+
+        <div>
+          <div class="admin-info"><strong>Email:</strong> {{user.email}}</div>
+          <div class="admin-info"><strong>Role:</strong> {{(isAdmin$ | async) ? 'admin' : 'user'}}</div>
+        </div>
+      </div>
+    </div>
+
+    <button mat-stroked-button (click)="logout()">LOGOUT</button>
+  </div>
+</ng-container>

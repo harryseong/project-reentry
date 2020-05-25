@@ -13,7 +13,7 @@ export class FirestoreService {
   allOrgs$ = new BehaviorSubject(null);
   currentOrg$ = new BehaviorSubject(null);
   serviceCategories$ = new BehaviorSubject(null);
-  admins$ = new BehaviorSubject(null);
+  admins$: BehaviorSubject<any[]> = new BehaviorSubject([]);
 
   organizations: AngularFirestoreCollection<any>;
   serviceCategories: AngularFirestoreCollection<any>;
