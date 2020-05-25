@@ -89,34 +89,42 @@ export class FirestoreService {
       });
   }
 
-  saveOrgFromForm(orgForm: any, showSnackBar: boolean) {
-    this.organizations.add(orgForm.value)
+  saveOrgFromForm(org: Org, showSnackBar: boolean) {
+    this.organizations.add(org)
       .then(() => {
-        console.log('New organization was successfully saved: ' + orgForm.get('name').value);
+        this.currentOrg$.next(org);
+        this.getAllOrgs();
         if (showSnackBar === true) {
-          const message = 'New organization was successfully saved.';
+          const message = 'New org saved successfully: ' + org.name;
           const action = 'OK';
-          this.snackBarService.openSnackBar(message, action, 4000);
-          this.router.navigate(['/', 'admin', 'orgs']);
+          this.snackBarService.openSnackBar(message, action, 3000);
         }
+        this.router.navigate(['/', 'admin', 'orgs']);
       });
   }
 
-  updateOrg(orgForm: any, originalOrgName: string, showSnackBar: boolean) {
-    const query = this.organizations.ref.where('name', '==', originalOrgName);
+  updateOrg(org: Org, originalOrgCity: string, originalOrgName: string, showSnackBar: boolean) {
+    const query = this.organizations.ref.where('address.city', '==', originalOrgCity).where('name', '==', originalOrgName);
     query.get().then(querySnapshot => {
       if (querySnapshot.empty) {
-        console.log('no documents found');
+        console.log('No org documents found with city and name: ' + org.address.city + ', ' + org.name);
       } else {
-        querySnapshot.forEach(docSnapshot => this.organizations.doc(docSnapshot.id).set(orgForm.value));
-        this.router.navigate(['/', 'admin', 'organization', 'view', orgForm.get('name').value]);
+        querySnapshot.forEach(docSnapshot => this.organizations.doc(docSnapshot.id).set(org));
+        this.currentOrg$.next(org);
+        this.allOrgs$.next(this.allOrgs$.value.map(o => {
+          if (o.address.city === originalOrgCity && o.name === originalOrgName) {
+            return org;
+          } else {
+            return o;
+          }
+        }));
+        this.router.navigate(['/', 'admin', 'orgs', 'view', org.address.city, org.name]);
       }
     });
-    console.log('Organization was successfully updated: ' + orgForm.get('name').value);
     if (showSnackBar === true) {
-      const message = 'Organization was successfully updated.';
+      const message = 'Org updated successfully: ' + org.name;
       const action = 'OK';
-      this.snackBarService.openSnackBar(message, action, 4000);
+      this.snackBarService.openSnackBar(message, action, 3000);
     }
   }
 
@@ -124,16 +132,15 @@ export class FirestoreService {
     const query = this.organizations.ref.where('address.city', '==', orgCity).where('name', '==', orgName);
     query.get().then(querySnapshot => {
       if (querySnapshot.empty) {
-        console.log('No documents found');
+        console.log('No org documents found with city and name: ' + orgCity + ', ' + orgName);
       } else {
         querySnapshot.forEach(docSnapshot => this.organizations.doc(docSnapshot.id).delete());
-        console.log('Organization was deleted: ' + orgName);
         this.router.navigate(['/admin/orgs']);
 
         if (showSnackBar === true) {
-          const message = orgName + ' has been deleted.';
+          const message = 'Org deleted successfully: ' + orgName;
           const action = 'OK';
-          this.snackBarService.openSnackBar(message, action);
+          this.snackBarService.openSnackBar(message, action, 3000);
         }
       }
     });

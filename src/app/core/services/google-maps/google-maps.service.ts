@@ -72,7 +72,7 @@ export class GoogleMapsService {
    * @param org: Org JSON object
    * @param showSnackBar: boolean
    */
-  codeAddressAndUpdate(originalOrgName: string, org: Org, showSnackBar: boolean): void {
+  codeAddressAndUpdate(org: Org, originalOrgCity: string, originalOrgName: string, showSnackBar: boolean): void {
     const orgAddressString = this.orgService.extractOrgAddressString(org);
     this.geocoder.geocode( {address: orgAddressString}, (results, status) => {
       if (status.toString() === 'OK') {
@@ -82,7 +82,7 @@ export class GoogleMapsService {
         } else {
           console.warn('No geocode results found for orgAddressString: ' + orgAddressString);
         }
-        this.firestoreService.updateOrg(org, originalOrgName, true);
+        this.firestoreService.updateOrg(org, originalOrgCity, originalOrgName, true);
       } else {
         console.warn('Geocode was not successful for the following reason: ' + status);
         if (showSnackBar === true) {

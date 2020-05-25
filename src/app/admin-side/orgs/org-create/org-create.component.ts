@@ -66,8 +66,8 @@ export class OrgCreateComponent implements OnInit, OnDestroy {
       streetAddress2: new FormControl(''),
       city: new FormControl('', [Validators.required]),
       county: new FormControl(null),
-      state: new FormControl('Michigan', [Validators.required]),
-      zipCode: new FormControl('', [Validators.required, Validators.pattern('^[0-9]{5}(?:-[0-9]{4})?$')]),
+      state: new FormControl('MI', [Validators.required]),
+      zipCode: new FormControl('', [Validators.required, Validators.pattern(Constants.REGEX_PATTERN.zipCode)]),
       gpsCoords: new FormGroup({
         lat: new FormControl(''),
         lng: new FormControl(''),
@@ -75,12 +75,12 @@ export class OrgCreateComponent implements OnInit, OnDestroy {
     }),
     formattedAddress: new FormControl(null),
     website: new FormControl('', [
-      Validators.pattern('^(?:http(s)?:\\/\\/)?[\\w.-]+(?:\\.[\\w\\.-]+)+[\\w\\-\\._~:/?#[\\]@!\\$&\'\\(\\)\\*\\+,;=.]+$')
+      Validators.pattern(Constants.REGEX_PATTERN.url)
       ]),
     contact: new FormGroup({
       name: new FormControl(''),
       email: new FormControl('', [Validators.email]),
-      phone: new FormControl('', [Validators.pattern('^\\(?([0-9]{3})\\)?[-.●]?([0-9]{3})[-.●]?([0-9]{4})$')]),
+      phone: new FormControl('', [Validators.pattern(Constants.REGEX_PATTERN.phone)]),
     }),
     languages: new FormControl([]),
     payment: new FormControl(''),
@@ -121,7 +121,7 @@ export class OrgCreateComponent implements OnInit, OnDestroy {
     const specifyHours = hoursFormGroup.get('specifyHours').value;
     if (specifyHours === true) {
       this.daysOfWeek.forEach((day: string) => {
-        hoursFormGroup.get(day.toLowerCase()).get('open').setValue(true);
+        hoursFormGroup.get(day.toLowerCase()).get('open').setValue(false);
         this.toggleDay(day.toLowerCase());
       });
     } else {

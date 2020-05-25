@@ -104,7 +104,7 @@ export class OrgEditComponent implements OnInit, OnDestroy {
           streetAddress2: new FormControl(org.address.streetAddress2),
           city: new FormControl(org.address.city, [Validators.required]),
           state: new FormControl(org.address.state, [Validators.required]),
-          zipCode: new FormControl(org.address.zipCode, [Validators.required, Validators.pattern(Constants.REGEX_PATTERN.zipcode)]),
+          zipCode: new FormControl(org.address.zipCode, [Validators.required, Validators.pattern(Constants.REGEX_PATTERN.zipCode)]),
           gpsCoords: new FormGroup({
             lat: new FormControl(''),
             lng: new FormControl(''),
@@ -203,9 +203,8 @@ export class OrgEditComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    const ac = this.orgForm.get('address');
-    const fullAddress = ac.get('streetAddress1').value + ' ' + ac.get('streetAddress2').value +  ', ' +
-      ac.get('city').value + ', ' + ac.get('state').value;
-    // this.googleMapsService.codeAddressAndUpdate(fullAddress, orgName, orgForm);
+    const originalOrgCity = this.currentOrg$.value.address.city;
+    const originalOrgName = this.currentOrg$.value.name;
+    this.googleMapsService.codeAddressAndUpdate(this.orgForm.value, originalOrgCity, originalOrgName, true);
   }
 }
