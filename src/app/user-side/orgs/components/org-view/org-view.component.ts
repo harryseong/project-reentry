@@ -35,7 +35,7 @@ export class OrgViewComponent implements OnInit, AfterViewInit, OnDestroy {
     this.loadOrg();
     this.currentOrgSubscription$ = this.db.currentOrg$.subscribe(org => {
       if (org !== null) {
-        this.db.updateOrgViewCount(org.name);
+        this.db.updateOrgViewCount(org);
       }
     });
   }

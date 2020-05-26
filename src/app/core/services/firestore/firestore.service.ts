@@ -5,6 +5,7 @@ import {SnackBarService} from '../snack-bar/snack-bar.service';
 import {BehaviorSubject} from 'rxjs';
 import {Org} from '../../../shared/interfaces/org';
 import {OrgService} from '../org/org.service';
+import * as moment from 'moment';
 
 @Injectable({
   providedIn: 'root'
@@ -148,12 +149,14 @@ export class FirestoreService {
 
   /**
    * Update view count of the service category whenever user visits service category page.
-   * @param serviceCategory: String name of service category.
+   * @param serviceCategoryName: String name of service category.
    */
-  updateServiceCategoryViewCount(serviceCategory: string) {
-    const year = new Date().getFullYear();
-    const month = new Date().getMonth();
-    const query = this.serviceCategories.ref.where('name', '==', serviceCategory);
+  updateServiceCategoryViewCount(serviceCategoryName: string) {
+    const year = moment().year();
+    const month = moment().month() + 1;
+    const day = moment().date();
+
+    const query = this.serviceCategories.ref.where('name', '==', serviceCategoryName);
     query.get().then(querySnapshot => {
       if (querySnapshot.empty) {
         console.warn('no documents found');
@@ -163,21 +166,29 @@ export class FirestoreService {
           const data = docSnapshot.data();
           const incrementCount = () => {
             if (data.viewData[year] !== undefined) {
+
               if (data.viewData[year][month] !== undefined) {
-                // Increment count for year-month.
-                data.viewData[year][month]++;
+
+                if (data.viewData[year][month][day] !== undefined) {
+                  data.viewData[year][month][day]++;
+                } else {
+                  // Create entry and set count to 1.
+                  data.viewData[year][month][day] = 1;
+                }
               } else {
-                // Create month entry and set count to 0.
-                data.viewData[year][month] = 1;
+                // Create entry and set count to 1.
+                data.viewData[year][month] = {};
+                data.viewData[year][month][day] = 1;
               }
               // Update data on Firebase.
               this.serviceCategories.doc(id).set(data);
             } else {
               // If year does not exist, create year entry.
               data.viewData[year] = {};
+              data.viewData[year][month] = {};
               this.serviceCategories.doc(id).set(data).then(() => {
                 // Create month entry and set count to 0.
-                data.viewData[year][month] = 1;
+                data.viewData[year][month][day] = 1;
                 // Update data on Firebase.
                 this.serviceCategories.doc(id).set(data);
               });
@@ -200,10 +211,12 @@ export class FirestoreService {
    * Update view count of the organization whenever user visits organization page.
    * @param orgName: String name of organization.
    */
-  updateOrgViewCount(orgName: string) {
-    const year = new Date().getFullYear();
-    const month = new Date().getMonth();
-    const query = this.organizations.ref.where('name', '==', orgName);
+  updateOrgViewCount(org: Org) {
+    const year = moment().year();
+    const month = moment().month() + 1;
+    const day = moment().date();
+
+    const query = this.organizations.ref.where('address.city', '==', org.address.city).where('name', '==', org.name);
     query.get().then(querySnapshot => {
       if (querySnapshot.empty) {
         console.log('no documents found');
@@ -213,26 +226,35 @@ export class FirestoreService {
           const data = docSnapshot.data();
           const incrementCount = () => {
             if (data.viewData[year] !== undefined) {
+
               if (data.viewData[year][month] !== undefined) {
-                // Increment count for year-month.
-                data.viewData[year][month]++;
+
+                if (data.viewData[year][month][day] !== undefined) {
+                  data.viewData[year][month][day]++;
+                } else {
+                  // Create entry and set count to 1.
+                  data.viewData[year][month][day] = 1;
+                }
               } else {
-                // Create month entry and set count to 0.
-                data.viewData[year][month] = 1;
+                // Create entry and set count to 1.
+                data.viewData[year][month] = {};
+                data.viewData[year][month][day] = 1;
               }
               // Update data on Firebase.
               this.organizations.doc(id).set(data);
             } else {
               // If year does not exist, create year entry.
               data.viewData[year] = {};
+              data.viewData[year][month] = {};
               this.organizations.doc(id).set(data).then(() => {
-                // Create month entry and set count to 0.
-                data.viewData[year][month] = 1;
+                // Create entry and set count to 1.
+                data.viewData[year][month][day] = 1;
                 // Update data on Firebase.
                 this.organizations.doc(id).set(data);
               });
             }
           };
+
           if (data.viewData !== undefined && data.viewData !== null) {
             incrementCount();
           } else {
