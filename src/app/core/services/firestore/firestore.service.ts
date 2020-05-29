@@ -173,7 +173,12 @@ export class FirestoreService {
         querySnapshot.forEach(docSnapshot => {
           const id = docSnapshot.id;
           const data = docSnapshot.data();
+
           const incrementCount = () => {
+            if (data.viewData === undefined || data.viewData === null) {
+              data.viewData = {};
+            }
+
             if (data.viewData[year] !== undefined) {
 
               if (data.viewData[year][month] !== undefined) {
@@ -189,28 +194,17 @@ export class FirestoreService {
                 data.viewData[year][month] = {};
                 data.viewData[year][month][day] = 1;
               }
-              // Update data on Firebase.
-              this.serviceCategories.doc(id).set(data);
             } else {
               // If year does not exist, create year entry.
               data.viewData[year] = {};
               data.viewData[year][month] = {};
-              this.serviceCategories.doc(id).set(data).then(() => {
-                // Create month entry and set count to 0.
-                data.viewData[year][month][day] = 1;
-                // Update data on Firebase.
-                this.serviceCategories.doc(id).set(data);
-              });
+              data.viewData[year][month][day] = 1;
             }
+
+            this.serviceCategories.doc(id).set(data);
           };
-          if (data.viewData !== undefined) {
-            incrementCount();
-          } else {
-            data.viewData = {};
-            this.serviceCategories.doc(id).set(data).then(() => {
-              incrementCount();
-            });
-          }
+
+          incrementCount();
         });
       }
     });
@@ -233,7 +227,12 @@ export class FirestoreService {
         querySnapshot.forEach(docSnapshot => {
           const id = docSnapshot.id;
           const data = docSnapshot.data();
+
           const incrementCount = () => {
+            if (data.viewData === undefined || data.viewData === null) {
+              data.viewData = {};
+            }
+
             if (data.viewData[year] !== undefined) {
 
               if (data.viewData[year][month] !== undefined) {
@@ -249,29 +248,16 @@ export class FirestoreService {
                 data.viewData[year][month] = {};
                 data.viewData[year][month][day] = 1;
               }
-              // Update data on Firebase.
-              this.organizations.doc(id).set(data);
             } else {
               // If year does not exist, create year entry.
               data.viewData[year] = {};
               data.viewData[year][month] = {};
-              this.organizations.doc(id).set(data).then(() => {
-                // Create entry and set count to 1.
-                data.viewData[year][month][day] = 1;
-                // Update data on Firebase.
-                this.organizations.doc(id).set(data);
-              });
+              data.viewData[year][month][day] = 1;
             }
+            this.organizations.doc(id).set(data);
           };
 
-          if (data.viewData !== undefined && data.viewData !== null) {
-            incrementCount();
-          } else {
-            data.viewData = {};
-            this.organizations.doc(id).set(data).then(() => {
-              incrementCount();
-            });
-          }
+          incrementCount();
         });
       }
     });
