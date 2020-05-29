@@ -16,15 +16,13 @@ export class OrgAllComponent implements OnInit {
   displayedColumns: string[] = ['name', 'services', 'county', 'city'];
   dataSource: MatTableDataSource<any>;
   orgList: any[] = [];
-  serviceList: any[] = [];
-  languageList: any[] = [];
 
   constructor(private db: FirestoreService,
               private router: Router,
               private snackBarService: SnackBarService) {}
 
   ngOnInit() {
-    this.db.organizations.valueChanges().subscribe(
+    this.db.allOrgs$.subscribe(
       rsp => {
         this.orgList = rsp;
         this.dataSource = new MatTableDataSource(rsp);
@@ -42,11 +40,6 @@ export class OrgAllComponent implements OnInit {
       error1 => console.error(error1),
       () => {}
     );
-
-    this.db.languages.valueChanges()
-      .subscribe(rsp => this.languageList = this.db._sort(rsp, 'language'));
-    this.db.serviceCategories.valueChanges()
-      .subscribe(rsp => this.serviceList = this.db._sort(rsp, 'service'));
   }
 
   sortData(sort: Sort) {

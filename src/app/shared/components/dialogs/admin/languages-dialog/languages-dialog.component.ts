@@ -1,17 +1,16 @@
-import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import {FirestoreService} from '../../../../../core/services/firestore/firestore.service';
-import {Subscription} from 'rxjs';
+import {BehaviorSubject, Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-languages-dialog',
   templateUrl: './languages-dialog.component.html',
   styleUrls: ['./languages-dialog.component.scss']
 })
-export class LanguagesDialogComponent implements OnInit, OnDestroy {
-  languagesSubscription$: Subscription;
-  languages = [];
+export class LanguagesDialogComponent implements OnInit {
+  languages$: BehaviorSubject<any[]> = null;
   editMode = false;
   createMode = false;
   prevLanguageName = '';
@@ -21,16 +20,11 @@ export class LanguagesDialogComponent implements OnInit, OnDestroy {
 
   constructor(public dialogRef: MatDialogRef<LanguagesDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any,
-              private db: FirestoreService) { }
-
-  ngOnInit() {
-    this.languagesSubscription$ = this.db.languages.valueChanges()
-      .subscribe(rsp => this.languages = this.db._sort(rsp, 'language'));
+              private db: FirestoreService) {
+    this.languages$ = this.db.languages$;
   }
 
-  ngOnDestroy(): void {
-    this.languagesSubscription$.unsubscribe();
-  }
+  ngOnInit() {}
 
   cancel() {
     this.dialogRef.close();

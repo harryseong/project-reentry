@@ -1,17 +1,16 @@
-import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {FirestoreService} from '../../../../../core/services/firestore/firestore.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import {Subscription} from 'rxjs';
+import {BehaviorSubject, Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-service-categories-dialog',
   templateUrl: './service-categories-dialog.component.html',
   styleUrls: ['./service-categories-dialog.component.scss']
 })
-export class ServiceCategoriesDialogComponent implements OnInit, OnDestroy {
-  serviceCategoriesSubscription$: Subscription;
-  serviceCategories = [];
+export class ServiceCategoriesDialogComponent implements OnInit {
+  serviceCategories$: BehaviorSubject<any[]> = null;
   editMode = false;
   createMode = false;
   prevServiceCategoryName = '';
@@ -21,16 +20,11 @@ export class ServiceCategoriesDialogComponent implements OnInit, OnDestroy {
 
   constructor(public dialogRef: MatDialogRef<ServiceCategoriesDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any,
-              private db: FirestoreService) { }
-
-  ngOnInit() {
-    this.serviceCategoriesSubscription$ = this.db.serviceCategories.valueChanges()
-      .subscribe(rsp => this.serviceCategories = this.db._sort(rsp, 'name'));
+              private db: FirestoreService) {
+    this.serviceCategories$ = this.db.serviceCategories$;
   }
 
-  ngOnDestroy(): void {
-    this.serviceCategoriesSubscription$.unsubscribe();
-  }
+  ngOnInit() {}
 
   cancel() {
     this.dialogRef.close();
