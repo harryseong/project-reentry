@@ -1,22 +1,21 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {FirestoreService} from '../../../core/services/firestore/firestore.service';
 import { MatDialog } from '@angular/material/dialog';
 import {Constants} from '../../../shared/constants/constants';
-import {OrgService} from '../../../core/services/org/org.service';
 import {SubscribeErrorStateMatcher} from '../../../shared/classes/subscribe-error-state-matcher';
 import {DialogService} from '../../../core/services/dialog/dialog.service';
-import {Subscription} from 'rxjs';
 import {GoogleMapsService} from '../../../core/services/google-maps/google-maps.service';
+import {BehaviorSubject} from 'rxjs';
 
 @Component({
   selector: 'app-org-create',
   templateUrl: './org-create.component.html',
   styleUrls: ['./org-create.component.scss']
 })
-export class OrgCreateComponent implements OnInit, OnDestroy {
-  languagesSubscription$: Subscription;
-  serviceCategoriesSubscription$: Subscription;
+export class OrgCreateComponent implements OnInit {
+  languages$: BehaviorSubject<any[]> = null;
+  serviceCategories$: BehaviorSubject<any[]> = null;
 
   matcher: SubscribeErrorStateMatcher; // For form error matching.
   orgForm = new FormGroup({
@@ -90,30 +89,21 @@ export class OrgCreateComponent implements OnInit, OnDestroy {
     bringWithYou: new FormControl(''),
     additionalNotes: new FormControl('')
   });
-  serviceCategories: any[] = [];
-  languages: any[] = [];
   daysOfWeek = Constants.DAYS_OF_WEEK;
   paymentOptions = Constants.PAYMENT_OPTIONS;
 
-  constructor(private firestoreService: FirestoreService,
+  constructor(private db: FirestoreService,
               public dialog: MatDialog,
               private dialogService: DialogService,
-              private googleMapsService: GoogleMapsService,
-              private orgService: OrgService) { }
+              private googleMapsService: GoogleMapsService) {
+    this.languages$ = this.db.languages$;
+    this.serviceCategories$ = this.db.serviceCategories$;
+  }
 
   ngOnInit() {
-    this.languagesSubscription$ = this.firestoreService.languages.valueChanges()
-      .subscribe(rsp => this.languages = this.firestoreService._sort(rsp, 'language'));
-    this.serviceCategoriesSubscription$ = this.firestoreService.serviceCategories.valueChanges()
-      .subscribe(rsp => this.serviceCategories = this.firestoreService._sort(rsp, 'name'));
     this.daysOfWeek.forEach(day => {
       this.toggleDay(day);
     });
-  }
-
-  ngOnDestroy(): void {
-    this.languagesSubscription$.unsubscribe();
-    this.serviceCategoriesSubscription$.unsubscribe();
   }
 
   specifyHours() {
@@ -146,11 +136,11 @@ export class OrgCreateComponent implements OnInit, OnDestroy {
   }
 
   editLanguages(): void {
-    this.dialogService.openEditLanguagesDialog(this.languages);
+    this.dialogService.openEditLanguagesDialog(this.languages$.value);
   }
 
   editServiceCategories(): void {
-    this.dialogService.openEditServiceCategoriesDialog(this.serviceCategories);
+    this.dialogService.openEditServiceCategoriesDialog(this.serviceCategories$.value);
   }
 
   onSubmit() {

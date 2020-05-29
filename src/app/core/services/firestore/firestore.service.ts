@@ -13,6 +13,7 @@ import * as moment from 'moment';
 export class FirestoreService {
   allOrgs$ = new BehaviorSubject(null);
   currentOrg$ = new BehaviorSubject(null);
+  languages$ = new BehaviorSubject(null);
   serviceCategories$ = new BehaviorSubject(null);
   admins$: BehaviorSubject<any[]> = new BehaviorSubject([]);
 
@@ -51,6 +52,14 @@ export class FirestoreService {
         this.allOrgs$.next(sortedOrgs);
       })
       .catch(err => this.snackBarService.openSnackBar('Something went wrong. Please refresh the page.', 'OK'));
+  }
+
+  getAllLanguages() {
+    this.languages.get().toPromise()
+      .then(querySnapshot => {
+        const sortedLanguages = this._sort(querySnapshot.docs.map(doc => doc.data()), 'language');
+        this.languages$.next(sortedLanguages);
+      })
   }
 
   // Run this once when Home component initiated.
