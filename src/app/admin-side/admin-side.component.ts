@@ -13,6 +13,7 @@ export class AdminSideComponent implements OnInit {
   ngOnInit() {
     this.db.getAllAdmins();
     this.db.getAllOrgs();
+    this.db.getAllLanguages();
     this.db.getAllServiceCategories();
   }
 }

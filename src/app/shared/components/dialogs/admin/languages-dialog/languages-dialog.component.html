@@ -7,7 +7,7 @@
   </span>
 </div>
 
-<div mat-dialog-content fxLayout="column">
+<div mat-dialog-content fxLayout="column" *ngIf="languages$ | async as languages">
   <table *ngIf="!editMode && !createMode">
     <tr *ngFor="let language of languages; last as isLast">
       <td [class]="isLast ? 'last' : ''">

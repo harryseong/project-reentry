@@ -7,9 +7,9 @@
   </span>
 </div>
 
-<div mat-dialog-content fxLayout="column">
+<div mat-dialog-content fxLayout="column" *ngIf="serviceCategories$ | async as serviceCategories">
   <table *ngIf="!editMode && !createMode">
-    <tr *ngFor="let serviceCategory of serviceCategories; last as isLast">
+    <tr *ngFor="let serviceCategory of (serviceCategories$ | async); last as isLast">
       <td [class]="isLast ? 'last' : ''">
         <div fxLayout="row" fxLayoutAlign="space-between">
           <span>{{serviceCategory.name}}</span>

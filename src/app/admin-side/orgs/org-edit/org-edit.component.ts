@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, NgZone, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, NgZone, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {FirestoreService} from '../../../core/services/firestore/firestore.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -27,18 +27,16 @@ declare var google: any;
     ])
   ]
 })
-export class OrgEditComponent implements OnInit, OnDestroy {
+export class OrgEditComponent implements OnInit {
   currentOrg$: BehaviorSubject<Org> = null;
-  languagesSubscription$: Subscription;
-  serviceCategoriesSubscription$: Subscription;
+  languages$: BehaviorSubject<any> = null;
+  serviceCategories$: BehaviorSubject<any> = null;
   matcher: SubscribeErrorStateMatcher; // For form error matching.
   orgForm: FormGroup = null;
-  serviceCategories: any[] = [];
-  languages: any[] = [];
   daysOfWeek = Constants.DAYS_OF_WEEK;
   paymentOptions = Constants.PAYMENT_OPTIONS;
 
-  constructor(private firestoreService: FirestoreService,
+  constructor(private db: FirestoreService,
               public dialog: MatDialog,
               private dialogService: DialogService,
               private userService: UserService,
@@ -46,14 +44,12 @@ export class OrgEditComponent implements OnInit, OnDestroy {
               private router: Router,
               private route: ActivatedRoute,
               private googleMapsService: GoogleMapsService) {
-    this.currentOrg$ = firestoreService.currentOrg$;
+    this.currentOrg$ = db.currentOrg$;
+    this.languages$ = this.db.languages$;
+    this.serviceCategories$ = this.db.serviceCategories$;
   }
 
   ngOnInit() {
-    this.languagesSubscription$ = this.firestoreService.languages.valueChanges()
-      .subscribe(rsp => this.languages = this.firestoreService._sort(rsp, 'language'));
-    this.serviceCategoriesSubscription$ = this.firestoreService.serviceCategories.valueChanges()
-      .subscribe(rsp => this.serviceCategories = this.firestoreService._sort(rsp, 'name'));
     this.loadOrg();
 
     this.currentOrg$.subscribe(org => {
@@ -133,15 +129,10 @@ export class OrgEditComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {
-    this.languagesSubscription$.unsubscribe();
-    this.serviceCategoriesSubscription$.unsubscribe();
-  }
-
   loadOrg() {
     const orgCity = this.route.snapshot.params.org_city;
     const orgName = this.route.snapshot.params.org_name;
-    this.firestoreService.getOrg(orgCity, orgName);
+    this.db.getOrg(orgCity, orgName);
   }
 
   specifyHours() {
@@ -195,11 +186,11 @@ export class OrgEditComponent implements OnInit, OnDestroy {
   }
 
   editLanguages(): void {
-    this.dialogService.openEditLanguagesDialog(this.languages);
+    this.dialogService.openEditLanguagesDialog(this.db.languages$.value);
   }
 
   editServiceCategories(): void {
-    this.dialogService.openEditServiceCategoriesDialog(this.serviceCategories);
+    this.dialogService.openEditServiceCategoriesDialog(this.db.serviceCategories$.value);
   }
 
   onSubmit() {

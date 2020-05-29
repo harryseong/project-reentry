@@ -29,7 +29,7 @@
         </mat-form-field>
       </div>
 
-      <div fxLayout="row" fxLayoutGap="1.5em" fxLayoutGap.xs="0" fxLayoutAlign="space-between center">
+      <div fxLayout="row" fxLayoutGap="1.5em" fxLayoutGap.xs="0" fxLayoutAlign="space-between center" *ngIf="serviceCategories$ | async as serviceCategories">
         <mat-form-field fxFlex="70" fxFlex.xs="100">
           <mat-label>Services Provided</mat-label>
           <mat-select [required]="true" formControlName="services" multiple [errorStateMatcher]="matcher">
@@ -40,11 +40,11 @@
           </mat-error>
         </mat-form-field>
 
-        <div>
-          <button type="button" mat-stroked-button class="edit-item-list-button" (click)="editServiceCategories()">
-            <span><i class="far fa-edit fa-fw"></i> Service List</span>
-          </button>
-        </div>
+<!--        <div>-->
+<!--          <button type="button" mat-stroked-button class="edit-item-list-button" (click)="editServiceCategories()">-->
+<!--            <span><i class="far fa-edit fa-fw"></i> Service List</span>-->
+<!--          </button>-->
+<!--        </div>-->
       </div>
     </div>
 
@@ -201,7 +201,7 @@
         <i class="fas fa-info-circle fa-fw"></i> Other Information
       </h3>
 
-      <div fxLayout="row wrap" fxLayoutGap="1.5em" fxLayoutGap.xs="0" fxLayoutAlign="space-between center">
+      <div fxLayout="row wrap" fxLayoutGap="1.5em" fxLayoutGap.xs="0" fxLayoutAlign="space-between center" *ngIf="languages$ | async as languages">
         <mat-form-field fxFlex="70" fxFlex.xs="100">
           <mat-label><i class="fas fa-language fa-fw"></i> Other Languages Spoken</mat-label>
           <mat-select formControlName="languages" multiple>
