@@ -15,6 +15,7 @@ import { SubheaderComponent } from './components/subheader/subheader.component';
 import { LanguagesDialogComponent } from './components/dialogs/admin/languages-dialog/languages-dialog.component';
 import { ServiceCategoriesDialogComponent } from './components/dialogs/admin/service-categories-dialog/service-categories-dialog.component';
 import {OrgDeleteDialogComponent} from './components/dialogs/admin/org-delete-dialog/org-delete-dialog.component';
+import { UserSurveyDialogComponent } from './components/dialogs/user-survey-dialog/user-survey-dialog.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import {OrgDeleteDialogComponent} from './components/dialogs/admin/org-delete-di
     SubheaderComponent,
     LanguagesDialogComponent,
     ServiceCategoriesDialogComponent,
-    OrgDeleteDialogComponent
+    UserSurveyDialogComponent
+    OrgDeleteDialogComponent,
   ],
   imports: [
     CommonModule,

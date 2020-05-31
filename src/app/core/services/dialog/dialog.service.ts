@@ -4,6 +4,7 @@ import {HelpDialogComponent} from '../../../shared/components/dialogs/help-dialo
 import {LanguagesDialogComponent} from '../../../shared/components/dialogs/admin/languages-dialog/languages-dialog.component';
 import {ServiceCategoriesDialogComponent} from '../../../shared/components/dialogs/admin/service-categories-dialog/service-categories-dialog.component';
 import {OrgDeleteDialogComponent} from '../../../shared/components/dialogs/admin/org-delete-dialog/org-delete-dialog.component';
+import {UserSurveyDialogComponent} from '../../../shared/components/dialogs/user-survey-dialog/user-survey-dialog.component';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +18,16 @@ export class DialogService {
       width: '25em',
       maxWidth: '95%'
     });
+  }
+
+  openUserSurveyDialog() {
+    const surveyStatus = localStorage.getItem('surveyStatus');
+    if (surveyStatus === null || surveyStatus === 'deferred') {
+      this.dialog.open(UserSurveyDialogComponent, {
+        width: '35em',
+        maxWidth: '95%'
+      })
+    }
   }
 
   openEditLanguagesDialog(languages: any[]) {

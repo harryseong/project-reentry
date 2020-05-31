@@ -3,6 +3,7 @@ import {animate, style, transition, trigger} from '@angular/animations';
 import {ActivatedRoute} from '@angular/router';
 import {Subscription, SubscriptionLike} from 'rxjs';
 import {Location} from "@angular/common";
+import {DialogService} from '../../core/services/dialog/dialog.service';
 
 @Component({
   selector: 'app-home',
@@ -27,7 +28,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   locationSubscription$: SubscriptionLike;
   routeSubscription$: Subscription;
 
-  constructor(private location: Location,
+  constructor(private dialogService: DialogService,
+              private location: Location,
               private route: ActivatedRoute) {}
 
   ngOnInit() {
@@ -35,16 +37,22 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.locationSubscription$ = this.location.subscribe(location => {
       this.setCurrentActiveLink(location.url);
     });
+
+    this.triggerUserSurvey();
   }
 
   ngOnDestroy(): void {
-    if (this.routeSubscription$ != null) {
+    if (this.routeSubscription$ != null ) {
       this.routeSubscription$.unsubscribe();
     }
 
     if (this.locationSubscription$ != null) {
       this.locationSubscription$.unsubscribe();
     }
+  }
+
+  triggerUserSurvey() {
+    this.dialogService.openUserSurveyDialog();
   }
 
   setCurrentActiveLink(rsp) {

@@ -48,6 +48,11 @@ export class FirestoreService {
       .sort((a, b) => (a[parameter] > b[parameter]) ? 1 : ((b[parameter] > a[parameter] ? -1 : 0)));
   }
 
+  submitSurvey(userSurveyResponse: any) {
+    this.db.collection<any>('userSurvey').add(userSurveyResponse);
+  }
+
+  // Run this once when Home component initiated.
   getAllOrgs() {
     const localStorageOrgs = this.localStorageService.getItem('orgs');
     if (localStorageOrgs === null) {

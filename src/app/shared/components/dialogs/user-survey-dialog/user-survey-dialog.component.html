@@ -1,0 +1,32 @@
+<div mat-dialog-title>Project Reentry User Survey</div>
+
+<div mat-dialog-content>
+
+  <div fxLayout="column" fxLayoutGap="1em">
+    <div>
+      Hello, please take a second to tell us about your use of this app.
+    </div>
+
+    <form [formGroup]="userSurveyForm">
+
+      <mat-form-field fxFlex="100">
+        <mat-label>Please describe yourself.</mat-label>
+        <mat-select formControlName="userType" multiple [required]="true">
+          <mat-option *ngFor="let userType of userTypes" [value]="userType">{{userType}}</mat-option>
+        </mat-select>
+        <mat-error *ngIf="userSurveyForm.get('userType').hasError('required')">
+          Please select one option.
+        </mat-error>
+      </mat-form-field>
+
+    </form>
+
+  </div>
+
+</div>
+
+<div mat-dialog-actions fxLayoutAlign="end">
+  <button mat-stroked-button (click)="decline()">No Thanks</button>
+  <button mat-stroked-button (click)="defer()">Later</button>
+  <button mat-stroked-button (click)="submit()" [disabled]="!userSurveyForm.valid">Submit</button>
+</div>
