@@ -17,7 +17,7 @@ import {Subscription} from 'rxjs';
   ],
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  subheaderText = 'Connecting you to the services you need...';
+  subheaderText = 'Connecting you to community resources';
   navLinks = [
     {path: '/', label: 'Near Me'},
     {path: '/categories', label: 'By Categories'},
