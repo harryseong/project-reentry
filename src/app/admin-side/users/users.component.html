@@ -31,8 +31,7 @@
         <ng-container matColumnDef="role">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Role </th>
           <td mat-cell *matCellDef="let element">
-            <button mat-stroked-button (click)="editRole(element.email, element.role)"
-                    matTooltipPosition="right" matTooltip="Click to edit role">
+            <button mat-stroked-button matTooltipPosition="right" (click)="updateRole(element)" [matTooltip]="'Make ' + (element.role === 'user' ? 'admin' : 'user')">
               {{element.role}}
             </button>
           </td>
