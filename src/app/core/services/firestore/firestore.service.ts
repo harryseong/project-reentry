@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable, NgZone} from '@angular/core';
 import {AngularFirestore, AngularFirestoreCollection} from '@angular/fire/firestore';
 import {Router} from '@angular/router';
 import {SnackBarService} from '../snack-bar/snack-bar.service';
@@ -24,6 +24,7 @@ export class FirestoreService {
   users: AngularFirestoreCollection<any>;
 
   constructor(private db: AngularFirestore,
+              private ngZone: NgZone,
               private orgService: OrgService,
               private router: Router,
               private snackBarService: SnackBarService) {
@@ -52,6 +53,12 @@ export class FirestoreService {
         this.allOrgs$.next(sortedOrgs);
       })
       .catch(err => this.snackBarService.openSnackBar('Something went wrong. Please refresh the page.', 'OK'));
+  }
+
+  addToAllOrgs(org: Org) {
+    const allOrgs = this.allOrgs$.value;
+    allOrgs.push(org);
+    this.allOrgs$.next(this._sort(allOrgs, 'name'));
   }
 
   getAllLanguages() {
@@ -103,13 +110,16 @@ export class FirestoreService {
     this.organizations.add(org)
       .then(() => {
         this.currentOrg$.next(org);
-        this.getAllOrgs();
-        if (showSnackBar === true) {
-          const message = 'New org saved successfully: ' + org.name;
-          const action = 'OK';
-          this.snackBarService.openSnackBar(message, action, 3000);
-        }
-        this.router.navigate(['/', 'admin', 'orgs']);
+        this.addToAllOrgs(org);
+
+        this.ngZone.run(() => {
+          if (showSnackBar === true) {
+            const message = 'New org saved successfully: ' + org.name;
+            const action = 'OK';
+            this.snackBarService.openSnackBar(message, action, 3000);
+          }
+          this.router.navigate(['/', 'admin', 'orgs']);
+        });
       });
   }
 
@@ -128,14 +138,17 @@ export class FirestoreService {
             return o;
           }
         }));
-        this.router.navigate(['/', 'admin', 'orgs', 'view', org.address.city, org.name]);
+
+        this.ngZone.run(() => {
+          if (showSnackBar === true) {
+            const message = 'Org updated successfully: ' + org.name;
+            const action = 'OK';
+            this.snackBarService.openSnackBar(message, action, 3000);
+          }
+          this.router.navigate(['/', 'admin', 'orgs', 'view', org.address.city, org.name]);
+        });
       }
     });
-    if (showSnackBar === true) {
-      const message = 'Org updated successfully: ' + org.name;
-      const action = 'OK';
-      this.snackBarService.openSnackBar(message, action, 3000);
-    }
   }
 
   deleteOrg(orgCity: string, orgName: string, showSnackBar: boolean) {
@@ -145,13 +158,18 @@ export class FirestoreService {
         console.log('No org documents found with city and name: ' + orgCity + ', ' + orgName);
       } else {
         querySnapshot.forEach(docSnapshot => this.organizations.doc(docSnapshot.id).delete());
-        this.router.navigate(['/admin/orgs']);
+        this.allOrgs$.next(this.allOrgs$.value.filter(org => {
+          return !(org.address.city === orgCity && org.name === orgName);
+        }));
 
-        if (showSnackBar === true) {
-          const message = 'Org deleted successfully: ' + orgName;
-          const action = 'OK';
-          this.snackBarService.openSnackBar(message, action, 3000);
-        }
+        this.ngZone.run(() => {
+          if (showSnackBar === true) {
+            const message = 'Org deleted successfully: ' + orgName;
+            const action = 'OK';
+            this.snackBarService.openSnackBar(message, action, 3000);
+          }
+          this.router.navigate(['/admin/orgs']);
+        });
       }
     });
   }
