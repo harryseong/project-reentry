@@ -16,6 +16,7 @@ export class FirestoreService {
   languages$ = new BehaviorSubject(null);
   serviceCategories$ = new BehaviorSubject(null);
   admins$: BehaviorSubject<any[]> = new BehaviorSubject([]);
+  users$: BehaviorSubject<any[]> = new BehaviorSubject([]);
 
   organizations: AngularFirestoreCollection<any>;
   serviceCategories: AngularFirestoreCollection<any>;
@@ -47,18 +48,59 @@ export class FirestoreService {
 
   // Run this once when Home component initiated.
   getAllOrgs() {
-    this.organizations.get().toPromise()
-      .then(querySnapshot => {
-        const sortedOrgs = this._sort(querySnapshot.docs.map(doc => doc.data()), 'name');
-        this.allOrgs$.next(sortedOrgs);
-      })
-      .catch(err => this.snackBarService.openSnackBar('Something went wrong. Please refresh the page.', 'OK'));
+    this.allOrgs$.next([]);
+    // this.organizations.get().toPromise()
+    //   .then(querySnapshot => {
+    //     const sortedOrgs = this._sort(querySnapshot.docs.map(doc => doc.data()), 'name');
+    //     this.allOrgs$.next(sortedOrgs);
+    //   })
+    //   .catch(err => this.snackBarService.openSnackBar('Something went wrong. Please refresh the page.', 'OK'));
   }
 
   addToAllOrgs(org: Org) {
     const allOrgs = this.allOrgs$.value;
     allOrgs.push(org);
     this.allOrgs$.next(this._sort(allOrgs, 'name'));
+  }
+
+  getAllAdmins() {
+    const adminsRef = this.users.ref.where('role', '==', 'admin');
+    adminsRef.get()
+      .then(querySnapshot => querySnapshot.docs.map(doc => doc.data()))
+      .then(admins => this.admins$.next(admins))
+      .catch(err => this.snackBarService.openSnackBar('Something went wrong. Please refresh the page.', 'OK'));
+  }
+
+  getAllUsers() {
+    this.users.get().toPromise()
+      .then(querySnapshot => {
+        const sortedUsers = this._sort(querySnapshot.docs.map(doc => doc.data()), 'name');
+        this.users$.next(sortedUsers);
+      })
+      .catch(err => this.snackBarService.openSnackBar('Something went wrong. Please refresh the page.', 'OK'));
+  }
+
+  updateUserRole(user) {
+    const userDoc = this.users.doc(user.email);
+    userDoc.get().toPromise()
+      .then(doc => {
+          userDoc.set({
+            email: doc.data().email,
+            name: user.name,
+            role: (user.role === 'user' ? 'admin' : 'user')
+          })
+            .then(() => {
+              this.users$.next(this.users$.value.map(u => {
+                if (u.email === user.email) {
+                  u.role = u.role === 'admin' ? 'user' : 'admin';
+                }
+                return u;
+              }));
+              this.snackBarService.openSnackBar('Role updated successfully.', 'OK', 3000);
+            })
+            .catch(() => this.snackBarService.openSnackBar('Something went wrong. Please refresh and try again.', 'OK'))
+        }
+      );
   }
 
   getAllLanguages() {
@@ -279,16 +321,5 @@ export class FirestoreService {
         });
       }
     });
-  }
-
-  /**
-   * Get a list of all admins.
-   */
-  getAllAdmins() {
-    const adminsRef = this.users.ref.where('role', '==', 'admin');
-    adminsRef.get()
-      .then(querySnapshot => querySnapshot.docs.map(doc => doc.data()))
-      .then(admins => this.admins$.next(admins))
-      .catch(err => this.snackBarService.openSnackBar('Something went wrong. Please refresh the page.', 'OK'));
   }
 }

@@ -1,30 +1,34 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MatTableDataSource} from '@angular/material/table';
 import {Sort} from '@angular/material/sort';
 import {FirestoreService} from '../../core/services/firestore/firestore.service';
-import {MatDialog} from '@angular/material/dialog';
-import {SnackBarService} from '../../core/services/snack-bar/snack-bar.service';
-import {DialogService} from '../../core/services/dialog/dialog.service';
+import {BehaviorSubject, Subscription} from "rxjs";
 
 @Component({
   selector: 'app-users',
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss']
 })
-export class UsersComponent implements OnInit {
+export class UsersComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['name', 'email', 'role'];
   dataSource: MatTableDataSource<any>;
+  users$: BehaviorSubject<any[]> = null;
+  usersSubscription$: Subscription;
   userList: any[] = [];
 
-  constructor(private db: FirestoreService,
-              public dialog: MatDialog,
-              private dialogService: DialogService) { }
+  constructor(private db: FirestoreService) {
+    this.users$ = this.db.users$;
+  }
 
   ngOnInit() {
-    this.db.users.valueChanges().subscribe(rsp => {
-      this.userList = rsp;
-      this.dataSource = new MatTableDataSource(rsp);
+    this.usersSubscription$ = this.users$.subscribe(users => {
+      this.userList = users;
+      this.dataSource = new MatTableDataSource<any>(users);
     });
+  }
+
+  ngOnDestroy(): void {
+    this.usersSubscription$.unsubscribe();
   }
 
   sortData(sort: Sort) {
@@ -62,7 +66,7 @@ export class UsersComponent implements OnInit {
     }
   }
 
-  editRole(email: string, role: string): void {
-    this.dialogService.openUserDialog(email, role)
+  updateRole(user): void {
+    this.db.updateUserRole(user);
   }
 }

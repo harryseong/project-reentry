@@ -11,6 +11,7 @@ export class AdminSideComponent implements OnInit {
   constructor(public db: FirestoreService) {}
 
   ngOnInit() {
+    this.db.getAllUsers();
     this.db.getAllAdmins();
     this.db.getAllOrgs();
     this.db.getAllLanguages();
