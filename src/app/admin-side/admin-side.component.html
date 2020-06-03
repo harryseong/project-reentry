@@ -6,7 +6,7 @@
       <app-progress-spinner></app-progress-spinner>
     </ng-template>
 
-    <ng-container *ngIf="(db.admins$ | async) && (db.allOrgs$ | async) && (db.serviceCategories$ | async); else progressSpinner">
+    <ng-container *ngIf="(db.users$ | async) && (db.admins$ | async) && (db.allOrgs$ | async) && (db.serviceCategories$ | async); else progressSpinner">
       <router-outlet></router-outlet>
     </ng-container>
   </div>

@@ -56,6 +56,8 @@ export class OrgAllComponent implements OnInit {
           return TableService.compare(a.name, b.name, isAsc);
         case 'city':
           return TableService.compare(a.address.city, b.address.city, isAsc);
+        case 'county':
+          return TableService.compare(a.address.county, b.address.county, isAsc);
         default:
           return 0;
       }
@@ -69,11 +71,6 @@ export class OrgAllComponent implements OnInit {
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
-  }
-
-  viewOrg(orgCity: string, orgName: string) {
-    alert(orgName);
-    this.router.navigate(['/admin/orgs/', orgCity, orgName]);
   }
 
   uploadOrgCsv(files: FileList) {
@@ -105,8 +102,5 @@ export class OrgAllComponent implements OnInit {
         snackBarService.openSnackBar('Successfully uploaded file. ' + orgCount + ' orgs uploaded.', 'OK');
       }
     });
-  }
-
-  createSaveOrg(csvOrg) {
   }
 }
