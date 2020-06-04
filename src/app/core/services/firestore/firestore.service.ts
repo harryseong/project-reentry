@@ -89,7 +89,10 @@ export class FirestoreService {
   addToAllOrgs(org: Org) {
     const allOrgs = this.allOrgs$.value;
     allOrgs.push(org);
-    this.allOrgs$.next(this._sort(allOrgs, 'name'));
+
+    const sortedOrgs = this._sort(allOrgs, 'name');
+    this.allOrgs$.next(sortedOrgs);
+    this.localStorageService.setItem('orgs', {orgs: sortedOrgs, expiry: this.setExpiry()});
   }
 
   getAllAdmins() {
@@ -202,13 +205,15 @@ export class FirestoreService {
       } else {
         querySnapshot.forEach(docSnapshot => this.organizations.doc(docSnapshot.id).set(org));
         this.currentOrg$.next(org);
-        this.allOrgs$.next(this.allOrgs$.value.map(o => {
+        const updatedOrgs = this.allOrgs$.value.map(o => {
           if (o.address.city === originalOrgCity && o.name === originalOrgName) {
             return org;
           } else {
             return o;
           }
-        }));
+        });
+        this.allOrgs$.next(updatedOrgs);
+        this.localStorageService.setItem('orgs', {orgs: updatedOrgs, expiry: this.setExpiry()});
 
         this.ngZone.run(() => {
           if (showSnackBar === true) {
@@ -229,9 +234,11 @@ export class FirestoreService {
         console.log('No org documents found with city and name: ' + orgCity + ', ' + orgName);
       } else {
         querySnapshot.forEach(docSnapshot => this.organizations.doc(docSnapshot.id).delete());
-        this.allOrgs$.next(this.allOrgs$.value.filter(org => {
+        const filteredOrgs = this.allOrgs$.value.filter(org => {
           return !(org.address.city === orgCity && org.name === orgName);
-        }));
+        });
+        this.allOrgs$.next(filteredOrgs);
+        this.localStorageService.setItem('orgs', {orgs: filteredOrgs, expiry: this.setExpiry()});
 
         this.ngZone.run(() => {
           if (showSnackBar === true) {
