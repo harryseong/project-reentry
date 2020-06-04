@@ -6,6 +6,7 @@ import {BehaviorSubject} from 'rxjs';
 import {Org} from '../../../shared/interfaces/org';
 import {OrgService} from '../org/org.service';
 import * as moment from 'moment';
+import {LocalStorageService} from "../local-storage/local-storage.service";
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +26,7 @@ export class FirestoreService {
   users: AngularFirestoreCollection<any>;
 
   constructor(private db: AngularFirestore,
+              private localStorageService: LocalStorageService,
               private ngZone: NgZone,
               private orgService: OrgService,
               private router: Router,
@@ -46,20 +48,51 @@ export class FirestoreService {
       .sort((a, b) => (a[parameter] > b[parameter]) ? 1 : ((b[parameter] > a[parameter] ? -1 : 0)));
   }
 
-  // Run this once when Home component initiated.
   getAllOrgs() {
+    const localStorageOrgs = this.localStorageService.getItem('orgs');
+    if (localStorageOrgs === null) {
+      this.getAllOrgsFromFirestore();
+      console.log('Fetched all orgs from Firestore and saved in local storage.')
+    } else {
+      const expiry = localStorageOrgs.expiry;
+      const now = new Date().getTime();
+      if (expiry !== null && expiry !== undefined) {
+        if (now < expiry) {
+          this.allOrgs$.next(localStorageOrgs.orgs);
+          console.log('Fetched orgs from local storage.')
+        } else {
+          this.getAllOrgsFromFirestore();
+          console.log('Local storage orgs expired. Fetched all orgs from Firestore and saved in local storage.')
+        }
+      } else {
+        this.getAllOrgsFromFirestore();
+        console.log('Expiry not found on local storage orgs. Fetched all orgs from Firestore and saved in local storage.')
+      }
+    }
+  }
+
+  getAllOrgsFromFirestore() {
     this.organizations.get().toPromise()
       .then(querySnapshot => {
         const sortedOrgs = this._sort(querySnapshot.docs.map(doc => doc.data()), 'name');
         this.allOrgs$.next(sortedOrgs);
+        this.localStorageService.setItem('orgs', {orgs: sortedOrgs, expiry: this.setExpiry()});
       })
       .catch(err => this.snackBarService.openSnackBar('Something went wrong. Please refresh the page.', 'OK'));
+  }
+
+  setExpiry() {
+    const ttl = 86400000; // One day.
+    return (new Date().getTime() + ttl);
   }
 
   addToAllOrgs(org: Org) {
     const allOrgs = this.allOrgs$.value;
     allOrgs.push(org);
-    this.allOrgs$.next(this._sort(allOrgs, 'name'));
+
+    const sortedOrgs = this._sort(allOrgs, 'name');
+    this.allOrgs$.next(sortedOrgs);
+    this.localStorageService.setItem('orgs', {orgs: sortedOrgs, expiry: this.setExpiry()});
   }
 
   getAllAdmins() {
@@ -172,13 +205,15 @@ export class FirestoreService {
       } else {
         querySnapshot.forEach(docSnapshot => this.organizations.doc(docSnapshot.id).set(org));
         this.currentOrg$.next(org);
-        this.allOrgs$.next(this.allOrgs$.value.map(o => {
+        const updatedOrgs = this.allOrgs$.value.map(o => {
           if (o.address.city === originalOrgCity && o.name === originalOrgName) {
             return org;
           } else {
             return o;
           }
-        }));
+        });
+        this.allOrgs$.next(updatedOrgs);
+        this.localStorageService.setItem('orgs', {orgs: updatedOrgs, expiry: this.setExpiry()});
 
         this.ngZone.run(() => {
           if (showSnackBar === true) {
@@ -199,9 +234,11 @@ export class FirestoreService {
         console.log('No org documents found with city and name: ' + orgCity + ', ' + orgName);
       } else {
         querySnapshot.forEach(docSnapshot => this.organizations.doc(docSnapshot.id).delete());
-        this.allOrgs$.next(this.allOrgs$.value.filter(org => {
+        const filteredOrgs = this.allOrgs$.value.filter(org => {
           return !(org.address.city === orgCity && org.name === orgName);
-        }));
+        });
+        this.allOrgs$.next(filteredOrgs);
+        this.localStorageService.setItem('orgs', {orgs: filteredOrgs, expiry: this.setExpiry()});
 
         this.ngZone.run(() => {
           if (showSnackBar === true) {
