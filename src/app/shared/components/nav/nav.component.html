@@ -1,7 +1,7 @@
 <nav>
   <mat-toolbar class="nav-toolbar mat-elevation-z1" ngClass.xs="mobile" fxLayout="row" fxLayoutAlign="space-between center">
-    <button mat-button id="logo" [matMenuTriggerFor]="navMenu" fxHide.gt-xs>
-      <span>Project Reentry <i class="fas fa-caret-down"></i></span>
+    <button mat-icon-button id="logo" [matMenuTriggerFor]="navMenu" fxHide.gt-xs>
+      <span><i class="fas fa-bars fa-fw"></i></span>
     </button>
 
     <div fxLayout="row" fxLayoutAlign="start center" fxHide.xs>
@@ -10,7 +10,8 @@
       <button mat-button [routerLink]="['/', 'admin']" *ngIf="isAdmin$ | async"><span><i class="fas fa-user-cog fa-fw"></i> Admin</span></button>
     </div>
 
-    <button mat-button (click)="goBack()"><span><i class="fas fa-arrow-left fa-fw"></i> Back</span></button>
+    <button mat-icon-button (click)="goBack()" fxHide.gt-xs><span><i class="fas fa-arrow-left fa-fw"></i></span></button>
+    <button mat-button (click)="goBack()" fxHide.xs><span><i class="fas fa-arrow-left fa-fw"></i> Back</span></button>
   </mat-toolbar>
 </nav>
 
