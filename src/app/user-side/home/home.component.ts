@@ -1,7 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {animate, style, transition, trigger} from '@angular/animations';
 import {ActivatedRoute} from '@angular/router';
-import {Subscription} from 'rxjs';
+import {Subscription, SubscriptionLike} from 'rxjs';
+import {Location} from "@angular/common";
 
 @Component({
   selector: 'app-home',
@@ -22,16 +23,17 @@ export class HomeComponent implements OnInit, OnDestroy {
     {path: '/', label: 'Near Me'},
     {path: '/categories', label: 'By Categories'},
   ];
-  activeLink = this.navLinks[0].path;
+  activeLink = null;
+  locationSubscription$: SubscriptionLike;
   routeSubscription$: Subscription;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private location: Location,
+              private route: ActivatedRoute) {}
 
   ngOnInit() {
-    this.routeSubscription$ = this.route.firstChild.url.subscribe(rsp => {
-      const currentActiveLink = '/' + rsp.toString();
-      if (this.activeLink !== currentActiveLink)
-        this.activeLink = currentActiveLink;
+    this.routeSubscription$ = this.route.firstChild.url.subscribe(rsp => this.setCurrentActiveLink(rsp));
+    this.locationSubscription$ = this.location.subscribe(location => {
+      this.setCurrentActiveLink(location.url);
     });
   }
 
@@ -39,5 +41,15 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (this.routeSubscription$ != null) {
       this.routeSubscription$.unsubscribe();
     }
+
+    if (this.locationSubscription$ != null) {
+      this.locationSubscription$.unsubscribe();
+    }
+  }
+
+  setCurrentActiveLink(rsp) {
+    const currentActiveLink = '/' + rsp.toString();
+    if (this.activeLink !== currentActiveLink)
+      this.activeLink = currentActiveLink;
   }
 }
