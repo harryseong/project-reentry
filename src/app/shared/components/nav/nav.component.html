@@ -10,6 +10,8 @@
       <button mat-button [routerLink]="['/', 'admin']" *ngIf="isAdmin$ | async"><span><i class="fas fa-user-cog fa-fw"></i> Admin</span></button>
     </div>
 
+    <app-header fxHide.gt-xs></app-header>
+
     <button mat-icon-button (click)="goBack()" fxHide.gt-xs><span><i class="fas fa-arrow-left fa-fw"></i></span></button>
     <button mat-button (click)="goBack()" fxHide.xs><span><i class="fas fa-arrow-left fa-fw"></i> Back</span></button>
   </mat-toolbar>
