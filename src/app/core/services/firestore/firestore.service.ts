@@ -6,6 +6,7 @@ import {BehaviorSubject} from 'rxjs';
 import {Org} from '../../../shared/interfaces/org';
 import {OrgService} from '../org/org.service';
 import * as moment from 'moment';
+import {LocalStorageService} from "../local-storage/local-storage.service";
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +26,7 @@ export class FirestoreService {
   users: AngularFirestoreCollection<any>;
 
   constructor(private db: AngularFirestore,
+              private localStorageService: LocalStorageService,
               private ngZone: NgZone,
               private orgService: OrgService,
               private router: Router,
@@ -46,14 +48,42 @@ export class FirestoreService {
       .sort((a, b) => (a[parameter] > b[parameter]) ? 1 : ((b[parameter] > a[parameter] ? -1 : 0)));
   }
 
-  // Run this once when Home component initiated.
   getAllOrgs() {
+    const localStorageOrgs = this.localStorageService.getItem('orgs');
+    if (localStorageOrgs === null) {
+      this.getAllOrgsFromFirestore();
+      console.log('Fetched all orgs from Firestore and saved in local storage.')
+    } else {
+      const expiry = localStorageOrgs.expiry;
+      const now = new Date().getTime();
+      if (expiry !== null && expiry !== undefined) {
+        if (now < expiry) {
+          this.allOrgs$.next(localStorageOrgs.orgs);
+          console.log('Fetched orgs from local storage.')
+        } else {
+          this.getAllOrgsFromFirestore();
+          console.log('Local storage orgs expired. Fetched all orgs from Firestore and saved in local storage.')
+        }
+      } else {
+        this.getAllOrgsFromFirestore();
+        console.log('Expiry not found on local storage orgs. Fetched all orgs from Firestore and saved in local storage.')
+      }
+    }
+  }
+
+  getAllOrgsFromFirestore() {
     this.organizations.get().toPromise()
       .then(querySnapshot => {
         const sortedOrgs = this._sort(querySnapshot.docs.map(doc => doc.data()), 'name');
         this.allOrgs$.next(sortedOrgs);
+        this.localStorageService.setItem('orgs', {orgs: sortedOrgs, expiry: this.setExpiry()});
       })
       .catch(err => this.snackBarService.openSnackBar('Something went wrong. Please refresh the page.', 'OK'));
+  }
+
+  setExpiry() {
+    const ttl = 86400000; // One day.
+    return (new Date().getTime() + ttl);
   }
 
   addToAllOrgs(org: Org) {
