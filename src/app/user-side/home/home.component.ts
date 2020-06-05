@@ -1,8 +1,9 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {animate, style, transition, trigger} from '@angular/animations';
-import {ActivatedRoute} from '@angular/router';
-import {Subscription, SubscriptionLike} from 'rxjs';
+import {ActivatedRoute, NavigationEnd, Router, RouterEvent} from '@angular/router';
+import {BehaviorSubject, Subscription, SubscriptionLike} from 'rxjs';
 import {Location} from "@angular/common";
+import {filter} from "rxjs/operators";
 
 @Component({
   selector: 'app-home',
@@ -23,17 +24,28 @@ export class HomeComponent implements OnInit, OnDestroy {
     {path: '/', label: 'Near Me'},
     {path: '/categories', label: 'By Categories'},
   ];
-  activeLink = null;
+  currentActiveLink$: BehaviorSubject<string> = new BehaviorSubject<string>('/');
   locationSubscription$: SubscriptionLike;
   routeSubscription$: Subscription;
+  routerEventsSubscription$: Subscription;
 
   constructor(private location: Location,
-              private route: ActivatedRoute) {}
+              private route: ActivatedRoute,
+              private router: Router) {}
 
   ngOnInit() {
-    this.routeSubscription$ = this.route.firstChild.url.subscribe(rsp => this.setCurrentActiveLink(rsp));
+    this.routeSubscription$ = this.route.firstChild.url.subscribe(rsp => {
+      this.setCurrentActiveLink(rsp);
+    });
+
     this.locationSubscription$ = this.location.subscribe(location => {
       this.setCurrentActiveLink(location.url);
+    });
+
+    this.routerEventsSubscription$ = this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: RouterEvent) => {
+      this.currentActiveLink$.next(event.url);
     });
   }
 
@@ -45,11 +57,15 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (this.locationSubscription$ != null) {
       this.locationSubscription$.unsubscribe();
     }
+
+    if (this.routerEventsSubscription$ != null) {
+      this.routerEventsSubscription$.unsubscribe();
+    }
   }
 
   setCurrentActiveLink(rsp) {
     const currentActiveLink = '/' + rsp.toString();
-    if (this.activeLink !== currentActiveLink)
-      this.activeLink = currentActiveLink;
+    if (this.currentActiveLink$.value !== currentActiveLink)
+      this.currentActiveLink$.next(currentActiveLink);
   }
 }
