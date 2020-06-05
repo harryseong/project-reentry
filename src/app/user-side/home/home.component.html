@@ -1,4 +1,4 @@
-<div [@transitionAnimations]>
+<div [@transitionAnimations] *ngIf="currentActiveLink$ | async as currentActiveLink">
   <div fxLayout="row" fxLayoutAlign.xs="center">
     <app-subheader [subheaderText]="subheaderText"></app-subheader>
   </div>
@@ -8,8 +8,8 @@
       <a mat-tab-link
          *ngFor="let link of navLinks"
          [routerLink]="link.path"
-         (click)="activeLink=link.path"
-         [active]="activeLink===link.path">
+         (click)="currentActiveLink$.next(link.path)"
+         [active]="currentActiveLink===link.path">
         {{link.label}}
       </a>
     </nav>
